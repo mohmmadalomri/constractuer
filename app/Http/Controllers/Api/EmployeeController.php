@@ -12,7 +12,9 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::all();
-        return response()->json($employees);
+        return response()->json([
+            'employees' => $employees
+        ], 200);
     }
 
 
@@ -20,51 +22,50 @@ class EmployeeController extends Controller
     {
         $employee = Employee::create($request->all());
         return response()->json([
-            'status'=>true,
-            'message'=>'created employee successfully',
-            'data'=>$employee
+            'status' => true,
+            'message' => 'created employee successfully',
+            'data' => $employee
         ]);
     }
 
 
-    public function show(Request $request)
+    public function show(Request $request, $id)
     {
-        $employee = Employee::findOrFail($request->id);
-        return response()->json($employee);
+        $employee = Employee::findOrFail($id);
+        return response()->json([
+            'employee' => $employee
+        ], 200);
     }
 
 
-
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $employee = Employee::findOrFail($request->id);
-        if($employee)
-        {
-            $data['profession_id']  = $request->profession_id ? $request->profession_id : $employee->profession_id;
-            $data['hourly_salary']  =$request->hourly_salary ? $request->hourly_salary : $employee->hourly_salary;
-            $data['monthly_salary'] =$request->monthly_salary ? $request->monthly_salary : $employee->monthly_salary;
-            
+        $employee = Employee::findOrFail($id);
+        if ($employee) {
+            $data['profession_id'] = $request->profession_id ? $request->profession_id : $employee->profession_id;
+            $data['hourly_salary'] = $request->hourly_salary ? $request->hourly_salary : $employee->hourly_salary;
+            $data['monthly_salary'] = $request->monthly_salary ? $request->monthly_salary : $employee->monthly_salary;
+
             $employee->update($data);
             return response()->json([
-                'status'=>true,
+                'status' => true,
                 'message' => 'employee Information Updated Successfully',
                 'data' => $employee,
             ]);
-        }
-        else{
+        } else {
             return response()->json([
-                'status'=>false,
+                'status' => false,
                 'message' => 'employee Information Updated error',
             ]);
         }
     }
 
 
-    public function destroy(Request $request)
+    public function destroy(Request $request, $id)
     {
-        Employee::find($request->id)->delete();
+        Employee::find($id)->delete();
         return response()->json([
-            'status'=>true,
+            'status' => true,
             'message' => 'employee Information deleted Successfully',
         ]);
     }

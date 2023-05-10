@@ -13,65 +13,65 @@ class TeamController extends Controller
 
     public function index()
     {
-        $teams =Team::all();
-        return response()->json($teams);
+        $teams = Team::all();
+        return response()->json([
+            'teams' => $teams
+        ], 200);
     }
 
 
     public function store(StoreTeamRequest $request)
     {
-        $data['name'] = $request->name ;
-        $data['describe'] = $request->describe ;
-        $data['supervisor_id'] = $request->supervisor_id ;
-        $data['company_id'] = $request->company_id ;
+        $data['name'] = $request->name;
+        $data['describe'] = $request->describe;
+        $data['supervisor_id'] = $request->supervisor_id;
+        $data['company_id'] = $request->company_id;
 
         $team = Team::create($data);
         return response()->json([
-            'status'=>true,
-            'date' =>$team,
+            'status' => true,
+            'date' => $team,
             'message' => 'Team  Added Successfully',
         ]);
 
 
     }
 
-    public function show(Request $request)
+    public function show(Request $request, $id)
     {
-        $team = Team::findOrFail($request->id);
-        return response()->json($team);
+        $team = Team::findOrFail($id);
+        return response()->json([
+            'team' => $team
+        ], 200);
     }
 
 
     public function update(Request $request, $id)
     {
-            $team = Team::findOrFail($id);
-            if($team)
-            {
-                $data['name'] = $request->name ? $request->name : $team->name;
-                $data['describe'] = $request->describe ? $request->describe : $team->describe ;
-                $data['supervisor_id'] = $request->supervisor_id ? $request->supervisor_id : $team->supervisor_id;
-                $data['company_id'] = $request->company_id ? $request->company_id : $team->company_id  ;
+        $team = Team::findOrFail($id);
+        if ($team) {
+            $data['name'] = $request->name ? $request->name : $team->name;
+            $data['describe'] = $request->describe ? $request->describe : $team->describe;
+            $data['supervisor_id'] = $request->supervisor_id ? $request->supervisor_id : $team->supervisor_id;
+            $data['company_id'] = $request->company_id ? $request->company_id : $team->company_id;
 
-                if ($request->file('image'))
-                {
-                    if ($team->image != '')
-                    {
-                        if (File::exists('storage/team_image/' . $team->image))
-                        {
-                            unlink('storage/team_image/' . $team->image);
-                        }
-                        $team_image = $request->file('image')->store('team_image','public');
-                        $data['image']  =$team_image;
+            if ($request->file('image')) {
+                if ($team->image != '') {
+                    if (File::exists('storage/team_image/' . $team->image)) {
+                        unlink('storage/team_image/' . $team->image);
                     }
-
+                    $team_image = $request->file('image')->store('team_image', 'public');
+                    $data['image'] = $team_image;
                 }
-                $team->update($data);
-                return response()->json([
-                    'status'=>true,
-                    'date' =>$team,
-                    'message' => 'Team  Update Successfully',
-                ]);
+
             }
+            $team->update($data);
+            return response()->json([
+                'status' => true,
+                'date' => $team,
+                'message' => 'Team  Update Successfully',
+            ]);
+        }
     }
 
 
@@ -79,7 +79,7 @@ class TeamController extends Controller
     {
         Team::find($id)->delete();
         return response()->json([
-            'status'=>true,
+            'status' => true,
             'message' => 'Team deleted Successfully',
         ]);
     }

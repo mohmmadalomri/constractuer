@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Request extends Model
 {
     use HasFactory;
-    
-    protected $fillable=[
+
+    protected $fillable = [
         'client_id',
         'title',
         'day',
@@ -20,5 +20,5 @@ class Request extends Model
         'company_id'
     ];
 
-    public $timestamps = false; 
+    public $timestamps = false;
 }

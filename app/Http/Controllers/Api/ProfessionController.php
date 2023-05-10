@@ -12,67 +12,65 @@ class ProfessionController extends Controller
     public function index()
     {
         $professions = Profession::all();
-        return response()->json($professions);
+        return response()->json([
+            'professions' => $professions
+        ], 200);
     }
 
     public function store(Request $request)
     {
         $profession = Profession::create($request->all());
-        $logo_image = $request->file('image')->store('profession','public');
+        $logo_image = $request->file('image')->store('profession', 'public');
         return response()->json([
-            'status'=>true,
-            'message'=>'created profession successfully',
-            'data'=>$profession
+            'status' => true,
+            'message' => 'created profession successfully',
+            'data' => $profession
         ]);
     }
 
 
-    public function show(Request $request)
+    public function show(Request $request, $id)
     {
-        $profession = Profession::findOrFail($request->id);
+        $profession = Profession::findOrFail($id);
         return response()->json($profession);
     }
 
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-        $profession = Profession::findOrFail($request->id);
-        
-        if($profession)
-        {
-            $data['name']  = $request->name ? $request->name : $profession->name;
-            $data['describe']  = $request->describe ? $request->describe : $profession->describe;
-            $data['image'] = $request->file('image') ? $request->file('image')->store('profession','public') : $profession->image;
+        $profession = Profession::findOrFail($id);
+
+        if ($profession) {
+            $data['name'] = $request->name ? $request->name : $profession->name;
+            $data['describe'] = $request->describe ? $request->describe : $profession->describe;
+            $data['image'] = $request->file('image') ? $request->file('image')->store('profession', 'public') : $profession->image;
             $profession->update($data);
-            return response()->json($profession);
+//            return response()->json($profession);
             return response()->json([
-                'status'=>true,
-                'message'=>'update profession',
-                'data'=>$profession
+                'status' => true,
+                'message' => 'update profession',
+                'data' => $profession
             ]);
-        }
-        else{
+        } else {
             return response()->json([
-                'status'=>false,
+                'status' => false,
                 'message' => 'profession Information Updated error',
             ]);
         }
     }
 
-    public function destroy(Request $request)
+    public function destroy(Request $request, $id)
     {
-        $profession = Profession::findOrFail($request->id);
-        return response()->json($request);
-        if($profession)
-        {
+        $profession = Profession::findOrFail($id);
+//        return response()->json($request);
+        if ($profession) {
             $profession->delete();
             return response()->json([
-                'status'=>true,
+                'status' => true,
                 'message' => 'profession Information deleted Successfully',
             ]);
-        }
-        else{
+        } else {
             return response()->json([
-                'status'=>false,
+                'status' => false,
                 'message' => 'not found profession',
             ]);
         }
