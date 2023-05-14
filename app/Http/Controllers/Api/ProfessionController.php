@@ -11,7 +11,7 @@ class ProfessionController extends Controller
 
     public function index()
     {
-        $professions = Profession::all();
+        $professions = Profession::with('company')->get();
         return response()->json([
             'professions' => $professions
         ], 200);
@@ -31,8 +31,10 @@ class ProfessionController extends Controller
 
     public function show(Request $request, $id)
     {
-        $profession = Profession::findOrFail($id);
-        return response()->json($profession);
+        $profession = Profession::findOrFail($id)->with('company')->first();
+        return response()->json([
+            'profession'=>$profession
+        ],200);
     }
 
     public function update(Request $request, $id)

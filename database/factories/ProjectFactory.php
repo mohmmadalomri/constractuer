@@ -16,12 +16,12 @@ class ProjectFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'describe'=> $this->faker->sentence(),
-            'budget'=> $this->faker->randomNumber(5, true),
+            'budget'=> $this->faker->randomNumber(),
             'image'=> $this->faker->image(null, 640, 480),
-            'supervisor_id'=> $this->faker->unique()->randomDigit(),
-            'start_time'=> $this->faker->time(),
-            'end_time'=> $this->faker->time(),
-            'client_id'=> $this->faker->unique()->randomDigit(),
+            'supervisor_id'=> $this->faker->randomNumber(1,20),
+            'start_time'=> $this->faker->date(),
+            'end_time'=> $this->faker->date(),
+            'client_id'=> $this->faker->randomNumber(1,20),
             'company_id'=>1
         ];
     }

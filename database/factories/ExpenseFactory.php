@@ -14,7 +14,12 @@ class ExpenseFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'title' => $this->faker->name(),
+            'describe' => $this->faker->text(),
+            'date' => $this->faker->date(),
+            'total'=>$this->faker->randomNumber() ,
+            'client_id' =>$this->faker->randomNumber(1,20),
+
         ];
     }
 }

@@ -10,4 +10,4 @@ use Illuminate\Support\Facades\Route;
 //Route::put('task/{id}/update',[TaskController::class ,'update']);
 //Route::delete('task/{id}/delete',[TaskController::class ,'destroy']);
 
-Route::apiResource('task', \App\Http\Controllers\Api\TaskController::class);
+Route::apiResource('task', \App\Http\Controllers\Api\TaskController::class)->middleware('auth:sanctum');

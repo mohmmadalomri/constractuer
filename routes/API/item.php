@@ -8,4 +8,4 @@ use App\Http\Controllers\Api\ItemController;
 //Route::put('item/{id}/update' , [ItemController::class , 'update']);
 //Route::delete('item/{id}/delete' , [ItemController::class , 'destroy']);
 
-\Illuminate\Support\Facades\Route::apiResource('item',ItemController::class);
+\Illuminate\Support\Facades\Route::apiResource('item',ItemController::class)->middleware('auth:sanctum');

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\RequsetsController;
+use Illuminate\Support\Facades\Route;
 
 //
 //Route::get('requests' , [RequsetsController::class , 'index']);
@@ -9,4 +10,4 @@ use App\Http\Controllers\Api\RequsetsController;
 //Route::put('request/{id}/update' , [RequsetsController::class , 'update']);
 //Route::delete('request/{id}/delete' , [RequsetsController::class , 'destroy']);
 
-\Illuminate\Support\Facades\Route::apiResource('request', RequsetsController::class);
+Route::apiResource('request', RequsetsController::class)->middleware('auth:sanctum');

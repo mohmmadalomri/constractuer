@@ -11,7 +11,7 @@ class EmployeeController extends Controller
 
     public function index()
     {
-        $employees = Employee::all();
+        $employees = Employee::with('user', 'profession')->get();
         return response()->json([
             'employees' => $employees
         ], 200);
@@ -31,7 +31,7 @@ class EmployeeController extends Controller
 
     public function show(Request $request, $id)
     {
-        $employee = Employee::findOrFail($id);
+        $employee = Employee::findOrFail($id)->with('user', 'profession')->first();
         return response()->json([
             'employee' => $employee
         ], 200);

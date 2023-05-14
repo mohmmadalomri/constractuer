@@ -7,4 +7,4 @@ use App\Http\Controllers\Api\ProfessionController;
 //        Route::get('profession/show',[ProfessionController::class ,'show']);
 //        Route::delete('profession/delete',[ProfessionController::class ,'destroy']);
 
-\Illuminate\Support\Facades\Route::apiResource('profession',ProfessionController::class);
+\Illuminate\Support\Facades\Route::apiResource('profession',ProfessionController::class)->middleware('auth:sanctum');

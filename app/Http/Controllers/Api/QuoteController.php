@@ -17,6 +17,7 @@ class QuoteController extends Controller
      */
     public function index()
     {
+
         $quotes = Quote::all();
         return response()->json([
             'quotes' => $quotes

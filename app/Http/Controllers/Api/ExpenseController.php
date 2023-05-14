@@ -10,7 +10,7 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        $expenses = Expense::all();
+        $expenses = Expense::with('clint')->get();
         return response()->json([
             'expenses' => $expenses
         ], 200);
@@ -18,7 +18,7 @@ class ExpenseController extends Controller
 
     public function show($id)
     {
-        $expense = Expense::find($id);
+        $expense = Expense::find($id)->with('clint')->first();
         return response()->json([
             'expense' => $expense
         ], 200);

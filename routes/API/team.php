@@ -8,4 +8,4 @@ use App\Http\Controllers\Api\TeamController;
 //Route::put('team/{id}/updte' , [TeamController::class , 'update']);
 //Route::delete('team/{id}/delete' , [TeamController::class , 'destroy']);
 
-\Illuminate\Support\Facades\Route::apiResource('team',TeamController::class);
+\Illuminate\Support\Facades\Route::apiResource('team',TeamController::class)->middleware('auth:sanctum');

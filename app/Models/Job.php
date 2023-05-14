@@ -21,7 +21,7 @@ class Job extends Model
         'arrival_window',
         'company_id',
     ];
-    
+
     public function client()
     {
         $this->belongsTo(Client::class,'client_id','id');
@@ -32,7 +32,7 @@ class Job extends Model
         return $this->belongsToMany(Item::class , 'jobs_items','job_id','item_id');
     }
 
-    
+
     public function teams()
     {
         return $this->belongsToMany(Team::class , 'jobs_teams','jobs_id','team_id');
@@ -40,6 +40,6 @@ class Job extends Model
 
     public function company()
     {
-        $this->belongsTo(Company::class,'company_id','id');
+        $this->hasOne(Company::class,'id','company_id');
     }
 }

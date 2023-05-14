@@ -10,4 +10,4 @@ use App\Http\Controllers\Api\JobController;
 //Route::delete('job/{id}/delete' , [JobController::class , 'destroy']);
 //
 
-\Illuminate\Support\Facades\Route::apiResource('job', JobController::class);
+\Illuminate\Support\Facades\Route::apiResource('job', JobController::class)->middleware('auth:sanctum');

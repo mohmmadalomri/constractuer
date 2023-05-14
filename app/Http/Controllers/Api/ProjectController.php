@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+use App\Models\Company;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -17,9 +19,15 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        $projects = Project::all();
+
+        $projects = Project::with('company', 'supervisor', 'client', 'teams')->get();
+//        $projects=Project::all();
+//        $company=Company::all();
+//        $user=User::all();
         return response()->json([
-            'projects' => $projects
+            'projects' => $projects,
+//            'company'=>$company,
+//            'user'=>$user
         ], 200);
     }
 
@@ -31,6 +39,7 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
+
         $request->file('image')->store('project_image', 'public');
 
         $projects = Project::create($request->all());
@@ -48,9 +57,9 @@ class ProjectController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request)
+    public function show(Request $request, $id)
     {
-        $projects = Project::findOrFail($request->id);
+        $projects = Project::findOrFail($id)->with('company', 'supervisor', 'client', 'teams')->first();
         return response()->json([
             'projects' => $projects
         ], 200);

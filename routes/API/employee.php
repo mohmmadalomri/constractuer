@@ -9,4 +9,4 @@ use App\Http\Controllers\Api\EmployeeController;
 //        Route::delete('employee/delete',[EmployeeController::class ,'destroy']);
 
 
-\Illuminate\Support\Facades\Route::apiResource('employee', EmployeeController::class);
+\Illuminate\Support\Facades\Route::apiResource('employee', EmployeeController::class)->middleware('auth:sanctum');

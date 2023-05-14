@@ -12,7 +12,7 @@ class ClientController extends Controller
 
     public function index()
     {
-        $clients = Client::all();
+        $clients = Client::with('projects', 'invoices')->get();
         return response()->json([
             'clients' => $clients
         ], 200);
@@ -42,7 +42,7 @@ class ClientController extends Controller
 
     public function show($id)
     {
-        $client = Client::findOrFail($id);
+        $client = Client::findOrFail($id)->with('projects', 'invoices')->first();
         return response()->json([
             'client' => $client
         ], 200);

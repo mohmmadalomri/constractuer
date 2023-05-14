@@ -14,11 +14,11 @@ class EmployeeFactory extends Factory
     public function definition()
     {
         return [
-            'user_id'=> 1,
-            'company_id'=> 1,
-            'profession_id'=> 1,
-            'hourly_salary'=> 0,
-            'monthly_salary'=> 0,
+            'user_id'=> $this->faker->randomNumber(1,20),
+            'company_id'=> $this->faker->randomNumber(1,20),
+            'profession_id'=> $this->faker->randomNumber(1,20),
+            'hourly_salary'=> $this->faker->randomNumber(),
+            'monthly_salary'=> $this->faker->randomNumber(),
         ];
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Quote;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
-class QuoteSeeder extends Seeder
+class UserSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,6 +14,6 @@ class QuoteSeeder extends Seeder
      */
     public function run()
     {
-        Quote::factory()->count(20)->create();
+        User::factory()->count(20)->create();
     }
 }

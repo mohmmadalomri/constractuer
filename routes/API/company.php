@@ -6,4 +6,4 @@ use App\Http\Controllers\Api\CompanyController;
 //        Route::put('company/update',[CompanyController::class ,'update']);
 //        Route::get('company/show',[CompanyController::class ,'show']);
 //        Route::delete('company/delete',[CompanyController::class ,'delete']);
-\Illuminate\Support\Facades\Route::apiResource('company',CompanyController::class);
+\Illuminate\Support\Facades\Route::apiResource('company',CompanyController::class)->middleware('auth:sanctum');

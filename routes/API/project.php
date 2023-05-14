@@ -8,4 +8,4 @@ use App\Http\Controllers\Api\ProjectController;
 //        Route::get('project/{id}/show',[ProjectController::class ,'show']);
 //        Route::delete('project/{id}/delete',[ProjectController::class ,'destroy']);
 
-\Illuminate\Support\Facades\Route::apiResource('project',ProjectController::class);
+\Illuminate\Support\Facades\Route::apiResource('project',ProjectController::class)->middleware('auth:sanctum');

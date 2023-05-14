@@ -8,4 +8,4 @@ use App\Http\Controllers\Api\QuoteController;
 //        Route::get('quote/show/{id}',[QuoteController::class ,'show']);
 //        Route::delete('quote/{id}/delete',[QuoteController::class ,'destroy']);
 
-\Illuminate\Support\Facades\Route::apiResource('quote',QuoteController::class);
+\Illuminate\Support\Facades\Route::apiResource('quote',QuoteController::class)->middleware('auth:sanctum');

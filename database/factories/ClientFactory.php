@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Factories;
-
+use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ClientFactory extends Factory
@@ -15,22 +15,22 @@ class ClientFactory extends Factory
     {
         return [
 
-            'first_name' => fack()->firstName(),
-            'last_name' => fack()->lastName(),
-            'name_company' => fack()->company(),
-            'phone'=>fack()->phoneNumber() ,
-            'email' =>fack()->image(null, 640, 480),
-            'link_website' => fack()->url() ,
-            'link_facebook'=> fack()->freeEmail() ,
-            'link_twitter'=> fack()->freeEmail() ,
-            'link_youtupe'=> fack()->freeEmail() ,
-            'link_linkedin'=> fack()->freeEmail() ,
-            'address_1'=>fack()->address(),
-            'address_2'=>fack()->address(),
-            'country' => fack()->country(),
-            'governorate'=>fack()->governorate(),
-            'city' => fack()->state(),
-            'zip_code' =>fack()->postcode(),
+            'first_name' => $this->faker->firstName(),
+            'last_name' => $this->faker->lastName(),
+            'name_company' => $this->faker->userName(),
+            'phone'=>$this->faker->phoneNumber() ,
+            'email' =>$this->faker->freeEmail(),
+            'link_website' => $this->faker->url() ,
+            'link_facebook'=> $this->faker->url() ,
+            'link_twitter'=> $this->faker->url() ,
+            'link_youtupe'=> $this->faker->url() ,
+            'link_linkedin'=> $this->faker->url() ,
+            'address_1'=>$this->faker->text(),
+            'address_2'=>$this->faker->address(),
+            'country' => $this->faker->text(),
+            'governorate'=>$this->faker->text(),
+            'city' => $this->faker->text(),
+            'zip_code' =>$this->faker->text(),
             'company_id'=>1,
         ];
     }

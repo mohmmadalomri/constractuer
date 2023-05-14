@@ -10,4 +10,4 @@ use App\Http\Controllers\Api\ExpenseController;
 //Route::delete('expense/{id}/delete' , [ExpenseController::class , 'destroy']);
 
 
-\Illuminate\Support\Facades\Route::apiResource('expense', ExpenseController::class);
+\Illuminate\Support\Facades\Route::apiResource('expense', ExpenseController::class)->middleware('auth:sanctum');

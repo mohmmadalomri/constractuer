@@ -8,4 +8,4 @@ use App\Http\Controllers\Api\InvoiceController;
 //    Route::get('invoice/show/{id}',[InvoiceController::class ,'show']);
 //    Route::delete('invoice/{id}/delete',[InvoiceController::class ,'delete']);
 
-\Illuminate\Support\Facades\Route::apiResource('invoice',InvoiceController::class);
+\Illuminate\Support\Facades\Route::apiResource('invoice',InvoiceController::class)->middleware('auth:sanctum');
