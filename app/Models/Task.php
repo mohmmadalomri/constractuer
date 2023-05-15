@@ -10,6 +10,16 @@ class Task extends Model
     use HasFactory;
 
     protected $fillable = ['name', 'describe', 'project_id', 'team_id', 'start_time',
-        'end_time', 'status'];
+        'end_time', 'status','location'];
     public $guarded = [];
+
+    public function project(){
+        return $this->belongsTo(Project::class,'project_id','id');
+    }
+
+
+    public function team(){
+        return $this->belongsTo(Team::class);
+    }
+
 }

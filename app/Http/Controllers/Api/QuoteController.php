@@ -67,7 +67,7 @@ class QuoteController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
         $quote = Quote::findOrFail($id);
         return response()->json([

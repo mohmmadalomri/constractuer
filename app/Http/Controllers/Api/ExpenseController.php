@@ -18,7 +18,7 @@ class ExpenseController extends Controller
 
     public function show($id)
     {
-        $expense = Expense::find($id)->with('clint')->first();
+        $expense = Expense::with('clint')->find($id);
         return response()->json([
             'expense' => $expense
         ], 200);

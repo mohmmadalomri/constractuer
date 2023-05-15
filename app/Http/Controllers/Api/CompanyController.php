@@ -18,7 +18,7 @@ class CompanyController extends Controller
 
     public function index()
     {
-        $company = Company::with('admin','employees','invoices','professions')->get();
+        $company = Company::with('admin', 'employees', 'invoices', 'professions')->get();
         return response()->json([
             'company' => $company
         ], 200);
@@ -96,9 +96,9 @@ class CompanyController extends Controller
         }
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $company = Company::findOrFail($id)->with('admin','employees','invoices','professions')->first();
+        $company = Company::with('admin', 'employees', 'invoices', 'professions')->find($id);
         return response()->json([
             'company' => $company
         ], 200);

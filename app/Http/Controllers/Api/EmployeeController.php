@@ -29,9 +29,9 @@ class EmployeeController extends Controller
     }
 
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $employee = Employee::findOrFail($id)->with('user', 'profession')->first();
+        $employee = Employee::with('user', 'profession')->find($id);
         return response()->json([
             'employee' => $employee
         ], 200);

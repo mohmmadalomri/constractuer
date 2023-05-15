@@ -21,13 +21,9 @@ class ProjectController extends Controller
     {
 
         $projects = Project::with('company', 'supervisor', 'client', 'teams')->get();
-//        $projects=Project::all();
-//        $company=Company::all();
-//        $user=User::all();
+
         return response()->json([
             'projects' => $projects,
-//            'company'=>$company,
-//            'user'=>$user
         ], 200);
     }
 
@@ -57,9 +53,9 @@ class ProjectController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $projects = Project::findOrFail($id)->with('company', 'supervisor', 'client', 'teams')->first();
+        $projects = Project::with('company', 'supervisor', 'client', 'teams')->find($id);
         return response()->json([
             'projects' => $projects
         ], 200);

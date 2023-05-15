@@ -15,10 +15,10 @@ class TaskController extends Controller
 
     public function index()
     {
-        $tasks = Task::all();
+        $tasks = Task::with('project', 'team')->get();
         return response()->json([
             'tasks' => $tasks
-        ],);
+        ],200);
     }
 
 
@@ -40,12 +40,13 @@ class TaskController extends Controller
         ]);
     }
 
-    public function show(Request $request)
+    public function show($id)
     {
-        $task = Task::findOrFail($request->id);
+
+        $task = Task::with('project', 'team')->find($id);
         return response()->json([
-            'task'=>$task
-        ],200);
+            'task' => $task
+        ], 200);
     }
 
 

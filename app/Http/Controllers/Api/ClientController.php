@@ -42,7 +42,7 @@ class ClientController extends Controller
 
     public function show($id)
     {
-        $client = Client::findOrFail($id)->with('projects', 'invoices')->first();
+        $client = Client::with('projects', 'invoices')->find($id);
         return response()->json([
             'client' => $client
         ], 200);

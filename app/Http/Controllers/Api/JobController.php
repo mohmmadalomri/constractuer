@@ -42,9 +42,9 @@ class JobController extends Controller
         ]);
     }
 
-    public function show(Request $request, $id)
+    public function show( $id)
     {
-        $job = Job::findOrFail($id);
+        $job = Job::find($id);
         return response()->json($job);
     }
 

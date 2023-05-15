@@ -29,12 +29,12 @@ class ProfessionController extends Controller
     }
 
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $profession = Profession::findOrFail($id)->with('company')->first();
+        $profession = Profession::with('company')->find($id);
         return response()->json([
-            'profession'=>$profession
-        ],200);
+            'profession' => $profession
+        ], 200);
     }
 
     public function update(Request $request, $id)

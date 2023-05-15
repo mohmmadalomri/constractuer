@@ -14,7 +14,7 @@ class InvoiceController extends Controller
 
     public function index()
     {
-        $invoices = Invoice::with('client','items')->get();
+        $invoices = Invoice::with('client', 'items')->get();
         return response()->json([
             'invoices' => $invoices
         ], 200);
@@ -76,9 +76,9 @@ class InvoiceController extends Controller
         }
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $invoices = Invoice::findOrFail($id)->with('client','items')->first();
+        $invoices = Invoice::with('client', 'items')->find($id);
         return response()->json($invoices);
     }
 

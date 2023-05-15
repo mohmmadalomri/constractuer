@@ -40,7 +40,7 @@ class ItemController extends Controller
 
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
         $item = Item::findOrFail($id);
         return response()->json($item);

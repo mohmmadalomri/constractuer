@@ -40,6 +40,6 @@ class Job extends Model
 
     public function company()
     {
-        $this->hasOne(Company::class,'id','company_id');
+        $this->belongsTo(Company::class,'company_id','id');
     }
 }

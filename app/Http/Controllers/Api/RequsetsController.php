@@ -13,7 +13,7 @@ class RequsetsController extends Controller
 
     public function index()
     {
-        $requests = Request::all();
+        $requests = Request::with('client', 'team', 'company')->get();
         return response()->json([
             'requests' => $requests
         ], 200);
@@ -21,7 +21,7 @@ class RequsetsController extends Controller
 
     public function show($id)
     {
-        $request = Request::find($id);
+        $request = Request::with('client', 'team', 'company')->find($id);
         return response()->json([
             'request' => $request
         ], 200);

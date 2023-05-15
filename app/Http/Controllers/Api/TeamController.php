@@ -13,7 +13,7 @@ class TeamController extends Controller
 
     public function index()
     {
-        $teams = Team::with('supervisor','projects')->get();
+        $teams = Team::with('supervisor', 'projects')->get();
         return response()->json([
             'teams' => $teams
         ], 200);
@@ -37,9 +37,9 @@ class TeamController extends Controller
 
     }
 
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        $team = Team::findOrFail($id)->with('supervisor','projects')->first();
+        $team = Team::with('supervisor', 'projects')->find($id);
         return response()->json([
             'team' => $team
         ], 200);

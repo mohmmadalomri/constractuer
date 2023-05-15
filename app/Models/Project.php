@@ -9,7 +9,7 @@ class Project extends Model
 {
     use HasFactory;
     public $guarded = [];
-    
+
     protected $fillable=[
         'name',
         'describe',
@@ -40,5 +40,8 @@ class Project extends Model
     public function teams()
     {
         return $this->belongsToMany(Team::class , 'projects_teams','project_id','team_id');
+    }
+    public function task(){
+        return $this->hasMany(Task::class);
     }
 }

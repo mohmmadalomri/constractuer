@@ -21,6 +21,7 @@ class TaskFactory extends Factory
             'start_time' => $this->faker->date(),
             'end_time' => $this->faker->date(),
             'status' => $this->faker->title(),
+            'location' => $this->faker->title(),
 
         ];
     }

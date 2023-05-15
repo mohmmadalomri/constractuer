@@ -19,6 +19,14 @@ class Request extends Model
         'instruction',
         'company_id'
     ];
-
+    public function client(){
+        return $this->belongsTo(Client::class);
+    }
+    public function team(){
+        return $this->belongsTo(Team::class);
+    }
+    public function company(){
+        return $this->belongsTo(Company::class);
+    }
     public $timestamps = false;
 }
