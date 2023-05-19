@@ -15,7 +15,11 @@ class TaskController extends Controller
 
     public function index()
     {
+        
         $tasks = Task::with('project', 'team')->get();
+
+
+
         return response()->json([
             'tasks' => $tasks
         ],200);
