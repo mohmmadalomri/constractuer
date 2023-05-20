@@ -9,7 +9,7 @@ class Invoice extends Model
 {
     use HasFactory;
 
-    protected $fillable=[
+    protected $fillable = [
         'client_id',
         'title',
         'issued_date',
@@ -26,13 +26,18 @@ class Invoice extends Model
         'company_id',
     ];
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     public function client()
     {
-        return $this->belongsTo(Client::class,'client_id','id');
+        return $this->belongsTo(Client::class, 'client_id', 'id');
     }
 
     public function items()
     {
-        return $this->belongsToMany(Item::class , 'invoices_items','invoice_id','item_id');
+        return $this->belongsToMany(Item::class, 'invoices_items', 'invoice_id', 'item_id');
     }
 }
