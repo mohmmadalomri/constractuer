@@ -28,8 +28,9 @@ class ItemController extends Controller
         $data['price'] = $request->price;
         $data['company_id'] = $request->company_id;
 
-        $item_image = $request->file('image')->store('item_image', 'public');
-        $data['image'] = $item_image;
+        $data=$request->all();
+        $image=$request->file('image');
+        $data['image']=$this->images($image,null);
 
         $item = Item::create($data);
         return response()->json([
@@ -51,6 +52,7 @@ class ItemController extends Controller
     {
 
         $item = Item::findOrFail($id);
+        $data=$request->all();
         if ($item) {
             $data['name'] = $request->name ? $request->name : $item->name;
             $data['type'] = $request->type ? $request->type : $item->type;
@@ -59,13 +61,9 @@ class ItemController extends Controller
             $data['company_id'] = $request->company_id ? $request->company_id : $item->company_id;
 
             if ($request->file('image')) {
-                if ($item->image != '') {
-                    if (File::exists('storage/item_image/' . $item->image)) {
-                        unlink('storage/item_image/' . $item->image);
-                    }
-                }
-                $item_image = $request->file('image')->store('item_image', 'public');
-                $data['image'] = $item_image;
+               $oldimage=$item->image;
+                $image=$request->file('image');
+                $data['image']=$this->images($image,$oldimage);
             }
 
             $item->update($data);

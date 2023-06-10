@@ -36,9 +36,10 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
 
-        $request->file('image')->store('project_image', 'public');
-
-        $projects = Project::create($request->all());
+        $data = $request->all();
+        $image = $request->file('image');
+        $data['image'] = $this->images($image, null);
+        $projects = Project::create($data);
         return response()->json([
             'status' => true,
             'data' => $projects,
@@ -73,11 +74,17 @@ class ProjectController extends Controller
 //        $project = project::findOrFail($id);
         $project = Project::find($id);
         $data = $request->all();
+        if ($request->hasFile('image')) {
+
+            $oldimage = $project->image;
+            $image = $request->file('image');
+            $data['image'] = $this->images($image, $oldimage);
+
+        }
         if ($project) {
             $data['name'] = $request->name ? $request->name : $project->name;
             $data['describe'] = $request->describe ? $request->describe : $project->describe;
             $data['budget'] = $request->budget ? $request->budget : $project->budget;
-            $data['image'] = $request->image ? $request->image : $project->image;
             $data['supervisor_id'] = $request->supervisor_id ? $request->supervisor_id : $project->supervisor_id;
             $data['start_time'] = $request->start_time ? $request->start_time : $project->start_time;
             $data['end_time'] = $request->end_time ? $request->end_time : $project->end_time;

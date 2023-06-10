@@ -14,6 +14,7 @@ class JobController extends Controller
     public function index()
     {
         $jobs = Job::all();
+
         return response()->json([
             'jops' => $jobs
         ], 200);

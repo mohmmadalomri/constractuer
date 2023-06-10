@@ -32,10 +32,8 @@ class UserController extends Controller
         $data['phone'] = $request->phone;
         $data['birth_day'] = $request->birth_day ? $request->birth_day : Carbon::now();
         $data['password'] = bcrypt($request->password);
-        if ($request->file('image')) {
-            $image_user = $request->file('image')->store('user_image', 'public');
-            $data['image'] = $image_user;
-        }
+        $image = $request->file('image');
+        $data['image'] = $this->images($image, null);
 
         $user = User::create($data);
 
@@ -68,15 +66,11 @@ class UserController extends Controller
             $data['phone'] = $request->phone ? $request->phon : $user->phone;
             $data['birth_day'] = $request->birth_day ? $request->birth_day : Carbon::now();
 
-            if ($request->file('image')) {
-                if ($user->image != '') {
-                    if (File::exists('storage/user_image/' . $user->image)) {
-                        unlink('storage/user_image/' . $user->image);
-                    }
-                }
+            if ($request->hasFile('image')) {
 
-                $image_user = $request->file('image')->store('user_image', 'public');
-                $data['image'] = $image_user;
+                $oldimage = $user->image;
+                $image = $request->file('image');
+                $data['image'] = $this->images($image, $oldimage);
 
             }
 

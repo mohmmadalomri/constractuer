@@ -15,7 +15,6 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
             $table->string('title');
             $table->text('instruction');
             $table->timestamp('start_day');
@@ -24,9 +23,8 @@ class CreateJobsTable extends Migration
             $table->timestamp('end_time');
             $table->double('subtotal');
             $table->string('arrival_window');
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('client_id')->references('id')->on('clients');
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreignId('client_id')->references('id')->on('clients');
+            $table->foreignId('company_id')->references('id')->on('companies');
             $table->timestamps();
         });
     }

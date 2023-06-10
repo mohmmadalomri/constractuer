@@ -9,7 +9,7 @@ class Team extends Model
 {
     use HasFactory;
 
-    protected $fillable=[
+    protected $fillable = [
         'name',
         'describe',
         'image',
@@ -21,14 +21,16 @@ class Team extends Model
 
     public function supervisor()
     {
-        return $this->belongsTo(User::class,'supervisor_id','id');
+        return $this->belongsTo(User::class, 'supervisor_id', 'id');
     }
 
     public function projects()
     {
-        return $this->belongsToMany(Project::class ,'projects_teams','team_id','project_id');
+        return $this->belongsToMany(Project::class, 'projects_teams', 'team_id', 'project_id');
     }
-    public function task(){
+
+    public function task()
+    {
         $this->hasMany(Task::class);
     }
 

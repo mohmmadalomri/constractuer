@@ -12,7 +12,7 @@ class ClientController extends Controller
 
     public function index()
     {
-        $clients = Client::with('projects', 'invoices')->get();
+        $clients = Client::with('company')->get();
         return response()->json([
             'clients' => $clients
         ], 200);

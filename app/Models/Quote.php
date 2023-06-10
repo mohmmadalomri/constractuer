@@ -9,7 +9,7 @@ class Quote extends Model
 {
     use HasFactory;
 
-    protected $fillable =[
+    protected $fillable = [
         'client_id',
         'title',
         'message',
@@ -26,18 +26,18 @@ class Quote extends Model
 
     public function client()
     {
-        $this->belongsTo(Client::class,'client_id','id');
+        $this->belongsTo(Client::class, 'client_id', 'id');
     }
 
     public function items()
     {
-        return $this->belongsToMany(Item::class , 'quotes_items','quote_id','item_id');
+        return $this->belongsToMany(Item::class, 'quotes_items', 'quote_id', 'item_id');
     }
 
     public function company()
     {
-        $this->belongsTo(Company::class,'company_id','id');
+        $this->belongsTo(Company::class, 'company_id', 'id');
     }
 
-    
+
 }

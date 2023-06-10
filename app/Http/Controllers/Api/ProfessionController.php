@@ -19,8 +19,11 @@ class ProfessionController extends Controller
 
     public function store(Request $request)
     {
-        $profession = Profession::create($request->all());
-        $logo_image = $request->file('image')->store('profession', 'public');
+
+        $data = $request->all();
+        $image = $request->file('image');
+        $data['image'] = $this->images($image, null);
+        $profession = Profession::create($data);
         return response()->json([
             'status' => true,
             'message' => 'created profession successfully',
@@ -41,10 +44,17 @@ class ProfessionController extends Controller
     {
         $profession = Profession::findOrFail($id);
 
+        $data = $request->all();
+        if ($request->hasFile('image')) {
+
+            $oldimage = $profession->image;
+            $image = $request->file('image');
+            $data['image'] = $this->images($image, $oldimage);
+
+        }
         if ($profession) {
             $data['name'] = $request->name ? $request->name : $profession->name;
             $data['describe'] = $request->describe ? $request->describe : $profession->describe;
-            $data['image'] = $request->file('image') ? $request->file('image')->store('profession', 'public') : $profession->image;
             $profession->update($data);
 //            return response()->json($profession);
             return response()->json([

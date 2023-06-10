@@ -26,7 +26,8 @@ class TeamController extends Controller
         $data['describe'] = $request->describe;
         $data['supervisor_id'] = $request->supervisor_id;
         $data['company_id'] = $request->company_id;
-
+        $image = $request->file('image');
+        $data['image'] = $this->images($image, null);
         $team = Team::create($data);
         return response()->json([
             'status' => true,
@@ -55,14 +56,11 @@ class TeamController extends Controller
             $data['supervisor_id'] = $request->supervisor_id ? $request->supervisor_id : $team->supervisor_id;
             $data['company_id'] = $request->company_id ? $request->company_id : $team->company_id;
 
-            if ($request->file('image')) {
-                if ($team->image != '') {
-                    if (File::exists('storage/team_image/' . $team->image)) {
-                        unlink('storage/team_image/' . $team->image);
-                    }
-                    $team_image = $request->file('image')->store('team_image', 'public');
-                    $data['image'] = $team_image;
-                }
+            if ($request->hasFile('image')) {
+
+                $oldimage = $team->image;
+                $image = $request->file('image');
+                $data['image'] = $this->images($image, $oldimage);
 
             }
             $team->update($data);

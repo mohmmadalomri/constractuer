@@ -56,5 +56,10 @@ class Company extends Model
         return $this->hasMany(Profession::class, 'company_id', 'id');
     }
 
+    public function jop()
+    {
+        return $this->hasMany(Job::class, 'company_id', 'id');
+    }
+
 
 }
