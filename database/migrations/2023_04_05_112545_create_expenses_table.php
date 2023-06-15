@@ -19,8 +19,7 @@ class CreateExpensesTable extends Migration
             $table->text('describe');
             $table->timestamp('date');
             $table->double('total');
-            $table->unsignedBigInteger('client_id');
-            $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreignId('client_id')->references('id')->on('clients');
             $table->timestamps();
         });
     }

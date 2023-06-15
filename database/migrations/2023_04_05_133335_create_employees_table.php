@@ -15,14 +15,11 @@ class CreateEmployeesTable extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('profession_id');
             $table->double('hourly_salary')->default(0);
             $table->double('monthly_salary')->default(0);
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('profession_id')->references('id')->on('professions');
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('company_id')->references('id')->on('companies');
+            $table->foreignId('profession_id')->references('id')->on('professions');
             $table->timestamps();
         });
     }

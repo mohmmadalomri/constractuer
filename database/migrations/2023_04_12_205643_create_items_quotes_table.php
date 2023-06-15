@@ -14,10 +14,8 @@ class CreateItemsQuotesTable extends Migration
     public function up()
     {
         Schema::create('items_quotes', function (Blueprint $table) {
-            $table->unsignedBigInteger('quote_id');
-            $table->unsignedBigInteger('item_id');
-            $table->foreign('quote_id')->references('id')->on('quotes');
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->foreignId('quote_id')->references('id')->on('quotes');
+            $table->foreignId('item_id')->references('id')->on('items');
         });
     }
 

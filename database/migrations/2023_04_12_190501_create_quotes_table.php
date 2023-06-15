@@ -15,7 +15,6 @@ class CreateQuotesTable extends Migration
     {
         Schema::create('quotes', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
             $table->string('title');
             $table->text('message')->nullable();
             $table->double('subtotal');
@@ -26,9 +25,8 @@ class CreateQuotesTable extends Migration
             $table->double('tax_rate');
             $table->double('total');
             $table->text('note')->nullable();
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreignId('company_id')->references('id')->on('companies');
+            $table->foreignId('client_id')->references('id')->on('clients');
             $table->timestamps();
         });
     }

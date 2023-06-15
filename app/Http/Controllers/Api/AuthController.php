@@ -16,15 +16,15 @@ class AuthController extends Controller
     // function rgister new user
     public function register(Request $request)
     {
-        $failds= $request->validate([
+        $failds = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required','min:4'],
-            'phone'=>['string','max:25'],
-            'birth_day' =>'date',
+            'password' => ['required', 'min:4'],
+            'phone' => ['string', 'max:25'],
+            'birth_day' => 'date',
         ]);
 
-        $failds['password']= Hash::make($failds['password']);
+        $failds['password'] = Hash::make($failds['password']);
         $user = User::create($failds);
         return response()->json([
             'status' => true,
@@ -33,15 +33,16 @@ class AuthController extends Controller
             'token' => $user->createToken("API TOKEN")->plainTextToken
         ], 200);
     }
-         // function login
+
+    // function login
     public function login(Request $request)
     {
-        $failds= $request->validate([
+        $failds = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
 
         ]);
-        if(!Auth::attempt($request->only(['email', 'password']))){
+        if (!Auth::attempt($request->only(['email', 'password']))) {
             return response()->json([
                 'status' => false,
                 'message' => 'Email & Password does not match with our record.',
@@ -57,7 +58,8 @@ class AuthController extends Controller
             'token' => $user->createToken("API TOKEN")->plainTextToken
         ], 200);
     }
-        // function logout
+
+    // function logout
     public function logout()
     {
         auth()->user()->tokens()->delete();

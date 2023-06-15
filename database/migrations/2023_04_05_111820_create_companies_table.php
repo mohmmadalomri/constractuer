@@ -31,8 +31,7 @@ class CreateCompaniesTable extends Migration
             $table->string('governorate');  // المقاطعة او المحافظة
             $table->string('city');         // المدينة
             $table->string('zip_code');     // رمز البريد
-            $table->foreignIdFor(User::class);
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreignId('user_id')->references('id')->on('users');
             $table->timestamps();
         });
 

@@ -18,8 +18,7 @@ class CreateProfessionsTable extends Migration
             $table->string('name');
             $table->text('describe');
             $table->string('image');
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
 
         });
     }

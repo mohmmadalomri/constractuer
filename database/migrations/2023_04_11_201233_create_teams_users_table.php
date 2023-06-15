@@ -14,10 +14,8 @@ class CreateTeamsUsersTable extends Migration
     public function up()
     {
         Schema::create('teams_users', function (Blueprint $table) {
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('team_id');
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('team_id')->references('id')->on('teams');
+            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('team_id')->references('id')->on('teams');
         });
     }
 

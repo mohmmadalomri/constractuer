@@ -9,7 +9,7 @@ class Expense extends Model
 {
     use HasFactory;
 
-    protected $fillable=[
+    protected $fillable = [
         'title',
         'describe',
         'date',
@@ -17,7 +17,8 @@ class Expense extends Model
         'client_id',
     ];
 
-    public function client(){
+    public function client()
+    {
         return $this->belongsTo(Client::class);
     }
 }

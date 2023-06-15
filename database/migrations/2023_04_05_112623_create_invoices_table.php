@@ -15,7 +15,6 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('client_id');
             $table->string('title');
             $table->timestamp('issued_date');
             $table->timestamp('due_date');
@@ -28,9 +27,8 @@ class CreateInvoicesTable extends Migration
             $table->text('tax_describe');
             $table->double('tax_rate');
             $table->double('total');
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreignId('company_id')->references('id')->on('companies');
+            $table->foreignId('client_id')->references('id')->on('clients');
             $table->timestamps();
         });
     }

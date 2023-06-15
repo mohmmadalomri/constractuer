@@ -14,10 +14,8 @@ class CreateJobsTeamsTable extends Migration
     public function up()
     {
         Schema::create('jobs_teams', function (Blueprint $table) {
-            $table->unsignedBigInteger('job_id');
-            $table->unsignedBigInteger('team_id');
-            $table->foreign('job_id')->references('id')->on('jobs');
-            $table->foreign('team_id')->references('id')->on('teams');
+            $table->foreignId('job_id')->references('id')->on('jobs');
+            $table->foreignId('team_id')->references('id')->on('teams');
         });
     }
 

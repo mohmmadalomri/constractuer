@@ -14,10 +14,8 @@ class CreateItemsJobsTable extends Migration
     public function up()
     {
         Schema::create('items_jobs', function (Blueprint $table) {
-            $table->unsignedBigInteger('job_id');
-            $table->unsignedBigInteger('item_id');
-            $table->foreign('job_id')->references('id')->on('jobs');
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->foreignId('job_id')->references('id')->on('jobs');
+            $table->foreignId('item_id')->references('id')->on('items');
         });
     }
 

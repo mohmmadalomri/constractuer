@@ -20,8 +20,7 @@ class CreateItemsTable extends Migration
             $table->text('describe');
             $table->double('price');
             $table->string('image')->nullable();
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreignId('company_id')->references('id')->on('companies');
             $table->timestamps();
         });
     }

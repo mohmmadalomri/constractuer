@@ -19,7 +19,7 @@ class Job extends Model
         'end_time',
         'subtotal',
         'arrival_window',
-        'company_id',
+        'company_id','team_id'
     ];
 
     public function clients()

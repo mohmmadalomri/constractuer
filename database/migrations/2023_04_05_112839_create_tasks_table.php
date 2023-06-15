@@ -19,14 +19,12 @@ class CreateTasksTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('describe');
-            $table->unsignedBigInteger('project_id');
-            $table->unsignedBigInteger('team_id');
             $table->timestamp('start_time');
             $table->timestamp('end_time');
             $table->string('status');
             $table->string('location');
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('team_id')->references('id')->on('teams');
+            $table->foreignId('project_id')->references('id')->on('projects');
+            $table->foreignId('team_id')->references('id')->on('teams');
             $table->timestamps();
         });
     }

@@ -31,8 +31,7 @@ class CreateClientsTable extends Migration
             $table->string('governorate');
             $table->string('city');
             $table->string('zip_code');
-            $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreignId('company_id')->references('id')->on('companies');
             $table->timestamps();
         });
     }

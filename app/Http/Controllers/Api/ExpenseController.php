@@ -10,7 +10,7 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        $expenses = Expense::with('clint')->get();
+        $expenses = Expense::with('client')->get();
         return response()->json([
             'expenses' => $expenses
         ], 200);

@@ -14,10 +14,8 @@ class CreateProjectsTeamsTable extends Migration
     public function up()
     {
         Schema::create('projects_teams', function (Blueprint $table) {
-            $table->unsignedBigInteger('project_id');
-            $table->unsignedBigInteger('team_id');
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('team_id')->references('id')->on('teams');
+            $table->foreignId('project_id')->references('id')->on('projects');
+            $table->foreignId('team_id')->references('id')->on('teams');
         });
     }
 
