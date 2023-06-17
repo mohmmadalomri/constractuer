@@ -12,7 +12,8 @@ class ExpenseController extends Controller
     {
         $expenses = Expense::with('client')->get();
         return response()->json([
-            'expenses' => $expenses
+            'expenses' => $expenses,
+            'status' => true
         ], 200);
     }
 
@@ -20,6 +21,7 @@ class ExpenseController extends Controller
     {
         $expense = Expense::with('clint')->find($id);
         return response()->json([
+            'status' => true,
             'expense' => $expense
         ], 200);
     }
@@ -28,6 +30,7 @@ class ExpenseController extends Controller
     {
         $expense = Expense::create($request->all());
         return response()->json([
+            'status' => true,
             'massage' => 'expense add successfully',
             'expense' => $expense
         ], 200);
@@ -45,6 +48,7 @@ class ExpenseController extends Controller
 
             $expense->update($data);
             return response()->json([
+                'status' => true,
                 'massage' => 'expense updated successfully',
                 'expense' => $expense
             ], 200);

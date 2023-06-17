@@ -20,7 +20,7 @@ class JobController extends Controller
         ], 200);
     }
 
-    public function store(StorejobRequest $request)
+    public function store(Request $request)
     {
 
         $data['client_id'] = $request->client_id;
@@ -39,7 +39,7 @@ class JobController extends Controller
         return response()->json([
             'status' => true,
             'date' => $jobs,
-            'message' => 'invoices Information Added Successfully',
+            'message' => 'Job Information Added Successfully',
         ]);
     }
 
