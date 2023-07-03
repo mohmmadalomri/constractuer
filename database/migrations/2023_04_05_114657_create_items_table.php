@@ -21,6 +21,9 @@ class CreateItemsTable extends Migration
             $table->double('price');
             $table->string('image')->nullable();
             $table->foreignId('company_id')->references('id')->on('companies');
+
+            $table->integer('quantity')->default(0);
+
             $table->timestamps();
         });
     }

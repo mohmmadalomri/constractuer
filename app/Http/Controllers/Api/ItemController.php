@@ -28,6 +28,8 @@ class ItemController extends Controller
         $data['price'] = $request->price;
         $data['company_id'] = $request->company_id;
 
+        $data['quantity'] = $request->quantity;
+
         $data=$request->all();
         $image=$request->file('image');
         $data['image']=$this->images($image,null);
@@ -59,6 +61,9 @@ class ItemController extends Controller
             $data['describe'] = $request->describe ? $request->describe : $item->describe;
             $data['price'] = $request->price ? $request->price : $item->price;
             $data['company_id'] = $request->company_id ? $request->company_id : $item->company_id;
+
+            $data['quantity'] = $request->quantity ? $request->quantity : $item->quantity;
+
 
             if ($request->file('image')) {
                $oldimage=$item->image;

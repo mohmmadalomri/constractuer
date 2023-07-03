@@ -27,7 +27,7 @@ class Job extends Model
         $this->belongsTo(Client::class, 'client_id', 'id');
     }
 
-    public function companys()
+    public function companies()
     {
         $this->belongsTo(Company::class, 'company_id', 'id');
     }
@@ -41,6 +41,17 @@ class Job extends Model
     public function teams()
     {
         return $this->belongsToMany(Team::class, 'jobs_teams', 'jobs_id', 'team_id');
+    }
+
+
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+    public function employees()
+    {
+        return $this->hasMany(Employee::class);
     }
 
 

@@ -46,6 +46,12 @@ class ExpenseController extends Controller
             // $data['total'] = $request->total ? $request->total : $expense->total ;
             $data['client_id'] = $request->client_id ? $request->client_id : $expense->client_id;
 
+
+            $data['address'] = $request->address ? $request->address : $expense->address;
+            $data['job_title'] = $request->job_title ? $request->job_title : $expense->job_title;
+            $data['in_progress'] = $request->in_progress ? $request->in_progress : $expense->in_progress;
+
+
             $expense->update($data);
             return response()->json([
                 'status' => true,

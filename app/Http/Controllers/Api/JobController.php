@@ -34,6 +34,15 @@ class JobController extends Controller
         $data['arrival_window'] = $request->arrival_window;
         $data['company_id'] = $request->company_id;
 
+        $data['project_id'] = $request->project_id;
+        $data['team_id'] = $request->team_id;
+        $data['employee_id'] = $request->employee_id;
+        $data['item_id'] = $request->item_id;
+        $data['total_value'] = $request->total_value;
+        $data['total_expenses'] = $request->total_expenses;
+        $data['total_salaries'] = $request->total_salaries;
+        $data['in_progress'] = $request->in_progress;
+
 
         $jobs = Job::create($data);
         return response()->json([
@@ -45,7 +54,7 @@ class JobController extends Controller
 
     public function show($id)
     {
-        $job = Job::find($id);
+        $job = Job::with(['project_id','client_id'])->find($id);
         return response()->json($job);
     }
 
@@ -65,6 +74,16 @@ class JobController extends Controller
             $data['subtotal'] = $request->subtotal ? $request->subtotal : $job->subtotal;
             $data['arrival_window'] = $request->arrival_window ? $request->arrival_window : $job->arrival_window;
             $data['company_id'] = $request->company_id ? $request->company_id : $job->company_id;
+
+
+            $data['project_id'] = $request->project_id ? $request->project_id : $job->project_id;
+            $data['team_id'] = $request->team_id ? $request->team_id : $job->team_id;
+            $data['employee_id'] = $request->employee_id ? $request->employee_id : $job->employee_id;
+            $data['item_id'] = $request->item_id ? $request->item_id : $job->item_id;
+            $data['total_value'] = $request->total_value ? $request->total_value : $job->total_value;
+            $data['total_expenses'] = $request->total_expenses ? $request->total_expenses : $job->total_expenses;
+            $data['total_salaries'] = $request->total_salaries ? $request->total_salaries : $job->total_salaries;
+            $data['in_progress'] = $request->in_progress ? $request->in_progress : $job->in_progress;
 
             $job->update($data);
             return response()->json([

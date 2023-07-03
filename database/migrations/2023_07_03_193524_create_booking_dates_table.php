@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExpensesTable extends Migration
+class CreateBookingDatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,10 @@ class CreateExpensesTable extends Migration
      */
     public function up()
     {
-        Schema::create('expenses', function (Blueprint $table) {
+        Schema::create('booking_dates', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('describe');
+            $table->foreignId('request_id')->references('id')->on('requests');
             $table->timestamp('date');
-            $table->double('total');
-            $table->foreignId('client_id')->references('id')->on('clients');
-
-            $table->string('address');
-            $table->string('job_title');
-            $table->string('in_progress');
 
             $table->timestamps();
         });
@@ -36,6 +29,6 @@ class CreateExpensesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('expenses');
+        Schema::dropIfExists('booking_dates');
     }
 }
