@@ -27,4 +27,23 @@ class Request extends Model
     }
 
     public $timestamps = false;
+
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class);
+    }
+    public function tasks()
+    {
+        return $this->hasMany(Task::class);
+    }
+    public function items()
+    {
+        return $this->hasMany(Item::class);
+    }
+    public function bookingDates()
+    {
+        return $this->hasMany(Booking_date::class);
+    }
+
 }

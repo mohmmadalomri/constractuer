@@ -23,6 +23,16 @@ class CreateRequestsTable extends Migration
             $table->foreignId('client_id')->references('id')->on('clients');
             $table->foreignId('team_id')->references('id')->on('teams');
             $table->foreignId('company_id')->references('id')->on('companies');
+
+            $table->foreignId('project_id')->references('id')->on('projects');
+            $table->foreignId('task_id')->references('id')->on('tasks');
+            $table->string('request_adress');
+            $table->timestamp('booking_request');
+            $table->string('notes');
+            $table->foreignId('item_id')->references('id')->on('items');
+            $table->decimal('service_price', 8, 2)->nullable();
+
+
         });
     }
 

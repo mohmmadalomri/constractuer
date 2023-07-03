@@ -23,6 +23,11 @@ class CreateExpensesTable extends Migration
             $table->double('value');
             $table->enum('status', ['under_review', 'approved', 'cancellation', ' in_progress'])->default('under_review');
             $table->foreignId('client_id')->references('id')->on('clients');
+
+            $table->string('address');
+            $table->string('job_title');
+            $table->string('in_progress');
+
             $table->foreignId('project_id')->references('id')->on('projects');
             $table->foreignId('task_id')->references('id')->on('tasks');
             $table->foreignId('job_id')->references('id')->on('jobs');

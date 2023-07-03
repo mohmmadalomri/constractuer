@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequestRequest;
 use App\Http\Requests\UpdateRequestRequest;
+use App\Models\Booking_date;
 use App\Models\Request;
 
 
@@ -29,10 +30,20 @@ class RequsetsController extends Controller
 
     public function store(StoreRequestRequest $request)
     {
-        $requests = Request::create($request->all());
+        $requestData = $request->all();
+        $newRequest = Request::create($requestData);
+        $requestId = $newRequest->id;
+
+        $dates = $request->input('dates');
+        foreach ($dates as $date) {
+            Booking_date::create([
+                'request_id' => $requestId,
+                'date' => $date,
+            ]);
+        }
         return response()->json([
             'status' => true,
-            'date' => $requests,
+            'date' => $newRequest,
             'message' => 'Request Information Added Successfully',
         ]);
 
@@ -49,6 +60,15 @@ class RequsetsController extends Controller
             $data['team_id'] = $request->team_id ? $request->team_id : $requests->team_id;
             $data['subtotal'] = $request->subtotal ? $request->subtotal : $requests->subtotal;
             $data['instruction'] = $request->instruction ? $request->instruction : $requests->instruction;
+
+
+            $data['project_id'] = $request->project_id ? $request->project_id : $requests->project_id;
+            $data['task_id'] = $request->task_id ? $request->task_id : $requests->task_id;
+            $data['address'] = $request->address ? $request->address : $requests->address;
+            $data['notices'] = $request->notices ? $request->notices : $requests->notices;
+            $data['item_id'] = $request->item_id ? $request->item_id : $requests->item_id;
+            $data['service_price'] = $request->service_price ? $request->service_price : $requests->service_price;
+
 
             $requests->update($data);
             return response()->json([

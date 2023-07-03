@@ -35,6 +35,12 @@ class TaskController extends Controller
         $data['end_time'] = $request->end_time ? $request->end_time : Carbon::tomorrow();
         $data['status'] = $request->status;
 
+        $data['location'] = $request->location;
+        $data['client_id'] = $request->client_id;
+        $data['total_price'] = $request->total_price;
+        $data['total_expense'] = $request->total_expense;
+        $data['total_value'] = $request->total_value;
+
         $task = Task::create($data);
         return response()->json([
             'status' => true,
@@ -64,6 +70,12 @@ class TaskController extends Controller
             $data['start_time'] = $request->start_time ? $request->start_time : $task->start_time;
             $data['end_time'] = $request->end_time ? $request->end_time : $task->end_time;
             $data['status'] = $request->status ? $request->status : $task->status;
+
+            $data['location'] = $request->location ? $request->location : $task->location;
+            $data['client_id'] = $request->client_id ? $request->client_id : $task->client_id;
+            $data['total_price'] = $request->total_price ? $request->total_price : $task->total_price;
+            $data['total_expense'] = $request->total_expense ? $request->total_expense : $task->total_expense;
+            $data['total_value'] = $request->total_value ? $request->total_value : $task->total_value;
 
             $task->update($data);
             return response()->json([

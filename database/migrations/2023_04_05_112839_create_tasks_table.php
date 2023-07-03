@@ -25,6 +25,12 @@ class CreateTasksTable extends Migration
             $table->string('location');
             $table->foreignId('project_id')->references('id')->on('projects');
             $table->foreignId('team_id')->references('id')->on('teams');
+
+            $table->foreignId('client_id')->references('id')->on('clients');
+            $table->decimal('total_price', 8, 2)->nullable();
+            $table->decimal('total_expenses', 8, 2)->nullable();
+            $table->decimal('total_value', 8, 2)->nullable();
+
             $table->timestamps();
         });
     }

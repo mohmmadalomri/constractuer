@@ -26,6 +26,9 @@ class TeamController extends Controller
         $data['describe'] = $request->describe;
         $data['supervisor_id'] = $request->supervisor_id;
         $data['company_id'] = $request->company_id;
+
+        $data['employee_id'] = $request->employee_id;
+
         $image = $request->file('image');
         $data['image'] = $this->images($image, null);
         $team = Team::create($data);
@@ -55,6 +58,9 @@ class TeamController extends Controller
             $data['describe'] = $request->describe ? $request->describe : $team->describe;
             $data['supervisor_id'] = $request->supervisor_id ? $request->supervisor_id : $team->supervisor_id;
             $data['company_id'] = $request->company_id ? $request->company_id : $team->company_id;
+
+            $data['employee_id'] = $request->employee_id ? $request->employee_id : $team->employee_id;
+
 
             if ($request->hasFile('image')) {
 

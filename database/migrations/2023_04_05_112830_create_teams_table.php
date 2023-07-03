@@ -20,6 +20,9 @@ class CreateTeamsTable extends Migration
             $table->string('image')->nullable();
             $table->foreignId('supervisor_id')->references('id')->on('users')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('company_id')->references('id')->on('companies');
+
+            $table->foreignId('employee_id')->references('id')->on('employees');
+
             $table->timestamps();
         });
     }
