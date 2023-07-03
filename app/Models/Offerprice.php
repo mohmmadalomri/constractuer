@@ -5,14 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Expense extends Model
+class Offerprice extends Model
 {
     use HasFactory;
+    protected $guarded=[];
 
-    protected $guarded = [];
 
-    public function client()
-    {
-        return $this->belongsTo(Client::class);
-    }
+
+
 }

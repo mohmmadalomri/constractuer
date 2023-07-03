@@ -9,20 +9,7 @@ class Quote extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'client_id',
-        'title',
-        'message',
-        'subtotal',
-        'discount',
-        'type_discount',
-        'tax_name',
-        'tax_describe',
-        'tax_rate',
-        'total',
-        'note',
-        'company_id',
-    ];
+    protected $guarded = [];
 
     public function client()
     {

@@ -9,26 +9,7 @@ class Client extends Model
 {
     use HasFactory;
 
-    protected $fillable =
-        [
-            'first_name',
-            'last_name',
-            'name_company',
-            'phone',
-            'email',
-            'link_website',
-            'link_facebook',
-            'link_twitter',
-            'link_youtupe',
-            'link_linkedin',
-            'address_1',
-            'address_2',
-            'country',
-            'governorate',
-            'city',
-            'zip_code',
-            'company_id'
-        ];
+    protected $guarded = [];
 
     protected $casts = [
         'phone' => 'array',
@@ -39,6 +20,7 @@ class Client extends Model
     {
         return $this->hasMany(Job::class, 'client_id', 'id');
     }
+
     public function company()
     {
         return $this->belongsTo(Company::class);
@@ -58,7 +40,6 @@ class Client extends Model
     {
         return $this->hasMany(Expense::class);
     }
-
 
 
 }

@@ -9,19 +9,7 @@ class Job extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'client_id',
-        'title',
-        'instruction',
-        'start_day',
-        'end_day',
-        'start_time',
-        'end_time',
-        'subtotal',
-        'arrival_window',
-        'company_id','team_id'
-    ];
-
+    protected $guarded = [];
     public function clients()
     {
         $this->belongsTo(Client::class, 'client_id', 'id');

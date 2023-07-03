@@ -9,13 +9,7 @@ class Team extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'describe',
-        'image',
-        'supervisor_id',
-        'company_id',
-    ];
+
 
     public $guarded = [];
 

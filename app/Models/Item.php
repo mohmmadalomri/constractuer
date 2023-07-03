@@ -11,14 +11,7 @@ class Item extends Model
 
     public $guarded = [];
 
-    protected $fillable = [
-        'name',
-        'type',
-        'describe',
-        'price',
-        'image',
-        'company_id',
-    ];
+
 
 
 

@@ -9,12 +9,7 @@ class Profession extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'name',
-        'describe',
-        'image',
-        'company_id'
-    ];
+    protected $guarded = [];
 
     public $timestamps = false;
 
