@@ -20,10 +20,14 @@ class CreateProjectsTable extends Migration
             $table->string('name');
             $table->text('describe');
             $table->double('budget');
+            $table->double('total_price');
+            $table->double('profit');
             $table->string('image');
-            $table->timestamp('start_time');
-            $table->timestamp('end_time');
+            $table->date('start_time');
+            $table->date('end_time');
+            $table->enum('status', ['in_progress', 'Cancel ', 'finish', ' reject'])->default('in_progress');
             $table->foreignId('supervisor_id')->references('id')->on('users');
+            $table->foreignId('team_id')->references('id')->on('teams');
             $table->foreignId('company_id')->references('id')->on('companies');
             $table->foreignId('client_id')->references('id')->on('clients');
             $table->timestamps();

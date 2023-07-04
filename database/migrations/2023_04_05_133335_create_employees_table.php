@@ -15,6 +15,13 @@ class CreateEmployeesTable extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
+            $table->string('image');
+            $table->string('name');
+            $table->string('password');
+            $table->string('email');
+            $table->integer('phone');
+            $table->date('breath_day');
+            $table->enum('status', ['supervisor', 'employee', 'not_employee'])->default('employee');
             $table->double('hourly_salary')->default(0);
             $table->double('monthly_salary')->default(0);
             $table->foreignId('user_id')->references('id')->on('users');
