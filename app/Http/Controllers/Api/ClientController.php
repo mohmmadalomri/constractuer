@@ -24,11 +24,11 @@ class ClientController extends Controller
             'first_name' => 'string|required',
             'last_name' => 'string|required',
             'name_company' => 'string|required',
-            'phone' => 'string|',
-            'email' => 'string|',
-            'link_website' => 'string|',
-            'link_facebook' => 'string|',
-            'address_1' => 'string|',
+            'phone' => 'string',
+            'email' => 'string',
+            'link_website' => 'string',
+            'link_facebook' => 'string',
+            'address_1' => 'string',
         ]);
 
         $data = $request->all();

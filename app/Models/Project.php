@@ -10,17 +10,17 @@ class Project extends Model
     use HasFactory;
     public $guarded = [];
 
-    protected $fillable=[
-        'name',
-        'describe',
-        'budget',
-        'image',
-        'supervisor_id',
-        'start_time',
-        'end_time',
-        'client_id',
-        'company_id',
-    ];
+//    protected $fillable=[
+//        'name',
+//        'describe',
+//        'budget',
+//        'image',
+//        'supervisor_id',
+//        'start_time',
+//        'end_time',
+//        'client_id',
+//        'company_id',
+//    ];
 
     public function supervisor()
     {

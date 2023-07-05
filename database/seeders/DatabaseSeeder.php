@@ -27,22 +27,22 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call(UserSeeder::class);
-        $this->call(CompanySeeder::class);
-        $this->call(ClientSeeder::class);
-        $this->call(ProjectSeeder::class);
-        $this->call(ExpenseSeeder::class);
-        $this->call(InvoiceSeeder::class);
-        $this->call(TeamSeeder::class);
-        $this->call(TaskSeeder::class);
-        $this->call(ItemSeeder::class);
-        $this->call(RequestSeeder::class);
-        $this->call(ProfessionSeeder::class);
-        $this->call(ExpenseSeeder::class);
-        $this->call(ProjectSeeder::class);
-        $this->call(InvoiceSeeder::class);
-        $this->call(TeamSeeder::class);
-        $this->call(JobSeeder::class);
-        $this->call(QuoteSeeder::class);
+//        $this->call(CompanySeeder::class);
+//        $this->call(ClientSeeder::class);
+//        $this->call(ProjectSeeder::class);
+//        $this->call(ExpenseSeeder::class);
+//        $this->call(InvoiceSeeder::class);
+//        $this->call(TeamSeeder::class);
+//        $this->call(TaskSeeder::class);
+//        $this->call(ItemSeeder::class);
+//        $this->call(RequestSeeder::class);
+//        $this->call(ProfessionSeeder::class);
+//        $this->call(ExpenseSeeder::class);
+//        $this->call(ProjectSeeder::class);
+//        $this->call(InvoiceSeeder::class);
+//        $this->call(TeamSeeder::class);
+//        $this->call(JobSeeder::class);
+//        $this->call(QuoteSeeder::class);
 
 
 

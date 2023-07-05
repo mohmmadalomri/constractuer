@@ -35,8 +35,7 @@ class CreateClientsTable extends Migration
             $table->string('link_youtupe')->nullable();
             $table->string('link_linkedin')->nullable();
             $table->string('link_instagram')->nullable();
-            $table->string('link_linkedin')->nullable();
-            $table->string('address_1');
+            $table->string('address_1')->nullable();
             $table->string('address_2')->nullable();
             $table->string('country');
             $table->string('governorate');

@@ -22,7 +22,7 @@ class CreateProjectsTable extends Migration
             $table->double('budget');
             $table->string('image');
             $table->timestamp('start_time');
-            $table->timestamp('end_time');
+            $table->timestamp('end_time')->nullable();
             $table->foreignId('supervisor_id')->references('id')->on('users');
             $table->foreignId('company_id')->references('id')->on('companies');
             $table->foreignId('client_id')->references('id')->on('clients');

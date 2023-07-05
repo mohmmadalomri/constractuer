@@ -4,31 +4,34 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class Client extends Model
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
 
-    protected $fillable =
-        [
-            'first_name',
-            'last_name',
-            'name_company',
-            'phone',
-            'email',
-            'link_website',
-            'link_facebook',
-            'link_twitter',
-            'link_youtupe',
-            'link_linkedin',
-            'address_1',
-            'address_2',
-            'country',
-            'governorate',
-            'city',
-            'zip_code',
-            'company_id'
-        ];
+    protected $guarded=[''];
+//    protected $fillable =
+//        [
+//            'first_name',
+//            'last_name',
+//            'name_company',
+//            'phone',
+//            'email',
+//            'link_website',
+//            'link_facebook',
+//            'link_twitter',
+//            'link_youtupe',
+//            'link_linkedin',
+//            'address_1',
+//            'address_2',
+//            'country',
+//            'governorate',
+//            'city',
+//            'zip_code',
+//            'company_id'
+//        ];
 
     protected $casts = [
         'phone' => 'array',

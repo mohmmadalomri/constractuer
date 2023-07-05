@@ -19,7 +19,7 @@ class CreateCompaniesTable extends Migration
             $table->string('name')->unique;
             $table->string('logo');
             $table->text('email');
-            $table > date('date_of_created')->nullable();
+            $table->date('date_of_created')->nullable();
             $table->text('phone');
             $table->string('link_website')->nullable();
             $table->string('link_facebook')->nullable();

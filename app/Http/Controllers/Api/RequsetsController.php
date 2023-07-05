@@ -1,11 +1,15 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequestRequest;
 use App\Http\Requests\UpdateRequestRequest;
 use App\Models\Request;
+use App\Models\User;
+use App\Notifications\RequestNotification;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 
 
 class RequsetsController extends Controller
@@ -30,12 +34,16 @@ class RequsetsController extends Controller
     public function store(StoreRequestRequest $request)
     {
         $requests = Request::create($request->all());
+
+        $users=User::where('id','!=',auth()->user()->id)->get();
+        $user_create=auth()->user()->name;
+        Notification::send($users,new RequestNotification($requests->id,$user_create,$request->title));
+
         return response()->json([
             'status' => true,
             'date' => $requests,
             'message' => 'Request Information Added Successfully',
         ]);
-
     }
 
 
@@ -68,4 +76,5 @@ class RequsetsController extends Controller
             'message' => 'Request Information deleted Successfully',
         ]);
     }
+
 }

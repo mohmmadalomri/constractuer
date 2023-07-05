@@ -6,7 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
 use App\Models\Invoice;
+use App\Models\User;
+use App\Notifications\InvoiceNotification;
+use App\Notifications\RequestNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class InvoiceController extends Controller
 {
@@ -38,6 +42,11 @@ class InvoiceController extends Controller
         $data['company_id'] = $request->company_id;
 
         $invoices = Invoice::create($data);
+
+        $users=User::where('id','!=',auth()->user()->id)->get();
+        $user_create=auth()->user()->name;
+        Notification::send($users,new InvoiceNotification($invoices->id,$user_create,$request->title));
+
         return response()->json([
             'status' => true,
             'date' => $invoices,
