@@ -88,6 +88,7 @@ Route::group(['prefix' => 'v1', 'namspace' => 'Api'], function () {
     require 'API\search.php';
 
     require 'API\schedule.php';
+    require 'API\timesheet.php';
 
     require 'API\deposit.php';
 }
