@@ -23,9 +23,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/payment', [PaypalController::class, 'payment']);
-Route::get('/cancel', [PaypalController::class, 'cancel']);
-Route::get('/payment/success', [PaypalController::class, 'success']);
+
 
 
 Route::group(['prefix' => 'v1', 'namspace' => 'Api'], function () {

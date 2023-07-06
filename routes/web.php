@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\PaypalController;
 use App\Http\Controllers\SignaturePadController;
 use Illuminate\Support\Facades\Route;
 
@@ -27,3 +28,8 @@ Route::get('laravel-signature-pad-company', [SignaturePadController::class, 'ind
 Route::post('laravel-signature-pad', [SignaturePadController::class, 'store']);
 
 //require __DIR__.'/auth.php';
+
+
+Route::get('/payment', [PaypalController::class, 'payment']);
+Route::get('/cancel', [PaypalController::class, 'cancel']);
+Route::get('/payment/success', [PaypalController::class, 'success']);

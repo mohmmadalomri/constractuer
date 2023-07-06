@@ -8,27 +8,27 @@ use Srmklive\PayPal\Services\ExpressCheckout;
 
 class PaypalController extends Controller
 {
-    public function payment(Request $request){
+    public function payment(){
         $data =[];
         $data['items']=[
             [
                 'name'=>'Subscribe to Site',
-                'price'=>$request->price,
-                'desc'=>$request->description,
-                'qty'=>$request->quantity,
+                'price'=>600,
+                'desc'=>'Description',
+                'qty'=>4,
             ]
-//            ,[
-//                'name'=>'subscribe to channel',
-//                'price'=>300,
-//                'desc'=>'Description',
-//                'qty'=>2,
-//            ]
+            ,[
+                'name'=>'subscribe to channel',
+                'price'=>300,
+                'desc'=>'Description',
+                'qty'=>2,
+            ]
         ];
         $data['invoice_id']=1;
         $data['invoice_description']="Order #{$data['invoice_id']}Invoice";
         $data['return_url']='http://127.0.0.1:8000/payment/success';
         $data['cancel_url']='http://127.0.0.1:8000/cancel';
-        $data['total']=$request->price * $request->quantity;
+        $data['total']=3000; #$request->price * $request->quantity
 
         $providers=new ExpressCheckout;
         $response=$providers->setExpressCheckout($data,true);
