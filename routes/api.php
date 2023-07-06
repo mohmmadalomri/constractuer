@@ -76,10 +76,18 @@ Route::group(['prefix' => 'v1', 'namspace' => 'Api'], function () {
     require 'API\expense.php';
 
     require 'API\request.php';
+
     require 'API\discount.php';
+
     require 'API\payment.php';
+
     require 'API\Tax.php';
+
     require 'API\Attachment.php';
+
+    require 'API\search.php';
+
+    require 'API\schedule.php';
 }
 
 );
