@@ -46,6 +46,10 @@ Route::group(['prefix' => 'v1', 'namspace' => 'Api'], function () {
 //        ->middleware('guest:sanctum')->name('access-tokens');
 //    Route::delete('access-tokens/{token?}', [AccessTokenController::class, 'destroy'])
 //        ->middleware('auth:sanctum');
+    Route::get('payment_seeder', [\App\Http\Controllers\Api\PaymentSeederController::class, 'index']);
+    Route::get('show_all_PaymentInvoice', [\App\Http\Controllers\Api\PaymentInvoiceController::class, 'index']);
+    Route::post('insert_PaymentInvoice', [\App\Http\Controllers\Api\PaymentInvoiceController::class, 'store']);
+
     Route::get('/notifications/Markallread', [NotificationController::class, 'Markallread']);
     Route::get('/notifications', [NotificationController::class, 'getNotifications']);
 
