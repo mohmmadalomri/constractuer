@@ -20,6 +20,9 @@
             }
         </style>
     </head>
+    <a href="http://127.0.0.1:8000/laravel-signature-pad" style="text-align: center;font-size: 40px;color: red">signature</a>
+    <br>
+    <a href="http://127.0.0.1:8000/payment" style="text-align: center;font-size: 40px;color: green">Paypal</a>
     <body class="antialiased">
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
             @if (Route::has('login'))
