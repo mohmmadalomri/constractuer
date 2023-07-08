@@ -27,7 +27,7 @@ Route::get('laravel-signature-pad', [SignaturePadController::class, 'index']);
 Route::get('laravel-signature-pad-company', [SignaturePadController::class, 'index_company']);
 Route::post('laravel-signature-pad', [SignaturePadController::class, 'store']);
 
-//require __DIR__.'/auth.php';
+require __DIR__.'/auth.php';
 
 
 Route::get('/payment', [PaypalController::class, 'payment']);

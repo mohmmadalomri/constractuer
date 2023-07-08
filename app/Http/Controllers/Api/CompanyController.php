@@ -29,7 +29,7 @@ class CompanyController extends Controller
         $data['name'] = $request->name;
         $data['phone'] = $request->phone;
         $data['email'] = $request->email;
-        $data['link_webiste'] = $request->link_webiste;
+        $data['link_website'] = $request->link_website;
         $data['link_facebook'] = $request->link_facebook;
         $data['link_twitter'] = $request->link_twitter;
         $data['link_youtube'] = $request->link_youtube;
