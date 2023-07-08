@@ -15,14 +15,14 @@ class CreateJobsTable extends Migration
     {
         Schema::create('jobs', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->text('instruction');
-            $table->timestamp('start_day');
-            $table->timestamp('end_day');
-            $table->timestamp('start_time');
-            $table->timestamp('end_time');
-            $table->double('subtotal');
-            $table->string('arrival_window');
+            $table->string('title')->nullable();
+            $table->text('instruction')->nullable();
+            $table->date('start_day')->nullable();
+            $table->date('end_day')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->double('subtotal')->nullable();
+            $table->string('arrival_window')->nullable();
             $table->foreignId('client_id')->references('id')->on('clients');
             $table->foreignId('company_id')->references('id')->on('companies');
 
@@ -33,7 +33,7 @@ class CreateJobsTable extends Migration
             $table->decimal('total_value', 8, 2)->nullable();
             $table->decimal('total_expenses', 8, 2)->nullable();
             $table->decimal('total_salaries', 8, 2)->nullable();
-            $table->string('in_progress');
+            $table->string('in_progress')->nullable();
 
             $table->timestamps();
         });

@@ -17,13 +17,12 @@ class CreateRequestsTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('instruction');
-            $table->timestamp('day');
-            $table->timestamp('start_time');
-            $table->timestamp('end_time');
+            $table->date('day');
+            $table->time('start_time');
+            $table->time('end_time');
             $table->foreignId('client_id')->references('id')->on('clients');
             $table->foreignId('team_id')->references('id')->on('teams');
             $table->foreignId('company_id')->references('id')->on('companies');
-
             $table->foreignId('project_id')->references('id')->on('projects');
             $table->foreignId('task_id')->references('id')->on('tasks');
             $table->string('request_adress');
@@ -31,6 +30,7 @@ class CreateRequestsTable extends Migration
             $table->string('notes');
             $table->foreignId('item_id')->references('id')->on('items');
             $table->decimal('service_price', 8, 2)->nullable();
+            $table->string('status')->default(0)->nullable();#in_progress,#canceled,#completed,#not_approved
 
 
         });

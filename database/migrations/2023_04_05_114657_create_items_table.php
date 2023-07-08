@@ -20,10 +20,11 @@ class CreateItemsTable extends Migration
             $table->text('describe');
             $table->double('price');
             $table->string('image')->nullable();
-            $table->foreignId('company_id')->references('id')->on('companies');
-
+            $table->bigInteger('company_id')->unsigned();
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->bigInteger('tax_id')->unsigned()->nullable();
+            $table->foreign('tax_id')->references('id')->on('taxes');
             $table->integer('quantity')->default(0);
-
             $table->timestamps();
         });
     }

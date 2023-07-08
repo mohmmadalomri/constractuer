@@ -27,7 +27,7 @@ class StoreClientRequest extends FormRequest
             'first_name'          => 'required|max:100',
             'last_name'          =>'required|max:100',
             'name_company'          =>'required|max:100',
-            'phone'         => 'required',
+//            'phone'         => 'required',
             'email'          => 'email|max:255|unique:companies,email',
             'link_website'   =>'nullable|url',
             'link_facebook'    =>'nullable|url',

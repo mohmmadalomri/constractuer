@@ -17,7 +17,7 @@ class CreateProfessionsTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('describe');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->foreignId('company_id')->references('id')->on('companies')->onUpdate('cascade')->onDelete('cascade');
 
         });

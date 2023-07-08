@@ -35,7 +35,7 @@ class InvoiceController extends Controller
         $data['discount'] = $request->discount;
         $data['type_discount'] = $request->type_discount;
         $data['tax_name'] = $request->tax_name;
-        $data['tax_desribe'] = $request->tax_desribe;
+        $data['tax_describe'] = $request->tax_describe;
         $data['tax_rate'] = $request->tax_rate;
         $data['total'] = $request->total;
         $data['company_id'] = $request->company_id;

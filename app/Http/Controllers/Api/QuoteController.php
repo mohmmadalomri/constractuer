@@ -54,6 +54,7 @@ class QuoteController extends Controller
         $data['note'] = $request->note;
         $data['company_id'] = $request->company_id;
         $data['client_id'] = $request->client_id;
+        $data['item_id'] = $request->item_id;
 
         $quote = Quote::create($data);
 
@@ -114,6 +115,7 @@ class QuoteController extends Controller
             $data['note'] = $request->note ? $request->note : $quote->note;
             $data['company_id'] = $request->company_id ? $request->company_id : $quote->company_id;
             $data['client_id'] = $request->client_id ? $request->client_id : $quote->client_id;
+            $data['item_id'] = $request->item_id;
 
             $quote->update($data);
             return response()->json([

@@ -38,7 +38,7 @@ class TaskController extends Controller
         $data['location'] = $request->location;
         $data['client_id'] = $request->client_id;
         $data['total_price'] = $request->total_price;
-        $data['total_expense'] = $request->total_expense;
+        $data['total_expenses'] = $request->total_expenses;
         $data['total_value'] = $request->total_value;
 
         $task = Task::create($data);
@@ -74,7 +74,7 @@ class TaskController extends Controller
             $data['location'] = $request->location ? $request->location : $task->location;
             $data['client_id'] = $request->client_id ? $request->client_id : $task->client_id;
             $data['total_price'] = $request->total_price ? $request->total_price : $task->total_price;
-            $data['total_expense'] = $request->total_expense ? $request->total_expense : $task->total_expense;
+            $data['total_expenses'] = $request->total_expenses ? $request->total_expenses : $task->total_expenses;
             $data['total_value'] = $request->total_value ? $request->total_value : $task->total_value;
 
             $task->update($data);

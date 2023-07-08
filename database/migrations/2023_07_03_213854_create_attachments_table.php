@@ -15,7 +15,8 @@ class CreateAttachmentsTable extends Migration
     {
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
+            $table->bigInteger('team_id')->unsigned()->nullable();
+            $table->foreign('team_id')->references('id')->on('teams');
             $table->string('video')->nullable();
             $table->timestamps();
         });
