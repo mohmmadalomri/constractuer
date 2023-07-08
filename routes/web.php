@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\PaypalController;
+use App\Http\Controllers\SignaturePadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,4 +23,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+Route::get('laravel-signature-pad', [SignaturePadController::class, 'index']);
+Route::get('laravel-signature-pad-company', [SignaturePadController::class, 'index_company']);
+Route::post('laravel-signature-pad', [SignaturePadController::class, 'store']);
+
+//require __DIR__.'/auth.php';
+
+
+Route::get('/payment', [PaypalController::class, 'payment']);
+Route::get('/cancel', [PaypalController::class, 'cancel']);
+Route::get('/payment/success', [PaypalController::class, 'success']);

@@ -40,8 +40,8 @@ class TaxController extends Controller
             throw new ValidationException($validator, $response);
         }
         $data['name'] = $request->name;
-        $data['value'] = $request->value;
-        $data['receive_date'] = $request->receive_date;
+        $data['ratio'] = $request->ratio;
+        $data['description'] = $request->description;
 
         $Taxs = Tax::create($data);
         return response()->json([
