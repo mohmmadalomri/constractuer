@@ -1,6 +1,11 @@
 <?php
 
+
 use App\Http\Controllers\Api\AccessTokenController;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\PaypalController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -44,6 +49,12 @@ Route::group(['prefix' => 'v1', 'namspace' => 'Api'], function () {
 //        ->middleware('guest:sanctum')->name('access-tokens');
 //    Route::delete('access-tokens/{token?}', [AccessTokenController::class, 'destroy'])
 //        ->middleware('auth:sanctum');
+    Route::get('payment_seeder', [\App\Http\Controllers\Api\PaymentSeederController::class, 'index']);
+    Route::get('show_all_PaymentInvoice', [\App\Http\Controllers\Api\PaymentInvoiceController::class, 'index']);
+    Route::post('insert_PaymentInvoice', [\App\Http\Controllers\Api\PaymentInvoiceController::class, 'store']);
+
+    Route::get('/notifications/Markallread', [NotificationController::class, 'Markallread']);
+    Route::get('/notifications', [NotificationController::class, 'getNotifications']);
 
 
     require 'API\user.php';
@@ -73,6 +84,22 @@ Route::group(['prefix' => 'v1', 'namspace' => 'Api'], function () {
     require 'API\expense.php';
 
     require 'API\request.php';
+
+    require 'API\discount.php';
+
+    require 'API\payment.php';
+
+    require 'API\Tax.php';
+
+    require 'API\Attachment.php';
+
+    require 'API\search.php';
+
+    require 'API\schedule.php';
+
+    require 'API\timesheet.php';
+
+    require 'API\deposit.php';
 }
 
 );
