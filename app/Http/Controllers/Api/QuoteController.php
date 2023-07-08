@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreQuoteRequest;
 use App\Http\Requests\UpdateQuoteRequest;
 use App\Models\Quote;
+use App\Models\User;
+use App\Notifications\QuoteNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 
 class QuoteController extends Controller
 {
@@ -53,6 +56,11 @@ class QuoteController extends Controller
         $data['client_id'] = $request->client_id;
 
         $quote = Quote::create($data);
+
+        $users=User::where('id','!=',auth()->user()->id)->get();
+        $user_create=auth()->user()->name;
+        Notification::send($users,new QuoteNotification($quote->id,$user_create,$request->title));
+
         return response()->json([
             'status' => true,
             'date' => $quote,

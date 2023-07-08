@@ -7,6 +7,9 @@ use App\Http\Requests\StoreRequestRequest;
 use App\Http\Requests\UpdateRequestRequest;
 use App\Models\Booking_date;
 use App\Models\Request;
+use App\Models\User;
+use App\Notifications\RequestNotification;
+use Illuminate\Support\Facades\Notification;
 
 
 class RequsetsController extends Controller
@@ -41,6 +44,12 @@ class RequsetsController extends Controller
                 'date' => $date,
             ]);
         }
+
+        $users=User::where('id','!=',auth()->user()->id)->get();
+        $user_create=auth()->user()->name;
+        Notification::send($users,new RequestNotification($newRequest->id,$user_create,$request->title));
+
+
         return response()->json([
             'status' => true,
             'date' => $newRequest,
