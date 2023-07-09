@@ -24,14 +24,14 @@ class StoreProjectRequest extends FormRequest
     public function rules()
     {
         return [
-            'name'          =>'required|max:100',
-            'describe'      =>'required',
-            'budget'        =>'required|numeric',
-            'supervisor_id' =>'required|numeric',
-            'start_time'    =>'date',
-            'end_time'      =>'date',
-            'company_id'    =>'required',
-            'image'         =>'required|image'
+//            'name'          =>'required|max:100',
+//            'describe'      =>'required',
+//            'budget'        =>'required|numeric',
+//            'supervisor_id' =>'required|numeric',
+//            'start_time'    =>'date',
+//            'end_time'      =>'date',
+//            'company_id'    =>'required',
+//            'image'         =>'required|image'
         ];
     }
 }

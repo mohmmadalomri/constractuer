@@ -1,17 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
-use App\Models\Company;
+use App\Http\Traits\ImageTrait;
 use App\Models\Project;
-use App\Models\User;
-use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
+    use ImageTrait;
     /**
      * Display a listing of the resource.
      *
@@ -35,15 +34,16 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-
-        $data = $request->all();
-        $image = $request->file('image');
-        $data['image'] = $this->images($image, null);
-        $projects = Project::create($data);
+        $Project = Project::create($request->all());
+        if ($request->hasfile('image')) {
+            $Image_dir=$this->saveImage($request->image, 'attachments/projects/'.$Project->id);
+            $Project->image = $Image_dir;
+            $Project->save();
+        }
         return response()->json([
             'status' => true,
-            'data' => $projects,
-            'message' => 'Company Information Added Successfully',
+            'data' => $Project,
+            'message' => 'projects Information Added Successfully',
         ]);
 
     }
@@ -69,18 +69,16 @@ class ProjectController extends Controller
      * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateProjectRequest $request, $id)
+    public function update(StoreProjectRequest $request, $id)
     {
-//        $project = project::findOrFail($id);
         $project = Project::find($id);
-        $data = $request->all();
-        if ($request->hasFile('image')) {
-
-            $oldimage = $project->image;
-            $image = $request->file('image');
-            $data['image'] = $this->images($image, $oldimage);
-
+        if (!$project){
+            return response()->json([
+                'status' => false,
+                'message' => 'Error  Id ',
+            ],502);
         }
+        $data = $request->all();
         if ($project) {
             $data['name'] = $request->name ? $request->name : $project->name;
             $data['describe'] = $request->describe ? $request->describe : $project->describe;
@@ -89,6 +87,12 @@ class ProjectController extends Controller
             $data['start_time'] = $request->start_time ? $request->start_time : $project->start_time;
             $data['end_time'] = $request->end_time ? $request->end_time : $project->end_time;
             $project->update($data);
+            if ($request->hasfile('image')) {
+                $this->deleteFile('projects',$id);
+                $Image_dir=$this->saveImage($request->image, 'attachments/projects/'.$id);
+                $project->image = $Image_dir;
+                $project->save();
+            }
             return response()->json([
                 'status' => true,
                 'data' => $project,
@@ -107,6 +111,8 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         Project::find($id)->delete();
+        $this->deleteFile('projects',$id);
+
         return response()->json([
             'status' => true,
             'message' => 'project Information deleted Successfully',

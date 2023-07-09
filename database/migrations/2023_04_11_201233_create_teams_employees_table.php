@@ -14,8 +14,8 @@ class CreateTeamsEmployeesTable extends Migration
     public function up()
     {
         Schema::create('teams_employees', function (Blueprint $table) {
-            $table->foreignId('employee_id')->references('id')->on('employees');
-            $table->foreignId('team_id')->references('id')->on('teams');
+            $table->foreignId('employee_id')->references('id')->on('employees')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreignId('team_id')->references('id')->on('teams')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

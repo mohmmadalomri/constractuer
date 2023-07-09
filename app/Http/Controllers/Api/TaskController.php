@@ -27,26 +27,35 @@ class TaskController extends Controller
 
     public function store(StoreTaskRequest $request)
     {
-        $data['name'] = $request->name;
-        $data['describe'] = $request->describe;
-        $data['project_id'] = $request->project_id;
-        $data['team_id'] = $request->team_id;
-        $data['start_time'] = $request->start_time ? $request->start_time : carbon::now();
-        $data['end_time'] = $request->end_time ? $request->end_time : Carbon::tomorrow();
-        $data['status'] = $request->status;
+        try {
+            $data['name'] = $request->name;
+            $data['describe'] = $request->describe;
+            $data['project_id'] = $request->project_id;
+            $data['team_id'] = $request->team_id;
+            $data['start_time'] = $request->start_time ? $request->start_time : Carbon::now();
+            $data['end_time'] = $request->end_time ? $request->end_time : Carbon::tomorrow();
+            $data['status'] = $request->status;
+            $data['location'] = $request->location;
+            $data['client_id'] = $request->client_id;
+            $data['total_price'] = $request->total_price;
+            $data['total_expenses'] = $request->total_expenses;
+            $data['total_value'] = $request->total_value;
 
-        $data['location'] = $request->location;
-        $data['client_id'] = $request->client_id;
-        $data['total_price'] = $request->total_price;
-        $data['total_expenses'] = $request->total_expenses;
-        $data['total_value'] = $request->total_value;
+            $task = Task::create($data);
 
-        $task = Task::create($data);
-        return response()->json([
-            'status' => true,
-            'date' => $task,
-            'message' => 'Task Add Successfully',
-        ]);
+            return response()->json([
+                'status' => true,
+                'data' => $task,
+                'message' => 'Task added successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Error creating task: ' . $e->getMessage(),
+            ],502);
+        }
+
+
     }
 
     public function show($id)
@@ -95,10 +104,17 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        Task::find($id)->delete();
+        $Task = Task::find($id);
+        if (!$Task) {
+            return response()->json([
+                'status' => false,
+                'message' => 'not found Task',
+            ],502);
+        }
+        $Task->delete();
         return response()->json([
             'status' => true,
-            'message' => 'Task deleted Successfully',
+            'message' => 'Task Information deleted Successfully',
         ]);
     }
 }

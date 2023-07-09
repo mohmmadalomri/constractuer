@@ -65,7 +65,7 @@ class ClientController extends Controller
             $data['personal_email'] = $request->personal_email ? $request->personal_email : $client->personal_email;
             $data['home_email'] = $request->home_email ? $request->home_email : $client->home_email;
             $data['other_email'] = $request->other_email ? $request->other_email : $client->other_email;
-            $data['link_website'] = $request->link_website ? $request->link_website : $client->link_website;
+            $data['link_webiste'] = $request->link_website ? $request->link_website : $client->link_website;
             $data['link_facebook'] = $request->link_facebook ? $request->link_facebook : $client->link_facebook;
             $data['link_twitter'] = $request->link_twitter ? $request->link_twitter : $client->link_twitter;
             $data['link_youtupe'] = $request->link_youtupe ? $request->link_youtupe : $client->link_youtupe;

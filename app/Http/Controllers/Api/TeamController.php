@@ -37,6 +37,11 @@ class TeamController extends Controller
             $team->save();
         }
 
+        //important to update player
+        if(isset($request->employee_id)) {
+            $team->employees()->syncWithoutDetaching($request->employee_id);
+        }
+
         return response()->json([
             'status' => true,
             'date' => $team,
@@ -56,6 +61,7 @@ class TeamController extends Controller
             ]);
         }
         return response()->json([
+            'status' => true,
             'team' => $team
         ], 200);
     }
@@ -63,24 +69,25 @@ class TeamController extends Controller
 
     public function update(Request $request, $id)
     {
-        $team = Team::findOrFail($id);
+        $team = Team::find($id);
         if ($team) {
             $data['name'] = $request->name ? $request->name : $team->name;
             $data['describe'] = $request->describe ? $request->describe : $team->describe;
             $data['supervisor_id'] = $request->supervisor_id ? $request->supervisor_id : $team->supervisor_id;
             $data['company_id'] = $request->company_id ? $request->company_id : $team->company_id;
 
-            $data['employee_id'] = $request->employee_id ? $request->employee_id : $team->employee_id;
-
-
-            if ($request->hasFile('image')) {
-
-                $oldimage = $team->image;
-                $image = $request->file('image');
-                $data['image'] = $this->images($image, $oldimage);
-
-            }
             $team->update($data);
+            if ($request->hasfile('image')) {
+                $this->deleteFile('teams',$id);
+                $team_image = $this->saveImage($request->image, 'attachments/teams/'.$team->id);
+                $team->image = $team_image;
+                $team->save();
+            }
+
+            //important to update player
+            if(isset($request->employee_id)) {
+                $team->employees()->sync($request->employee_id);
+            }
             return response()->json([
                 'status' => true,
                 'date' => $team,
@@ -97,7 +104,6 @@ class TeamController extends Controller
 
     public function destroy($id)
     {
-
         $team = Team::find($id);
         if (!$team) {
             return response()->json([
@@ -105,9 +111,10 @@ class TeamController extends Controller
                 'message' => 'not found team',
             ]);
         }
-
         $this->deleteFile('teams',$id);
+//        $team->employees()->detach($id);
         $team->delete();
+
         return response()->json([
             'status' => true,
             'message' => 'team Information deleted Successfully',

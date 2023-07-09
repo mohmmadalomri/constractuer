@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreItemRequest;
 use App\Http\Requests\UpdateItemRequest;
+use App\Http\Traits\ImageTrait;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 class ItemController extends Controller
 {
-
+use ImageTrait;
     public function index()
     {
         $items = Item::all();
@@ -26,15 +27,16 @@ class ItemController extends Controller
         $data['type'] = $request->type;
         $data['describe'] = $request->describe;
         $data['price'] = $request->price;
-        $data['company_id'] = $request->company_id;
-
         $data['quantity'] = $request->quantity;
+        $data['company_id'] = $request->company_id;
+        $data['tax_id'] = $request->tax_id;
 
-        $data=$request->all();
-        $image=$request->file('image');
-        $data['image']=$this->images($image,null);
-
-        $item = Item::create($data);
+        $item=Item::create($data);
+        if ($request->hasfile('image')) {
+            $_image = $this->saveImage($request->image, 'attachments/items/'.$item->id);
+            $item->image = $_image;
+            $item->save();
+        }
         return response()->json([
             'status' => true,
             'date' => $item,
@@ -45,15 +47,21 @@ class ItemController extends Controller
 
     public function show($id)
     {
-        $item = Item::findOrFail($id);
-        return response()->json($item);
+        $Item = Item::find($id);
+        if (!$Item) {
+            return response()->json([
+                'status' => false,
+                'message' => 'not found Item',
+            ]);
+        }
+        return response()->json($Item);
     }
 
 
-    public function update(UpdateItemRequest $request, $id)
+    public function update(StoreItemRequest $request, $id)
     {
 
-        $item = Item::findOrFail($id);
+        $item = Item::find($id);
         $data=$request->all();
         if ($item) {
             $data['name'] = $request->name ? $request->name : $item->name;
@@ -61,14 +69,15 @@ class ItemController extends Controller
             $data['describe'] = $request->describe ? $request->describe : $item->describe;
             $data['price'] = $request->price ? $request->price : $item->price;
             $data['company_id'] = $request->company_id ? $request->company_id : $item->company_id;
-
+            $data['tax_id'] = $request->tax_id? $request->tax_id : $item->tax_id;
             $data['quantity'] = $request->quantity ? $request->quantity : $item->quantity;
 
 
-            if ($request->file('image')) {
-               $oldimage=$item->image;
-                $image=$request->file('image');
-                $data['image']=$this->images($image,$oldimage);
+            if ($request->hasfile('image')) {
+                $this->deleteFile('items',$id);
+                $_image = $this->saveImage($request->image, 'attachments/items/'.$id);
+                $item->image = $_image;
+                $item->save();
             }
 
             $item->update($data);
@@ -77,17 +86,29 @@ class ItemController extends Controller
                 'data' => $item,
                 'message' => 'Item Updated Successfully',
             ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => 'Item not found id',
+            ],502);
         }
     }
 
     public function destroy($id)
     {
-        $item = Item::find($id);
-//        Item::find($id)->delete();
-        $item->delete();
+        $Item = Item::find($id);
+        if (!$Item) {
+            return response()->json([
+                'status' => false,
+                'message' => 'not found Item',
+            ]);
+        }
+
+        $this->deleteFile('items',$id);
+        $Item->delete();
         return response()->json([
             'status' => true,
-            'message' => 'Item deleted Successfully',
+            'message' => 'Item Information deleted Successfully',
         ]);
     }
 }

@@ -18,11 +18,11 @@ class CreateProjectsTable extends Migration
         Schema::create('projects', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('describe');
+            $table->text('describe')->nullable();
             $table->double('budget');
             $table->double('total_price');
             $table->double('profit');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->date('start_time');
             $table->date('end_time');
             $table->enum('status', ['in_progress', 'Cancel ', 'finish', ' reject'])->default('in_progress');

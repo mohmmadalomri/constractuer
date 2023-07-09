@@ -17,8 +17,8 @@ class CreateItemsTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('type');
-            $table->text('describe');
-            $table->double('price');
+            $table->text('describe')->nullable();
+            $table->double('price')->nullable();
             $table->string('image')->nullable();
             $table->bigInteger('company_id')->unsigned();
             $table->foreign('company_id')->references('id')->on('companies');

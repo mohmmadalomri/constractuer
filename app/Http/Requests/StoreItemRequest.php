@@ -25,11 +25,11 @@ class StoreItemRequest extends FormRequest
     {
         return [
             //
-            'name'          => 'required|max:255',
-            'type'          =>  'required|max:255',
-            'describe'      =>  'required',
-            'price'          =>  'required|numeric',
-            'image'          =>'image|mimes:jpeg,jpg,png,svg,webp',
+//            'name'          => 'required|max:255',
+//            'type'          =>  'required|max:255',
+//            'describe'      =>  'required',
+//            'price'          =>  'required|numeric',
+//            'image'          =>'image|mimes:jpeg,jpg,png,svg,webp',
         ];
     }
 }

@@ -21,7 +21,7 @@ class CreateTasksTable extends Migration
             $table->text('describe');
             $table->timestamp('start_time');
             $table->timestamp('end_time');
-            $table->string('status');
+            $table->string('status')->default(0);
             $table->string('location');
             $table->foreignId('project_id')->references('id')->on('projects');
             $table->foreignId('team_id')->references('id')->on('teams');
