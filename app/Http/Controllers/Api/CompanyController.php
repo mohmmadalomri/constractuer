@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
+use App\Http\Traits\ImageTrait;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -14,7 +15,7 @@ use Intervention\Image\Facades\Image;
 
 class CompanyController extends Controller
 {
-    //
+    use ImageTrait;
 
     public function index()
     {
@@ -41,13 +42,12 @@ class CompanyController extends Controller
         $data['city'] = $request->city;
         $data['zip_code'] = $request->zip_code;
         $data['user_id'] = $request->user_id;
-
-        if ($request->file('logo')) {
-            $logo_image = $request->file('logo')->store('logo', 'public');
-            $data['logo'] = $logo_image;
-        }
-
         $company = Company::create($data);
+        if ($request->hasfile('logo')) {
+            $logo_image = $this->saveImage($request->logo, 'attachments/company/'.$company->id);
+            $company->logo = $logo_image;
+            $company->save();
+        }
         return response()->json([
             'status' => true,
             'date' => $company,
@@ -66,7 +66,7 @@ class CompanyController extends Controller
             $data['name'] = $request->name ? $request->name : $company->name;
             $data['phone'] = $request->phone ? $request->phone : $company->phone;
             $data['email'] = $request->email ? $request->email : $company->email;
-            $data['link_webiste'] = $request->link_webiste;
+            $data['link_website'] = $request->link_website;
             $data['link_facebook'] = $request->link_facebook;
             $data['link_twitter'] = $request->link_twitter;
             $data['link_youtube'] = $request->link_youtube;
@@ -77,17 +77,14 @@ class CompanyController extends Controller
             $data['governorate'] = $request->governorate ? $request->governorate : $company->governorate;
             $data['city'] = $request->city ? $request->city : $company->city;
             $data['zip_code'] = $request->zip_code ? $request->zip_code : $company->zip_code;
-
-            if ($request->file('logo')) {
-                if ($company->logo != '') {
-                    if (File::exists('storage/logo/' . $company->logo)) {
-                        unlink('storage/logo/' . $company->logo);
-                    }
-                }
-                $logo_image = $request->file('logo')->store('logo', 'public');
-                $data['logo'] = $logo_image;
-            }
             $company->update($data);
+            if ($request->hasfile('logo')) {
+                $this->deleteFile('company',$id);
+                $logo_image = $this->saveImage($request->logo, 'attachments/company/'.$id);
+                $company->logo = $logo_image;
+                $company->save();
+            }
+
             return response()->json([
                 'status' => true,
                 'data' => $company,
@@ -106,7 +103,15 @@ class CompanyController extends Controller
 
     public function destroy($id)
     {
-        Company::find($id)->delete();
+        $Company=  Company::find($id);
+        if (!$Company) {
+            return response()->json([
+                'status' => false,
+                'message' => 'not found Company',
+            ]);
+        }
+        $this->deleteFile('company',$id);
+        $Company->delete();
         return response()->json([
             'status' => true,
             'message' => 'Company Information deleted Successfully',
