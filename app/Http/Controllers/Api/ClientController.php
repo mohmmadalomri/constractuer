@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
 use Illuminate\Http\Request;
 use App\Models\Client;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class ClientController extends Controller
 {
@@ -20,17 +21,6 @@ class ClientController extends Controller
 
     public function store(StoreClientRequest $request)
     {
-        $request->validate([
-            'first_name' => 'string|required',
-            'last_name' => 'string|required',
-            'name_company' => 'string|required',
-            'phone' => 'string|',
-            'email' => 'string|',
-            'link_website' => 'string|',
-            'link_facebook' => 'string|',
-            'address_1' => 'string|',
-        ]);
-
         $data = $request->all();
         $client = Client::create($data);
 
@@ -43,6 +33,15 @@ class ClientController extends Controller
     public function show($id)
     {
         $client = Client::with('projects', 'invoices')->find($id);
+        if (!$client) {
+            return response()->json([
+                'status' => 'Error',
+                'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                'en' => 'not found this $id ',
+                'ar' => 'هذا غير موجود',
+                'data'=>[]
+            ], ResponseAlias::HTTP_NOT_FOUND);
+        }
         return response()->json([
             'client' => $client
         ], 200);
@@ -55,23 +54,33 @@ class ClientController extends Controller
             $data['first_name'] = $request->first_name ? $request->first_name : $client->first_name;
             $data['last_name'] = $request->last_name ? $request->last_name : $client->last_name;
             $data['name_company'] = $request->name_company ? $request->name_company : $client->name_company;
-            $data['phone'] = $request->phone ? $request->phone : $client->phone;
-            $data['email'] = $request->email ? $request->email : $client->email;
-            $data['link_webiste'] = $request->link_webiste;
-            $data['link_facebook'] = $request->link_facebook;
-            $data['link_twitter'] = $request->link_twitter;
-            $data['link_youtube'] = $request->link_youtube;
-            $data['link_linkedin'] = $request->link_linkedin;
+            $data['Main_phone'] = $request->Main_phone ? $request->Main_phone : $client->Main_phone;
+            $data['work_phone'] = $request->work_phone ? $request->work_phone : $client->work_phone;
+            $data['mobile_phone'] = $request->mobile_phone;
+            $data['home_phone'] = $request->home_phone;
+            $data['fax_phone'] = $request->fax_phone;
+            $data['other_phone'] = $request->other_phone;
+            $data['Main_email'] = $request->Main_email;
+            $data['work_email'] = $request->work_email ? $request->work_email : $client->work_email;
+            $data['personal_email'] = $request->personal_email ? $request->personal_email : $client->personal_email;
+            $data['home_email'] = $request->home_email ? $request->home_email : $client->home_email;
+            $data['other_email'] = $request->other_email ? $request->other_email : $client->other_email;
+            $data['link_website'] = $request->link_website ? $request->link_website : $client->link_website;
+            $data['link_facebook'] = $request->link_facebook ? $request->link_facebook : $client->link_facebook;
+            $data['link_twitter'] = $request->link_twitter ? $request->link_twitter : $client->link_twitter;
+            $data['link_youtupe'] = $request->link_youtupe ? $request->link_youtupe : $client->link_youtupe;
+            $data['link_linkedin'] = $request->link_linkedin ? $request->link_linkedin : $client->link_linkedin;
+            $data['link_instagram'] = $request->link_instagram ? $request->link_instagram : $client->link_instagram;
             $data['address_1'] = $request->address_1 ? $request->address_1 : $client->address_1;
             $data['address_2'] = $request->address_2 ? $request->address_2 : $client->address_2;
             $data['country'] = $request->country ? $request->country : $client->country;
             $data['governorate'] = $request->governorate ? $request->governorate : $client->governorate;
             $data['city'] = $request->city ? $request->city : $client->city;
-            $data['zip_code'] = $request->zip_code ? $request->zip_code : $client->zip_code;
-
+            $data['status'] = $request->status ? $request->status : $client->status;
+            $data['company_id'] = $request->company_id ? $request->company_id : $client->company_id;
             $client->update($data);
             return response()->json([
-                'masssege' => 'client updated siccsfuly',
+                'masssege' => 'client updated successfully',
                 'client' => $client
             ], 200);
         } else {
@@ -83,6 +92,15 @@ class ClientController extends Controller
     public function destroy($id)
     {
         $client = Client::find($id);
+        if (!$client) {
+            return response()->json([
+                'status' => 'Error',
+                'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                'en' => 'not found this $id ',
+                'ar' => 'هذا غير موجود',
+                'data'=>[]
+            ], ResponseAlias::HTTP_NOT_FOUND);
+        }
         $client->delete();
         return response()->json('deleted client successfully');
     }

@@ -55,6 +55,12 @@ class ProfessionController extends Controller
     public function show($id)
     {
         $profession = Profession::with('company')->find($id);
+        if (!$profession) {
+            return response()->json([
+                'status' => false,
+                'message' => 'not found profession',
+            ]);
+        }
         return response()->json([
             'profession' => $profession
         ], 200);
@@ -115,7 +121,7 @@ class ProfessionController extends Controller
 
     public function destroy($id)
     {
-        $profession = Profession::findOrFail($id);
+        $profession = Profession::find($id);
         if (!$profession) {
             return response()->json([
                 'status' => false,
