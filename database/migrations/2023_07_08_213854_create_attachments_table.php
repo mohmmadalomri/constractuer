@@ -19,6 +19,8 @@ class CreateAttachmentsTable extends Migration
             $table->foreign('team_id')->references('id')->on('teams');
             $table->bigInteger('invoice_id')->unsigned()->nullable();
             $table->foreign('invoice_id')->references('id')->on('invoices');
+            $table->bigInteger('quote_id')->unsigned()->nullable();
+            $table->foreign('quote_id')->references('id')->on('quotes');
             $table->string('video')->nullable();
             $table->timestamps();
         });

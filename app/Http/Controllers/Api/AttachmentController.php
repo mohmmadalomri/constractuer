@@ -7,8 +7,12 @@ use App\Http\Traits\ImageTrait;
 use App\Models\Attachment;
 use App\Models\AttachmentDocument;
 use App\Models\AttachmentImage;
+use App\Models\Invoice;
+use App\Models\Quote;
+use App\Models\Team;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -45,45 +49,144 @@ use ImageTrait;
                 ], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
                 throw new ValidationException($validator, $response);
             }
-
-            $Attachment = new Attachment();
-            $Attachment->name = $request->name;
-            $Attachment->save();
-            // insert video
-            if ($request->hasfile('video')) {
-                $video_path = $this->saveImage($request->video, 'attachments/video/'.$Attachment->id);
-                $Attachment->video = $video_path;
+            if(isset($request->team_id)) {
+//                $Team = Team::find($request->team_id);
+//                if(!$Team)
+//                {
+//                    return response()->json([
+//                        'status' => 'Error',
+//                        'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+//                        'message' => 'Team id id not found'
+//                    ], ResponseAlias::HTTP_NOT_FOUND);
+//                }
+                $Attachment = new Attachment();
+                $Attachment->team_id = $request->team_id;
+                $Attachment->name = $request->name;
                 $Attachment->save();
-            }
+                // insert video
+                if ($request->hasfile('video')) {
+                    $video_path = $this->saveImage($request->video, 'attachments/video/'.$Attachment->id);
+                    $Attachment->video = $video_path;
+                    $Attachment->save();
+                }
+                // insert img
+                if ($request->hasfile('images')) {
+                    foreach ($request->file('images') as $value){
+                        $image_path = $this->saveImage($value, 'attachments/images/' . $Attachment->id);
+                        // insert in ExpenseMedia
+                        $image = new AttachmentImage();
+                        $image->attachment_id = $Attachment->id;
+                        $image->image_path = $image_path;
+                        $image->save();
+                    }
+                }
 
-            // insert img
-            if ($request->hasfile('images')) {
-                foreach ($request->file('images') as $value){
-                    $image_path = $this->saveImage($value, 'attachments/images/' . $Attachment->id);
-                // insert in ExpenseMedia
-                $image = new AttachmentImage();
-                $image->attachment_id = $Attachment->id;
-                $image->image_path = $image_path;
-                $image->save();
-            }
-            }
-
-            // insert img
-            if ($request->hasfile('document')) {
-                foreach ($request->file('document') as $value){
-                    $document_path = $this->saveImage($value, 'attachments/documents/' . $Attachment->id);
-                    // insert in ExpenseMedia
-                    $image = new AttachmentDocument();
-                    $image->attachment_id = $Attachment->id;
-                    $image->document = $document_path;
-                    $image->save();
+                // insert img
+                if ($request->hasfile('document')) {
+                    foreach ($request->file('document') as $value){
+                        $document_path = $this->saveImage($value, 'attachments/documents/' . $Attachment->id);
+                        // insert in ExpenseMedia
+                        $image = new AttachmentDocument();
+                        $image->attachment_id = $Attachment->id;
+                        $image->document = $document_path;
+                        $image->save();
+                    }
                 }
             }
+            if(isset($request->invoice_id)) {
+                $Invoice = Invoice::find($request->invoice_id);
+                if(!$Invoice)
+                {
+                    return response()->json([
+                        'status' => 'Error',
+                        'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                        'message' => 'Invoice id id not found'
+                    ], ResponseAlias::HTTP_NOT_FOUND);
+                }
+                $Attachment = new Attachment();
+                $Attachment->invoice_id = $request->invoice_id;
+                $Attachment->name = $request->name;
+                $Attachment->save();
+                // insert video
+                if ($request->hasfile('video')) {
+                    $video_path = $this->saveImage($request->video, 'attachments/video/'.$Attachment->id);
+                    $Attachment->video = $video_path;
+                    $Attachment->save();
+                }
 
+                // insert img
+                if ($request->hasfile('images')) {
+                    foreach ($request->file('images') as $value){
+                        $image_path = $this->saveImage($value, 'attachments/images/' . $Attachment->id);
+                        // insert in ExpenseMedia
+                        $image = new AttachmentImage();
+                        $image->attachment_id = $Attachment->id;
+                        $image->image_path = $image_path;
+                        $image->save();
+                    }
+                }
+
+                // insert img
+                if ($request->hasfile('document')) {
+                    foreach ($request->file('document') as $value){
+                        $document_path = $this->saveImage($value, 'attachments/documents/' . $Attachment->id);
+                        // insert in ExpenseMedia
+                        $image = new AttachmentDocument();
+                        $image->attachment_id = $Attachment->id;
+                        $image->document = $document_path;
+                        $image->save();
+                    }
+                }
+            }
+            if(isset($request->quote_id)) {
+                $quote = Quote::find($request->quote_id);
+                if(!$quote)
+                {
+                    return response()->json([
+                        'status' => 'Error',
+                        'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                        'message' => 'Invoice id id not found'
+                    ], ResponseAlias::HTTP_NOT_FOUND);
+                }
+                $Attachment = new Attachment();
+                $Attachment->quote_id = $request->quote_id;
+                $Attachment->name = $request->name;
+                $Attachment->save();
+                // insert video
+                if ($request->hasfile('video')) {
+                    $video_path = $this->saveImage($request->video, 'attachments/video/'.$Attachment->id);
+                    $Attachment->video = $video_path;
+                    $Attachment->save();
+                }
+
+                // insert img
+                if ($request->hasfile('images')) {
+                    foreach ($request->file('images') as $value){
+                        $image_path = $this->saveImage($value, 'attachments/images/' . $Attachment->id);
+                        // insert in ExpenseMedia
+                        $image = new AttachmentImage();
+                        $image->attachment_id = $Attachment->id;
+                        $image->image_path = $image_path;
+                        $image->save();
+                    }
+                }
+
+                // insert img
+                if ($request->hasfile('document')) {
+                    foreach ($request->file('document') as $value){
+                        $document_path = $this->saveImage($value, 'attachments/documents/' . $Attachment->id);
+                        // insert in ExpenseMedia
+                        $image = new AttachmentDocument();
+                        $image->attachment_id = $Attachment->id;
+                        $image->document = $document_path;
+                        $image->save();
+                    }
+                }
+            }
             DB::commit();  // insert data
             return response()->json([
                 'status' => true,
-                'date' => $Attachment,
+//                'date' => $Attachment,
                 'message' => 'Attachment Information Added Successfully',
             ]);
         }catch (\Exception $e) {

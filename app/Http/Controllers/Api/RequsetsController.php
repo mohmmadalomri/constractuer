@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequestRequest;
@@ -33,17 +33,18 @@ class RequsetsController extends Controller
 
     public function store(StoreRequestRequest $request)
     {
+//        return $request;
         $requestData = $request->all();
         $newRequest = Request::create($requestData);
         $requestId = $newRequest->id;
 
-        $dates = $request->input('dates');
-        foreach ($dates as $date) {
-            Booking_date::create([
-                'request_id' => $requestId,
-                'date' => $date,
-            ]);
-        }
+//        $dates = $request->input('booking_request');
+//        foreach ($dates as $date) {
+//            Booking_date::create([
+//                'request_id' => $requestId,
+//                'date' => $date,
+//            ]);
+//        }
 
         $users=User::where('id','!=',auth()->user()->id)->get();
         $user_create=auth()->user()->name;
@@ -59,22 +60,20 @@ class RequsetsController extends Controller
     }
 
 
-    public function update(UpdateRequestRequest $request, $id)
+    public function update(StoreRequestRequest $request, $id)
     {
         $requests = Request::findOrFail($id);
         if ($requests) {
-            $data['day'] = $request->day ? $request->day : $requests->day;
+            $data['title'] = $request->title ? $request->title : $requests->title;
             $data['start_time'] = $request->start_time ? $request->start_time : $requests->start_time;
             $data['end_time'] = $request->end_time ? $request->end_time : $requests->end_time;
             $data['team_id'] = $request->team_id ? $request->team_id : $requests->team_id;
-            $data['subtotal'] = $request->subtotal ? $request->subtotal : $requests->subtotal;
-            $data['instruction'] = $request->instruction ? $request->instruction : $requests->instruction;
-
-
+            $data['day'] = $request->day ? $request->day : $requests->day;
+            $data['status'] = $request->status ? $request->status : $requests->status;
             $data['project_id'] = $request->project_id ? $request->project_id : $requests->project_id;
             $data['task_id'] = $request->task_id ? $request->task_id : $requests->task_id;
-            $data['address'] = $request->address ? $request->address : $requests->address;
-            $data['notices'] = $request->notices ? $request->notices : $requests->notices;
+//            $data['booking_request'] = $request->booking_request ? $request->booking_request : $requests->booking_request;
+            $data['notes'] = $request->notes ? $request->notes : $requests->notes;
             $data['item_id'] = $request->item_id ? $request->item_id : $requests->item_id;
             $data['service_price'] = $request->service_price ? $request->service_price : $requests->service_price;
 

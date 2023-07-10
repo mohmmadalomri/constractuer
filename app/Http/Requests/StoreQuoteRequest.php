@@ -24,18 +24,18 @@ class StoreQuoteRequest extends FormRequest
     public function rules()
     {
         return [
-            'client_id' =>'required',
-            'title'    =>'required|string|max:200',
-            'message'   =>'string',
-            'subtotal'  =>'required',
-            'discount'  =>'required',
-            'type_discount' =>'required',
-            'tax_name'      =>'required',
-            'tax_describe'   =>'required',
-            'tax_rate'      =>'required',
-            'total'         =>'required',
-            'note'         =>'required',
-            'company_id'    =>'required',
+//            'client_id' =>'required',
+//            'title'    =>'required|string|max:200',
+//            'message'   =>'string',
+//            'subtotal'  =>'required',
+//            'discount'  =>'required',
+//            'type_discount' =>'required',
+//            'tax_name'      =>'required',
+//            'tax_describe'   =>'required',
+//            'tax_rate'      =>'required',
+//            'total'         =>'required',
+//            'note'         =>'required',
+//            'company_id'    =>'required',
         ];
     }
 }

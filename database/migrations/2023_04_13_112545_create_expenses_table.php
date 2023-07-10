@@ -15,23 +15,28 @@ class CreateExpensesTable extends Migration
     {
         Schema::create('expenses', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->string('accounting_code');
-            $table->string('image');
-            $table->text('describe');
-            $table->date('date');
-            $table->double('value');
+            $table->string('image')->nullable();
+            $table->text('describe')->nullable();
+            $table->date('date')->nullable();
+            $table->double('value')->nullable();
             $table->enum('status', ['under_review', 'approved', 'cancellation', ' in_progress'])->default('under_review');
             $table->foreignId('client_id')->references('id')->on('clients');
 
-            $table->string('address');
-            $table->string('job_title');
-            $table->string('in_progress');
+            $table->string('address')->nullable();
+            $table->string('job_title')->nullable();
+            $table->string('in_progress')->nullable();
 
-            $table->foreignId('project_id')->references('id')->on('projects');
-            $table->foreignId('task_id')->references('id')->on('tasks');
+            $table->bigInteger('project_id')->unsigned()->nullable();
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->bigInteger('company_id')->unsigned()->nullable();
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('cascade');
+            $table->bigInteger('task_id')->unsigned()->nullable();
+            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->bigInteger('team_id')->unsigned()->nullable();
+            $table->foreign('team_id')->references('id')->on('teams')->onDelete('cascade');
             $table->foreignId('job_id')->references('id')->on('jobs');
-            $table->foreignId('team_id')->references('id')->on('teams');
             $table->foreignId('employee_id')->references('id')->on('employees');
             $table->timestamps();
         });
