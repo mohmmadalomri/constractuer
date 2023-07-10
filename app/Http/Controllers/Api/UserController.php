@@ -7,8 +7,10 @@ use App\Http\Requests\StoreUserRequest;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Intervention\Image\Facades\Image;
 
@@ -26,7 +28,6 @@ class UserController extends Controller
 
     public function store(StoreUserRequest $request)
     {
-
         $data['name'] = $request->name;
         $data['email'] = $request->email;
         $data['phone'] = $request->phone;
@@ -57,9 +58,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        //
-
-        $user = User::findOrFail($id);
+        $user = User::find($id);
         if ($user) {
             $data['name'] = $request->name ? $request->name : $user->name;
             $data['email'] = $request->email ? $request->email : $user->email;
@@ -67,12 +66,11 @@ class UserController extends Controller
             $data['birth_day'] = $request->birth_day ? $request->birth_day : Carbon::now();
 
             if ($request->hasFile('image')) {
-
                 $oldimage = $user->image;
                 $image = $request->file('image');
                 $data['image'] = $this->images($image, $oldimage);
-
             }
+
 
         }
 

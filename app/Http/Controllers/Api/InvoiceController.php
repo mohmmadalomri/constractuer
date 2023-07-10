@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\UpdateInvoiceRequest;
+use App\Http\Traits\ImageTrait;
 use App\Models\Invoice;
 use App\Models\User;
 use App\Notifications\InvoiceNotification;
@@ -13,35 +14,41 @@ use Illuminate\Support\Facades\Notification;
 
 class InvoiceController extends Controller
 {
-    //
+    use ImageTrait;
 
     public function index()
     {
-        $invoices = Invoice::with('client', 'items','company')->get();
+        $invoices = Invoice::with('client', 'items','company','tax','signature','paymentschedule')->get();
         return response()->json([
             'invoices' => $invoices
-        ], 200);
+        ]);
     }
 
     public function store(StoreInvoiceRequest $request)
     {
-        $data['client_id'] = $request->client_id;
         $data['title'] = $request->title;
         $data['issued_date'] = $request->issued_date;
         $data['due_date'] = $request->due_date;
         $data['payment'] = $request->payment;
         $data['message'] = $request->message;
         $data['subtotal'] = $request->subtotal;
-        $data['discount'] = $request->discount;
-        $data['type_discount'] = $request->type_discount;
-        $data['tax_name'] = $request->tax_name;
-        $data['tax_describe'] = $request->tax_describe;
-        $data['tax_rate'] = $request->tax_rate;
         $data['total'] = $request->total;
+        $data['payment_due'] = $request->payment_due;
+        $data['status'] = $request->status;
+        $data['tax_id'] = $request->tax_id;
+        $data['paymentSchedule_id'] = $request->paymentSchedule_id;
+        $data['signature_id'] = $request->signature_id;
+        $data['request_id'] = $request->request_id;
         $data['company_id'] = $request->company_id;
+        $data['discount_id'] = $request->discount_id;
+        $data['client_id'] = $request->client_id;
 
         $invoices = Invoice::create($data);
-
+        if ($request->hasfile('image')) {
+            $invoices_image = $this->saveImage($request->image, 'attachments/invoices/'.$invoices->id);
+            $invoices->image = $invoices_image;
+            $invoices->save();
+        }
 
         $users=User::where('id','!=',auth()->user()->id)->get();
         $user_create=auth()->user()->name;
@@ -56,47 +63,77 @@ class InvoiceController extends Controller
     }
 
 
-    public function update(UpdateInvoiceRequest $request, $id)
+    public function update(StoreInvoiceRequest $request, $id)
     {
-        $invoices = Invoice::findOrFail($id);
+        $invoices = Invoice::find($id);
         if ($invoices) {
-            $data['client'] = $request->client ? $request->client : $invoices->client;
-            $data['title'] = $request->title ? $request->title : $invoices->title;
-            $data['issued_date'] = $request->issued_date ? $request->issued_date : $invoices->issued_date;
-            $data['due_date'] = $request->due_date ? $request->due_date : $invoices->due_date;
+            $data['title'] = $request->title;
+            $data['issued_date'] = $request->issued_date;
+            $data['due_date'] = $request->due_date;
             $data['payment'] = $request->payment;
             $data['message'] = $request->message;
             $data['subtotal'] = $request->subtotal;
-            $data['discount'] = $request->discount;
-            $data['type_discount'] = $request->type_discount;
-            $data['tax_name'] = $request->tax_name ? $request->tax_name : $invoices->tax_name;
-            $data['tax_desribe'] = $request->tax_desribe;
-            $data['tax_rate'] = $request->tax_rate ? $request->tax_rate : $invoices->tax_rate;
-            $data['total'] = $request->total ? $request->total : $invoices->total;
-            $data['company_id'] = $request->company_id ? $request->company_id : $invoices->company_id;
-            $data['client_id'] = $request->client_id ? $request->client_id : $invoices->client_id;
+            $data['total'] = $request->total;
+            $data['payment_due'] = $request->payment_due;
+            $data['status'] = $request->status;
+            $data['tax_id'] = $request->tax_id;
+            $data['paymentSchedule_id'] = $request->paymentSchedule_id;
+            $data['signature_id'] = $request->signature_id;
+            $data['request_id'] = $request->request_id;
+            $data['company_id'] = $request->company_id;
+            $data['discount_id'] = $request->discount_id;
+            $data['client_id'] = $request->client_id;
 
             $invoices->update($data);
+            if ($request->hasfile('image')) {
+                $this->deleteFile('invoices',$id);
+                $invoices_image = $this->saveImage($request->image, 'attachments/invoices/'.$id);
+                $invoices->image = $invoices_image;
+                $invoices->save();
+            }
             return response()->json([
                 'status' => true,
                 'data' => $invoices,
-                'message' => 'invoices Information Updated Successfully',
+                'message' => 'Invoices Information Updated Successfully',
             ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'data' => [],
+                'message' => 'Not Found Id',
+            ],502);
         }
     }
 
     public function show($id)
     {
-        $invoices = Invoice::with('client', 'items')->find($id);
-        return response()->json($invoices);
+        $invoice = Invoice::with('client','items')->find($id);
+        if (!$invoice) {
+            return response()->json([
+                'status' => false,
+                'message' => 'not found id',
+            ],502);
+        }
+        return response()->json([
+            'profession' => $invoice
+        ], 200);
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy($id)
     {
+        $invoice = Invoice::find($id);
+        if (!$invoice) {
+            return response()->json([
+                'status' => false,
+                'message' => 'not found id',
+            ],502);
+        }
+        $this->deleteFile('invoices', $id);
+        $invoice->delete();
         Invoice::where('id', $id)->delete();
         return response()->json([
             'status' => true,
-            'message' => 'invoices Information deleted Successfully',
+            'message' => 'Invoices Information deleted Successfully',
         ]);
     }
 

@@ -14,7 +14,7 @@ class CreateSignaturesTable extends Migration
     public function up()
     {
         Schema::create('signatures', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id('id');
             $table->bigInteger('client_id')->unsigned()->nullable();
             $table->foreign('client_id')->references('id')->on('clients');
             $table->bigInteger('company_id')->unsigned()->nullable();
