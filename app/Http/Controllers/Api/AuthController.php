@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Notifications\ForgetPassword;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -70,7 +71,7 @@ class AuthController extends Controller
     }
     public function forgetPassword(Request $request)
     {
-        $verificationCode = mt_rand(100000, 999999);
+        $verificationCode = mt_rand(1000, 9999);
         $codeInsert=User::where('email',$request->email)->first();
         if (!$codeInsert){
             return response()->json(['message' => 'Invalid email address Please try again'],422);
@@ -78,37 +79,72 @@ class AuthController extends Controller
 //        $codeInsert->code=Hash::make($verificationCode);
         $codeInsert->code=$verificationCode;
         $codeInsert->save();
+
+        #forget_password Email
+        $codeInsert->notify(new ForgetPassword);
         return response()->json(['message' => 'User successfully sent code check it',
             'code' =>$verificationCode, ]);
     }
 
-
-
     public function reset(Request $request)
     {
-        $verificationCode = mt_rand(100000, 999999);
         $request->validate([
             'email' => 'required|email',
-            'code' => 'required|digits:6',
+            'code' => 'required|digits:4',
+        ]);
+        $currentDate = Carbon::now('Africa/Cairo');
+        $User = User::where([['email',$request->email],['code', $request->code]])->first();
+        if (!$User) {
+            return response()->json([
+                'en' => 'Invalid verification code. Please try again.',
+                'ar' => 'هذا الرمز غير صالح يرجي التحقق مره أحري',
+            ]);
+        }
+
+        $token = $User->createToken("API TOKEN")->plainTextToken;
+
+        $User->update([
+            'expire_at' =>  $currentDate->addMinutes(15),
+        ]);
+        return response()->json([
+            'en' => 'Token',
+            'ar' => 'التوكـــن',
+            'token' => $token,
+            'expire_at' => $currentDate->addMinutes(15)
+        ]);
+
+    }
+    public function confirm(Request $request)
+    {
+        $request->validate([
             'password' => ['required', 'confirmed', RulesPassword::defaults()],
         ]);
-        $currentDate = Carbon::today();
 
-        $user = User::where('email', $request->email)
-            ->where('code', $request->code)
-            ->whereDate('created_at', $currentDate)->first();
-
-        if (!$user) {
-            return response()->json(['message' => 'Invalid verification code. Please try again.']);
+        $User =Auth::user();
+//        return $User;
+        if (!$User) {
+            return response()->json(['message' => 'Invalid verification code. Please try again.',
+                'ar' => 'هذا الرمز غير صالح يرجي التحقق مره أحري',
+            ]);
         }
-        $user->forceFill([
+        // Check if the token has expired
+        $expirationTime = Carbon::parse($User->expire_at);
+        if ($expirationTime->isPast()) {
+            return response()->json([
+                'en' => 'The verification token has expired. Please request a new one.',
+                'ar' => 'انتهت صلاحية الرمز. يرجى طلب رمز جديد.',
+            ]);
+        }
+
+        $User->update([
             'password' => Hash::make($request->password),
-            'code' =>  Hash::make($verificationCode),
-        ])->save();
-        return response([
-            'message' => 'Password reset successfully'
+            'code' =>  null,
+            'expire_at' =>  null,
         ]);
+        return response([
+            'en' => 'Password reset successfully',
+            'ar' => 'تم تغيير كلمة المرور بنجاح',
+        ]);
+
     }
-
-
 }

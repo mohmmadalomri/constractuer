@@ -35,6 +35,7 @@ Route::group(['prefix' => 'v1', 'namspace' => 'Api'], function () {
     Route::post('logout', [AuthController::class, 'login']);
     Route::post('forgetPassword', [AuthController::class, 'forgetPassword']);
     Route::post('reset', [AuthController::class, 'reset']);
+    Route::post('confirm', [AuthController::class, 'confirm'])->middleware('auth:sanctum');
 
     Route::post('access-tokens', [AccessTokenController::class, 'store'])
         ->middleware('guest:sanctum');

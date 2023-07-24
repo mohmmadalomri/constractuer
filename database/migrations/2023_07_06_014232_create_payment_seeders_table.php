@@ -16,6 +16,9 @@ class CreatePaymentSeedersTable extends Migration
         Schema::create('payment_seeders', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+//            $table->time('start_time');
+//            $table->time('end_time');
+
             $table->timestamps();
         });
     }

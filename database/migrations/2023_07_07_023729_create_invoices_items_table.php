@@ -16,6 +16,16 @@ class CreateInvoicesItemsTable extends Migration
         Schema::create('invoices_items', function (Blueprint $table) {
             $table->foreignId('invoice_id')->references('id')->on('invoices');
             $table->foreignId('item_id')->references('id')->on('items');
+            $table->string('quantity')->nullable();
+            $table->string('tax')->nullable();
+            $table->string('price')->nullable();
+            $table->string('total_Price')->nullable();
+            #nullable->
+            #quantity
+            #tax
+            #price
+            #total_Price
+
         });
     }
 

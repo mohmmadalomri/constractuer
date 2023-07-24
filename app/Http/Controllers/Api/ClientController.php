@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreClientRequest;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Client;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
+use Illuminate\Validation\ValidationException;
+
 
 class ClientController extends Controller
 {
@@ -21,13 +25,23 @@ class ClientController extends Controller
 
     public function store(StoreClientRequest $request)
     {
-        $data = $request->all();
-        $client = Client::create($data);
+        try {
+            $data = $request->all();
+            $client = Client::create($data);
 
-        return response()->json([
-            'massege' => 'client add sucssfuly',
-            'client' => $client
-        ], 200);
+            return response()->json([
+                'massege' => 'client add sucssfuly',
+                'client' => $client
+            ], 200);
+        }catch (\Exception $e){
+//            $response = new JsonResponse([
+//                'data' => [],
+//                'message' => 'Validation Error',
+//                'errors' => $e->all(),
+//            ], ResponseAlias::HTTP_UNPROCESSABLE_ENTITY);
+//            throw new ValidationException($validator, $response);
+        }
+
     }
 
     public function show($id)
