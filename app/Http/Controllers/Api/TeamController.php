@@ -54,7 +54,7 @@ class TeamController extends Controller
 
             // insert video
             if ($request->hasfile('video')) {
-                $video_path = $this->saveImage($request->video, 'attachments/video/'.$team->id .'/'.$Attachment->id);
+                $video_path = $this->saveImage($request->video, 'attachments/video/team/'.$team->id .'/'.$Attachment->id);
                 $Attachment->video = $video_path;
                 $Attachment->save();
             }
@@ -62,7 +62,7 @@ class TeamController extends Controller
             // insert img
             if ($request->hasfile('images')) {
                 foreach ($request->file('images') as $value){
-                    $image_path = $this->saveImage($value, 'attachments/images/'.$team->id .'/'. $Attachment->id);
+                    $image_path = $this->saveImage($value, 'attachments/images/team/'.$team->id .'/'. $Attachment->id);
                     // insert in ExpenseMedia
                     $image = new AttachmentImage();
                     $image->attachment_id = $Attachment->id;
@@ -74,7 +74,7 @@ class TeamController extends Controller
             // insert img
             if ($request->hasfile('document')) {
                 foreach ($request->file('document') as $value){
-                    $document_path = $this->saveImage($value, 'attachments/documents/'.$team->id .'/'. $Attachment->id);
+                    $document_path = $this->saveImage($value, 'attachments/documents/team/'.$team->id .'/'. $Attachment->id);
                     // insert in ExpenseMedia
                     $image = new AttachmentDocument();
                     $image->attachment_id = $Attachment->id;
@@ -222,17 +222,17 @@ class TeamController extends Controller
             #Images_Delete
             $images=AttachmentImage::where('attachment_id',$id_attachment->id)->first();
             if ($images){
-                $this->deleteFile('images',$id.'/'.$id_attachment->id);
+                $this->deleteFile('images/team',$id.'/'.$id_attachment->id);
                 $images->delete();
             }
             #Document_Delete
             $Documents=AttachmentDocument::where('attachment_id',$id_attachment->id)->first();
             if ($Documents){
-                $this->deleteFile('documents',$id.'/'.$id_attachment->id);
+                $this->deleteFile('documents/team',$id.'/'.$id_attachment->id);
                 $Documents->delete();
             }
             #Video_Delete
-            $this->deleteFile('video',$id.'/'.$id_attachment->id);
+            $this->deleteFile('video/team',$id.'/'.$id_attachment->id);
             $id_attachment->delete();
         }
 
