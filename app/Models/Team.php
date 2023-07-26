@@ -34,4 +34,9 @@ class Team extends Model
         return $this->belongsToMany(Employee::class, 'teams_employees', 'team_id', 'employee_id');
     }
 
+    public function attachment()
+    {
+        return $this->belongsTo(Attachment::class, 'id','team_id');
+    }
+
 }

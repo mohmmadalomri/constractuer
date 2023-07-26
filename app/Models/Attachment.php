@@ -17,5 +17,8 @@ class Attachment extends Model
     {
         return $this->hasMany(AttachmentDocument::class, 'attachment_id');
     }
-
+    public function team()
+    {
+        return $this->belongsTo(Team::class, 'team_id');
+    }
 }

@@ -14,4 +14,5 @@ class AttachmentImage extends Model
     {
         return $this->belongsTo(Attachment::class, 'attachment_id');
     }
+
 }

@@ -47,22 +47,22 @@ class TeamController extends Controller
         if(isset($request->employee_id)) {
             $team->employees()->syncWithoutDetaching($request->employee_id);
         }
-
         if($request->hasfile('images')||$request->hasfile('video')||$request->hasfile('document')) {
             $Attachment = new Attachment();
-            $Attachment->team_id = $request->team_id;
-            $Attachment->name = $request->name;
+            $Attachment->team_id = $team->id;
             $Attachment->save();
+
             // insert video
             if ($request->hasfile('video')) {
-                $video_path = $this->saveImage($request->video, 'attachments/video/'.$Attachment->id);
+                $video_path = $this->saveImage($request->video, 'attachments/video/'.$team->id .'/'.$Attachment->id);
                 $Attachment->video = $video_path;
                 $Attachment->save();
             }
+
             // insert img
             if ($request->hasfile('images')) {
                 foreach ($request->file('images') as $value){
-                    $image_path = $this->saveImage($value, 'attachments/images/' . $Attachment->id);
+                    $image_path = $this->saveImage($value, 'attachments/images/'.$team->id .'/'. $Attachment->id);
                     // insert in ExpenseMedia
                     $image = new AttachmentImage();
                     $image->attachment_id = $Attachment->id;
@@ -74,7 +74,7 @@ class TeamController extends Controller
             // insert img
             if ($request->hasfile('document')) {
                 foreach ($request->file('document') as $value){
-                    $document_path = $this->saveImage($value, 'attachments/documents/' . $Attachment->id);
+                    $document_path = $this->saveImage($value, 'attachments/documents/'.$team->id .'/'. $Attachment->id);
                     // insert in ExpenseMedia
                     $image = new AttachmentDocument();
                     $image->attachment_id = $Attachment->id;
@@ -83,10 +83,15 @@ class TeamController extends Controller
                 }
             }
         }
-            DB::commit();  // insert data
+        DB::commit();  // insert data
         }catch (\Exception $e) {
             DB::rollback();
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            return response()->json([
+                'status' => false,
+                'en' => 'Error System',
+                'ar' => 'يوجد خطأ بالنظام',
+                'error'=>$e->getMessage()
+            ],502);
         }
 
         return response()->json([
@@ -114,36 +119,91 @@ class TeamController extends Controller
 
     public function update(Request $request, $id)
     {
-        $team = Team::find($id);
-        if ($team) {
-            $data['name'] = $request->name ? $request->name : $team->name;
-            $data['describe'] = $request->describe ? $request->describe : $team->describe;
-            $data['supervisor_id'] = $request->supervisor_id ? $request->supervisor_id : $team->supervisor_id;
-            $data['company_id'] = $request->company_id ? $request->company_id : $team->company_id;
+        DB::beginTransaction();
+        try {
+            $team = Team::find($id);
+            if ($team) {
+                $data['name'] = $request->name ? $request->name : $team->name;
+                $data['describe'] = $request->describe ? $request->describe : $team->describe;
+                $data['supervisor_id'] = $request->supervisor_id ? $request->supervisor_id : $team->supervisor_id;
+                $data['company_id'] = $request->company_id ? $request->company_id : $team->company_id;
 
-            $team->update($data);
-            if ($request->hasfile('image')) {
-                $this->deleteFile('teams',$id);
-                $team_image = $this->saveImage($request->image, 'attachments/teams/'.$team->id);
-                $team->image = $team_image;
-                $team->save();
-            }
+                $team->update($data);
+                if ($request->hasfile('image')) {
+                    $this->deleteFile('teams',$id);
+                    $team_image = $this->saveImage($request->image, 'attachments/teams/'.$team->id);
+                    $team->image = $team_image;
+                    $team->save();
+                }
 
-            //important to update player
-            if(isset($request->employee_id)) {
-                $team->employees()->sync($request->employee_id);
+                //important to update player
+                if(isset($request->employee_id)) {
+                    $team->employees()->sync($request->employee_id);
+                }
+
+                #Attachements
+                if($request->hasfile('images')||$request->hasfile('video')||$request->hasfile('document')) {
+                    $Attachment = new Attachment();
+                    $Attachment->team_id = $team->id;
+                    $Attachment->save();
+
+                    // insert video
+                    if ($request->hasfile('video')) {
+                        $this->deleteFile('video',$id);
+                        $video_path = $this->saveImage($request->video, 'attachments/video/'.$team->id .'/'.$Attachment->id);
+                        $Attachment->video = $video_path;
+                        $Attachment->save();
+                    }
+
+                    // insert img
+                    if ($request->hasfile('images')) {
+                        foreach ($request->file('images') as $value){
+                            $this->deleteFile('images',$id);
+                            $image_path = $this->saveImage($value, 'attachments/images/'.$team->id .'/'. $Attachment->id);
+                            // insert in ExpenseMedia
+                            $image = new AttachmentImage();
+                            $image->attachment_id = $Attachment->id;
+                            $image->image_path = $image_path;
+                            $image->save();
+                        }
+                    }
+
+                    // insert img
+                    if ($request->hasfile('document')) {
+                        foreach ($request->file('document') as $value){
+                            $this->deleteFile('documents',$id);
+                            $document_path = $this->saveImage($value, 'attachments/documents/'.$team->id .'/'. $Attachment->id);
+                            // insert in ExpenseMedia
+                            $image = new AttachmentDocument();
+                            $image->attachment_id = $Attachment->id;
+                            $image->document = $document_path;
+                            $image->save();
+                        }
+                    }
+                }
+                DB::commit();  // insert data
+
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'message' => 'not found team',
+                ]);
             }
-            return response()->json([
-                'status' => true,
-                'date' => $team,
-                'message' => 'Team  Update Successfully',
-            ]);
-        }else{
+        }catch (\Exception $e){
+            DB::rollback();
             return response()->json([
                 'status' => false,
-                'message' => 'not found team',
-            ]);
+                'en' => 'Error System',
+                'ar' => 'يوجد خطأ بالنظام',
+                'error'=>$e->getMessage()
+            ],502);
         }
+        return response()->json([
+            'status' => true,
+            'date' => $team,
+            'message' => 'Team  Update Successfully',
+        ]);
+
     }
 
 
@@ -156,8 +216,29 @@ class TeamController extends Controller
                 'message' => 'not found team',
             ]);
         }
+
+        $id_attachment=$team->attachment()->first();
+        if ($id_attachment){
+            #Images_Delete
+            $images=AttachmentImage::where('attachment_id',$id_attachment->id)->first();
+            if ($images){
+                $this->deleteFile('images',$id.'/'.$id_attachment->id);
+                $images->delete();
+            }
+            #Document_Delete
+            $Documents=AttachmentDocument::where('attachment_id',$id_attachment->id)->first();
+            if ($Documents){
+                $this->deleteFile('documents',$id.'/'.$id_attachment->id);
+                $Documents->delete();
+            }
+            #Video_Delete
+            $this->deleteFile('video',$id.'/'.$id_attachment->id);
+            $id_attachment->delete();
+        }
+
+
         $this->deleteFile('teams',$id);
-//        $team->employees()->detach($id);
+        $team->employees()->detach($id);
         $team->delete();
 
         return response()->json([
