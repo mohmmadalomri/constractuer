@@ -3,13 +3,18 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\StoreQuoteRequest;
 use App\Http\Requests\UpdateQuoteRequest;
 use App\Http\Traits\ImageTrait;
+use App\Models\Attachment;
+use App\Models\AttachmentDocument;
+use App\Models\AttachmentImage;
 use App\Models\Quote;
 use App\Models\User;
 use App\Notifications\QuoteNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 
 class QuoteController extends Controller
@@ -23,41 +28,90 @@ class QuoteController extends Controller
             'quotes' => $quotes
         ], 200);
     }
+
     public function store(StoreQuoteRequest $request)
     {
-        $data['title'] = $request->title;
-        $data['message'] = $request->message;
-        $data['subtotal'] = $request->subtotal;
-        $data['offer_price_massage'] = $request->offer_price_massage;
-        $data['total'] = $request->total;
-        $data['date'] = $request->date;
-        $data['note'] = $request->note;
-        $data['status'] = $request->status;
-        $data['paymentSchedule_id'] = $request->paymentSchedule_id;
-        $data['discount_id'] = $request->discount_id;
-        $data['item_id'] = $request->item_id;
-        $data['company_id'] = $request->company_id;
-        $data['client_id'] = $request->client_id;
-        $data['signature_id'] = $request->signature_id;
-        $data['tax_id'] = $request->tax_id;
-        $quote = Quote::create($data);
-        if ($request->hasfile('image')) {
-            $quote_image = $this->saveImage($request->image, 'attachments/quote/'.$quote->id);
-            $quote->image = $quote_image;
-            $quote->save();
-        }
-        $users=User::where('id','!=',auth()->user()->id)->get();
-        $user_create=auth()->user()->name;
-        Notification::send($users,new QuoteNotification($quote->id,$user_create,$request->title));
+        DB::beginTransaction();
+        try {
+            $data['title'] = $request->title;
+            $data['message'] = $request->message;
+            $data['subtotal'] = $request->subtotal;
+            $data['offer_price_massage'] = $request->offer_price_massage;
+            $data['total'] = $request->total;
+            $data['date'] = $request->date;
+            $data['note'] = $request->note;
+            $data['status'] = $request->status;
+            $data['paymentSchedule_id'] = $request->paymentSchedule_id;
+            $data['discount_id'] = $request->discount_id;
+            $data['item_id'] = $request->item_id;
+            $data['company_id'] = $request->company_id;
+            $data['client_id'] = $request->client_id;
+            $data['signature_id'] = $request->signature_id;
+            $data['tax_id'] = $request->tax_id;
+            $quote = Quote::create($data);
+            if ($request->hasfile('image')) {
+                $quote_image = $this->saveImage($request->image, 'attachments/quote/'.$quote->id);
+                $quote->image = $quote_image;
+                $quote->save();
+            }
+            $users=User::where('id','!=',auth()->user()->id)->get();
+            $user_create=auth()->user()->name;
+            Notification::send($users,new QuoteNotification($quote->id,$user_create,$request->title));
 
+
+            #attachements
+            if($request->hasfile('images')||$request->hasfile('video')||$request->hasfile('documents')) {
+                $Attachment = new Attachment();
+                $Attachment->quote_id = $quote->id;
+                $Attachment->save();
+
+                // insert video
+                if ($request->hasfile('video')) {
+                    $video_path = $this->saveImage($request->video, 'attachments/video/Quote/'.$quote->id .'/'.$Attachment->id);
+                    $Attachment->video = $video_path;
+                    $Attachment->save();
+                }
+
+                // insert img
+                if ($request->hasfile('images')) {
+                    foreach ($request->file('images') as $value){
+                        $image_path = $this->saveImage($value, 'attachments/images/Quote/'.$quote->id .'/'. $Attachment->id);
+                        // insert in ExpenseMedia
+                        $image = new AttachmentImage();
+                        $image->attachment_id = $Attachment->id;
+                        $image->image_path = $image_path;
+                        $image->save();
+                    }
+                }
+
+                // insert img
+                if ($request->hasfile('documents')) {
+                    foreach ($request->file('documents') as $value){
+                        $document_path = $this->saveImage($value, 'attachments/documents/Quote/'.$quote->id .'/'. $Attachment->id);
+                        // insert in ExpenseMedia
+                        $image = new AttachmentDocument();
+                        $image->attachment_id = $Attachment->id;
+                        $image->document = $document_path;
+                        $image->save();
+                    }
+                }
+            }
+            DB::commit();  // insert data
+        }catch (\Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'status' => false,
+                'en' => 'Error System',
+                'ar' => 'يوجد خطأ بالنظام',
+                'error'=>$e->getMessage()
+            ],502);
+        }
         return response()->json([
             'status' => true,
             'date' => $quote,
-            'message' => 'quote  Added Successfully',
+            'message' => 'Team Added Successfully',
         ]);
-
     }
-
     /**
      * Display the specified resource.
      *
@@ -126,6 +180,26 @@ class QuoteController extends Controller
                 'status' => false,
                 'message' => 'not found id',
             ],502);
+        }
+
+        $id_attachment=$Quote->attachment()->first();
+        if ($id_attachment){
+            #Images_Delete
+            $images=AttachmentImage::where('attachment_id',$id_attachment->id)->first();
+            if ($images ){
+                $this->deleteFile('images/Quote',$id.'/'.$id_attachment->id);
+                $images->delete();
+            }
+            #Document_Delete
+            $Documents=AttachmentDocument::where('attachment_id',$id_attachment->id)->first();
+            if ($Documents){
+                $this->deleteFile('documents/Quote',$id.'/'.$id_attachment->id);
+                $Documents->delete();
+            }
+
+            #Video_Delete
+            $this->deleteFile('video/Quote',$id.'/'.$id_attachment->id);
+            $id_attachment->delete();
         }
         $this->deleteFile('quote', $id);
         $Quote->delete();

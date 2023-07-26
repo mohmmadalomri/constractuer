@@ -47,7 +47,7 @@ class TeamController extends Controller
         if(isset($request->employee_id)) {
             $team->employees()->syncWithoutDetaching($request->employee_id);
         }
-        if($request->hasfile('images')||$request->hasfile('video')||$request->hasfile('document')) {
+        if($request->hasfile('images')||$request->hasfile('video')||$request->hasfile('documents')) {
             $Attachment = new Attachment();
             $Attachment->team_id = $team->id;
             $Attachment->save();
@@ -72,8 +72,8 @@ class TeamController extends Controller
             }
 
             // insert img
-            if ($request->hasfile('document')) {
-                foreach ($request->file('document') as $value){
+            if ($request->hasfile('documents')) {
+                foreach ($request->file('documents') as $value){
                     $document_path = $this->saveImage($value, 'attachments/documents/team/'.$team->id .'/'. $Attachment->id);
                     // insert in ExpenseMedia
                     $image = new AttachmentDocument();
