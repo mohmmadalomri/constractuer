@@ -20,4 +20,8 @@ class Employee extends Model
         return  $this->belongsTo(Profession::class , 'profession_id','id');
     }
 
+    public function WeaklySchedules()
+    {
+        return $this->hasMany(WeaklySchedule::class, 'employee_id');
+    }
 }
