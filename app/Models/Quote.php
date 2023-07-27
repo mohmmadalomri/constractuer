@@ -26,7 +26,7 @@ class Quote extends Model
         $this->belongsTo(Company::class, 'company_id', 'id');
     }
 
-    public function attachment()
+    public function attachments()
     {
         return $this->belongsTo(Attachment::class, 'id','quote_id');
     }

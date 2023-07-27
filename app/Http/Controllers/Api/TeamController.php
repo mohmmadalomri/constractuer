@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTeamRequest;
+use App\Http\Resources\team\AttachmentResource;
 use App\Http\Traits\ImageTrait;
 use App\Models\Attachment;
 use App\Models\AttachmentDocument;
@@ -21,8 +22,10 @@ class TeamController extends Controller
     {
         $teams = Team::with('supervisor', 'projects')->get();
         return response()->json([
+            'status'=>200,
+            'attachments'=>AttachmentResource::collection(Attachment::where('team_id','!=',null)->get()),
             'teams' => $teams
-        ], 200);
+        ]);
     }
 
 
@@ -94,11 +97,20 @@ class TeamController extends Controller
             ],502);
         }
 
-        return response()->json([
-            'status' => true,
-            'date' => $team,
-            'message' => 'Team Added Successfully',
-        ]);
+        $attachments= $team->attachments()->first();
+        if(!$attachments){
+            return response()->json([
+                'message' => 'created successfully',
+                'team' => $team,
+                'attachments'=>[],
+            ], 201);
+        }else{
+            return response()->json([
+                'message' => 'created successfully',
+                'team' => $team,
+                'attachments'=>new AttachmentResource($attachments),
+            ],201);
+        }
     }
 
     public function show($id)
@@ -110,10 +122,18 @@ class TeamController extends Controller
                 'message' => 'not found team',
             ]);
         }
-        return response()->json([
-            'status' => true,
-            'team' => $team
-        ], 200);
+        $attachments= $team->attachments()->first();
+        if(!$attachments){
+            return response()->json([
+                'team' => $team,
+                'attachments'=>[],
+            ], 200);
+        }else{
+            return response()->json([
+                'team' => $team,
+                'attachments'=>new AttachmentResource($attachments),
+            ]);
+        }
     }
 
 
@@ -217,7 +237,7 @@ class TeamController extends Controller
             ]);
         }
 
-        $id_attachment=$team->attachment()->first();
+        $id_attachment=$team->attachments()->first();
         if ($id_attachment){
             #Images_Delete
             $images=AttachmentImage::where('attachment_id',$id_attachment->id)->first();

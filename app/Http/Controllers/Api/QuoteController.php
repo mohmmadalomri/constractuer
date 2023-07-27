@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\StoreQuoteRequest;
 use App\Http\Requests\UpdateQuoteRequest;
+use App\Http\Resources\quote\AttachmentResource;
 use App\Http\Traits\ImageTrait;
 use App\Models\Attachment;
 use App\Models\AttachmentDocument;
@@ -25,6 +26,7 @@ class QuoteController extends Controller
     {
         $quotes = Quote::all();
         return response()->json([
+            'attachments'=>AttachmentResource::collection(Attachment::where('quote_id','!=',null)->get()),
             'quotes' => $quotes
         ], 200);
     }
@@ -106,11 +108,20 @@ class QuoteController extends Controller
                 'error'=>$e->getMessage()
             ],502);
         }
-        return response()->json([
-            'status' => true,
-            'date' => $quote,
-            'message' => 'Team Added Successfully',
-        ]);
+        $attachments= $quote->attachments()->first();
+        if(!$attachments){
+            return response()->json([
+                'message' => 'created successfully',
+                'quote' => $quote,
+                'attachments'=>[],
+            ], 201);
+        }else{
+            return response()->json([
+                'message' => 'created successfully',
+                'quote' => $quote,
+                'attachments'=>new AttachmentResource($attachments),
+            ],201);
+        }
     }
     /**
      * Display the specified resource.
@@ -127,9 +138,20 @@ class QuoteController extends Controller
                 'message' => 'not found id',
             ],502);
         }
-        return response()->json([
-            'quote' => $quote
-        ]);
+        $attachments= $quote->attachments()->first();
+        if(!$attachments){
+            return response()->json([
+                'message' => 'Show by Id successfully',
+                'quote' => $quote,
+                'attachments'=>[],
+            ], 201);
+        }else{
+            return response()->json([
+                'message' => 'Show by Id successfully',
+                'quote' => $quote,
+                'attachments'=>new AttachmentResource($attachments),
+            ],201);
+        }
     }
 
     public function update(StoreQuoteRequest $request, $id)
@@ -182,7 +204,7 @@ class QuoteController extends Controller
             ],502);
         }
 
-        $id_attachment=$Quote->attachment()->first();
+        $id_attachment=$Quote->attachments()->first();
         if ($id_attachment){
             #Images_Delete
             $images=AttachmentImage::where('attachment_id',$id_attachment->id)->first();

@@ -38,8 +38,9 @@ class Invoice extends Model
     {
         return $this->belongsToMany(Item::class, 'invoices_items', 'invoice_id', 'item_id');
     }
-    public function attachment()
+
+    public function attachments()
     {
-        return $this->belongsTo(Attachment::class, 'id','invoice_id');
+        return $this->hasMany(Attachment::class);
     }
 }

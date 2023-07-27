@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
-use App\Http\Requests\UpdateInvoiceRequest;
+use App\Http\Resources\invoice\AttachmentResource;
 use App\Http\Traits\ImageTrait;
 use App\Models\Attachment;
 use App\Models\AttachmentDocument;
@@ -12,7 +12,6 @@ use App\Models\AttachmentImage;
 use App\Models\Invoice;
 use App\Models\User;
 use App\Notifications\InvoiceNotification;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 
@@ -24,7 +23,8 @@ class InvoiceController extends Controller
     {
         $invoices = Invoice::with('client', 'items','company','tax','signature','paymentschedule')->get();
         return response()->json([
-            'invoices' => $invoices
+            'attachments'=>AttachmentResource::collection(Attachment::where('invoice_id','!=',null)->get()),
+            'invoices' => $invoices,
         ]);
     }
 
@@ -107,12 +107,20 @@ class InvoiceController extends Controller
             ],502);
         }
 
-        return response()->json([
-            'status' => true,
-            'date' => $invoices,
-            'message' => 'Team Added Successfully',
-        ]);
-
+        $attachments= $invoices->attachments()->first();
+        if(!$attachments){
+            return response()->json([
+                'message' => 'created successfully',
+                'invoices' => $invoices,
+                'attachments'=>[],
+            ], 201);
+        }else{
+            return response()->json([
+                'message' => 'created successfully',
+                'invoices' => $invoices,
+                'attachments'=>new AttachmentResource($attachments),
+            ],201);
+        }
 
 
 
@@ -171,9 +179,21 @@ class InvoiceController extends Controller
                 'message' => 'not found id',
             ],502);
         }
-        return response()->json([
-            'profession' => $invoice
-        ], 200);
+        $attachments= $invoice->attachments()->first();
+        if(!$attachments){
+            return response()->json([
+                'message' => 'Show by Id successfully',
+                'invoice' => $invoice,
+                'attachments'=>[],
+            ], 201);
+        }else{
+            return response()->json([
+                'message' => 'Show by Id successfully',
+                'invoice' => $invoice,
+                'attachments'=>new AttachmentResource($attachments),
+            ],201);
+        }
+
     }
 
     public function destroy($id)
@@ -185,7 +205,7 @@ class InvoiceController extends Controller
                 'message' => 'not found id',
             ],502);
         }
-        $id_attachment=$invoice->attachment()->first();
+        $id_attachment=$invoice->attachments()->first();
         if ($id_attachment){
             #Images_Delete
             $images=AttachmentImage::where('attachment_id',$id_attachment->id)->first();
