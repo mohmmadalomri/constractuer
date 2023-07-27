@@ -20,21 +20,25 @@ class SearchController extends Controller
     public function show_client(Request $request)
     {
         try {
-            $client= Client::find($request->client_id);
-            if(!$client)
-            {
+
+            if (isset($request->name)){
+                $client_search = Client::whereRaw("CONCAT(first_name, ' ', last_name) LIKE ?", ['%'.$request->name.'%'])->get();
                 return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'Client id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Client Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
             }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'Client Successfully',
-                'data'=>$client
-            ], ResponseAlias::HTTP_OK);
+            if (isset($request->address)){
+                $client_search = Client::whereRaw("CONCAT(address_1, ' ', address_2) LIKE ?", ['%'.$request->address.'%'])->get();
+                return response()->json([
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Client Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
+            }
 
         }catch (\Exception $e){
             return response()->json([
@@ -49,21 +53,24 @@ class SearchController extends Controller
     public function show_company(Request $request)
     {
         try {
-            $company= Company::find($request->company_id);
-            if(!$company)
-            {
+            if (isset($request->name)){
+                $client_search = Company::whereRaw("name LIKE ?", ['%'.$request->name.'%'])->get();
                 return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'Company id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Company Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
             }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'Company Successfully',
-                'data'=>$company
-            ], ResponseAlias::HTTP_OK);
+            if (isset($request->address)){
+                $client_search = Company::whereRaw("CONCAT(address_1, ' ', address_2) LIKE ?", ['%'.$request->address.'%'])->get();
+                return response()->json([
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Company Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
+            }
         }catch (\Exception $e){
             return response()->json([
                 'status' => 'Error',
@@ -75,22 +82,24 @@ class SearchController extends Controller
     public function show_invoice(Request $request)
     {
         try {
-            $invoice= Invoice::find($request->invoice_id);
-            if(!$invoice)
-            {
+            if (isset($request->title)){
+                $client_search = Invoice::whereRaw("title LIKE ?", ['%'.$request->title.'%'])->get();
                 return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'Invoice id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Company Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
             }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'Invoice Successfully',
-                'data'=>$invoice
-            ], ResponseAlias::HTTP_OK);
-
+//            if (isset($request->address)){
+//                $client_search = Invoice::whereRaw("CONCAT(address_1, ' ', address_2) LIKE ?", ['%'.$request->address.'%'])->get();
+//                return response()->json([
+//                    'status' => true,
+//                    'status_code'=>ResponseAlias::HTTP_OK,
+//                    'message' => 'Invoice Successfully',
+//                    'data'=>$client_search
+//                ], ResponseAlias::HTTP_OK);
+//            }
         }catch (\Exception $e){
             return response()->json([
                 'status' => 'Error',
@@ -102,21 +111,29 @@ class SearchController extends Controller
     public function show_project(Request $request)
     {
         try {
-            $project= Project::find($request->project_id);
-            if(!$project)
-            {
+            if (isset($request->name)){
+                $client_search = Project::whereRaw("name LIKE ?", ['%'.$request->name.'%'])->get();
                 return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'Project id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Company Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
             }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'Project Successfully',
-                'data'=>$project
-            ], ResponseAlias::HTTP_OK);
+            if (isset($request->date)) {
+                $client_search = Project::where(function ($query) use ($request) {
+                    $query->whereDate('start_time', '<=', $request->date)
+                        ->whereDate('end_time', '>=', $request->date);
+                })->get();
+
+                return response()->json([
+                    'status' => true,
+                    'status_code' => ResponseAlias::HTTP_OK,
+                    'message' => 'Companies Successfully',
+                    'data' => $client_search
+                ], ResponseAlias::HTTP_OK);
+            }
+
         }catch (\Exception $e){
             return response()->json([
                 'status' => 'Error',
@@ -128,21 +145,39 @@ class SearchController extends Controller
     public function show_task(Request $request)
     {
         try {
-            $task= Task::find($request->task_id);
-            if(!$task)
-            {
+            if (isset($request->name)){
+                $client_search = Task::whereRaw("name LIKE ?", ['%'.$request->name.'%'])->get();
                 return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'Task id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Task Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
             }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'Task Successfully',
-                'data'=>$task
-            ], ResponseAlias::HTTP_OK);
+            if (isset($request->date)) {
+                $client_search = Task::where(function ($query) use ($request) {
+                    $query->whereDate('start_time', '<=', $request->date)
+                        ->whereDate('end_time', '>=', $request->date);
+                })->get();
+
+                return response()->json([
+                    'status' => true,
+                    'status_code' => ResponseAlias::HTTP_OK,
+                    'message' => 'Task Successfully',
+                    'data' => $client_search
+                ], ResponseAlias::HTTP_OK);
+            }
+
+            if (isset($request->address)){
+                $client_search = Task::whereRaw("location LIKE ?", ['%'.$request->address.'%'])->get();
+                return response()->json([
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Task Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
+                }
+
         }catch (\Exception $e){
             return response()->json([
                 'status' => 'Error',
@@ -155,21 +190,25 @@ class SearchController extends Controller
     public function show_employee(Request $request)
     {
         try {
-            $employee= Employee::find($request->employee_id);
-            if(!$employee)
-            {
+            if (isset($request->name)){
+                $client_search = Employee::whereRaw("name LIKE ?", ['%'.$request->name.'%'])->get();
                 return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'employee id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Employee Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
             }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'employee Successfully',
-                'data'=>$employee
-            ], ResponseAlias::HTTP_OK);
+
+            if (isset($request->phone)){
+                $client_search = Employee::whereRaw("phone LIKE ?", ['%'.$request->phone.'%'])->get();
+                return response()->json([
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Employee Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
+            }
         }catch (\Exception $e){
             return response()->json([
                 'status' => 'Error',
@@ -181,22 +220,15 @@ class SearchController extends Controller
     public function show_team(Request $request)
     {
         try {
-            $team= Team::find($request->team_id);
-            if(!$team)
-            {
+            if (isset($request->name)){
+                $client_search = Team::whereRaw("name LIKE ?", ['%'.$request->name.'%'])->get();
                 return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'team id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Team Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
             }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'team Successfully',
-                'data'=>$team
-            ], ResponseAlias::HTTP_OK);
-
         }catch (\Exception $e){
             return response()->json([
                 'status' => 'Error',
@@ -209,23 +241,24 @@ class SearchController extends Controller
     public function show_expense(Request $request)
     {
         try {
-            $client= Client::find($request->client_id);
-            $expense= Expense::find($request->expense_id);
-            if(!$expense)
-            {
+            if (isset($request->title)){
+                $client_search = Expense::whereRaw("title LIKE ?", ['%'.$request->title.'%'])->get();
                 return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'expense id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Expense Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
             }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'expense Successfully',
-                'data'=>$expense
-            ], ResponseAlias::HTTP_OK);
-
+            if (isset($request->address)){
+                $client_search = Expense::whereRaw("address LIKE ?", ['%'.$request->address.'%'])->get();
+                return response()->json([
+                    'status' => true,
+                    'status_code'=>ResponseAlias::HTTP_OK,
+                    'message' => 'Expense Successfully',
+                    'data'=>$client_search
+                ], ResponseAlias::HTTP_OK);
+            }
         }catch (\Exception $e){
             return response()->json([
                 'status' => 'Error',
