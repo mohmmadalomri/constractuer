@@ -13,7 +13,9 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "santigarcor/laratrust": "*"
+        "paypal/rest-api-sdk-php": "*",
+        "santigarcor/laratrust": "*",
+        "srmklive/paypal": "~1.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

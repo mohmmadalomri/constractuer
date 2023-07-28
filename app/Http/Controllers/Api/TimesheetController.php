@@ -13,81 +13,28 @@ use App\Models\Project;
 use App\Models\Expense;
 use App\Models\Request;
 
+use App\Models\Task;
 use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class TimesheetController extends Controller
 {
-    public function show_expense($id)
+    public function show_task($id)
     {
         try {
-            $qoute= Expense::find($id);
-            if(!$qoute)
+            $task= Task::find($id);
+            if(!$task)
             {
                 return response()->json([
                     'status' => 'Error',
                     'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'Expense id not found'
+                    'message' => 'Task id not found'
                 ], ResponseAlias::HTTP_NOT_FOUND);
             }
             return response()->json([
                 'status' => true,
                 'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'Expense Successfully',
-                'data'=>new ExpenseResource(Expense::findOrFail($id))
-            ], ResponseAlias::HTTP_OK);
-        }catch (\Exception $e){
-            return response()->json([
-                'status' => 'Error',
-                'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                'message' => 'Error id',
-            ], ResponseAlias::HTTP_NOT_FOUND);
-        }
-
-    }
-    public function show_invoice($id)
-    {
-        try {
-            $Invoice= Invoice::find($id);
-            if(!$Invoice)
-            {
-                return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'Invoice id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
-            }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'Invoice Successfully',
-                'data'=>new InvoiceResource(Invoice::findOrFail($id))
-            ], ResponseAlias::HTTP_OK);
-        }catch (\Exception $e){
-            return response()->json([
-                'status' => 'Error',
-                'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                'message' => 'Error id',
-            ], ResponseAlias::HTTP_NOT_FOUND);
-        }
-
-    }
-    public function show_qoute($id)
-    {
-        try {
-            $qoute= Invoice::find($id);
-            if(!$qoute)
-            {
-                return response()->json([
-                    'status' => 'Error',
-                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
-                    'message' => 'Invoice id not found'
-                ], ResponseAlias::HTTP_NOT_FOUND);
-            }
-            return response()->json([
-                'status' => true,
-                'status_code'=>ResponseAlias::HTTP_OK,
-                'message' => 'Invoice Successfully',
-                'data'=>new InvoiceResource(Invoice::findOrFail($id))
+                'message' => 'Task Successfully',
+                'data'=>new TakResource(Task::findOrFail($id))
             ], ResponseAlias::HTTP_OK);
         }catch (\Exception $e){
             return response()->json([
@@ -99,4 +46,87 @@ class TimesheetController extends Controller
 
     }
 
+    public function show_project($id)
+    {
+        try {
+            $Project= Project::find($id);
+            if(!$Project)
+            {
+                return response()->json([
+                    'status' => 'Error',
+                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                    'message' => 'Project id not found'
+                ], ResponseAlias::HTTP_NOT_FOUND);
+            }
+            return response()->json([
+                'status' => true,
+                'status_code'=>ResponseAlias::HTTP_OK,
+                'message' => 'Project Successfully',
+                'data'=>new TakResource(Project::findOrFail($id))
+            ], ResponseAlias::HTTP_OK);
+        }catch (\Exception $e){
+            return response()->json([
+                'status' => 'Error',
+                'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                'message' => 'Error id',
+            ], ResponseAlias::HTTP_NOT_FOUND);
+        }
+
+    }
+
+    public function show_request($id)
+    {
+        try {
+            $request= Request::find($id);
+            if(!$request)
+            {
+                return response()->json([
+                    'status' => 'Error',
+                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                    'message' => 'request id not found'
+                ], ResponseAlias::HTTP_NOT_FOUND);
+            }
+            return response()->json([
+                'status' => true,
+                'status_code'=>ResponseAlias::HTTP_OK,
+                'message' => 'request Successfully',
+                'data'=>new RequestResource(Request::findOrFail($id))
+            ], ResponseAlias::HTTP_OK);
+        }catch (\Exception $e){
+            return response()->json([
+                'status' => 'Error',
+                'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                'message' => 'Error id',
+            ], ResponseAlias::HTTP_NOT_FOUND);
+        }
+
+    }
+
+    public function show_job($id)
+    {
+        try {
+            $request= Job::find($id);
+            if(!$request)
+            {
+                return response()->json([
+                    'status' => 'Error',
+                    'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                    'message' => 'request id not found'
+                ], ResponseAlias::HTTP_NOT_FOUND);
+            }
+            return response()->json([
+                'status' => true,
+                'status_code'=>ResponseAlias::HTTP_OK,
+                'message' => 'request Successfully',
+                'data'=>new RequestResource(Job::findOrFail($id))
+            ], ResponseAlias::HTTP_OK);
+        }catch (\Exception $e){
+            return response()->json([
+                'status' => 'Error',
+                'status_code'=>ResponseAlias::HTTP_NOT_FOUND,
+                'message' => 'Error id',
+            ], ResponseAlias::HTTP_NOT_FOUND);
+        }
+
+    }
 }
