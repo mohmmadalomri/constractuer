@@ -11,7 +11,7 @@ class AttachmentDocumentResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray($request): array
+    public function  toArray($request): array
     {
         $quote__id=$this->Attachment->quote_id;
         return [
