@@ -15,7 +15,7 @@ class AttachmentResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'quote_id' => $this->quote_id,
+            'quote_id' =>  $this->quote_id,
             'video'=>url('attachments/video/quote/'.$this->quote_id.'/'.$this->id.'/'.$this->video),
             'images' =>AttachmentImagesResource::collection($this->Images),
             'documents' =>AttachmentDocumentResource::collection($this->Documents)
