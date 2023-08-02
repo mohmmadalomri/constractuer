@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\invoice;
 
+use App\Http\Resources\team\AttachmentVideosResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AttachmentResource extends JsonResource
@@ -17,7 +18,8 @@ class AttachmentResource extends JsonResource
         return [
             'id' => $this->id,
             'invoice_id' => $this->invoice_id,
-            'video'=>url('attachments/video/invoice/'.$this->invoice_id.'/'.$this->id.'/'.$this->video),
+//            'video'=>url('attachments/video/invoice/'.$this->invoice_id.'/'.$this->id.'/'.$this->video),
+            'videos' =>AttachmentVideosResource::collection($this->Videos),
             'images' =>AttachmentImagesResource::collection($this->Images),
             'documents' =>AttachmentDocumentResource::collection($this->Documents)
         ];

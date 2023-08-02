@@ -9,6 +9,7 @@ use App\Http\Traits\ImageTrait;
 use App\Models\Attachment;
 use App\Models\AttachmentDocument;
 use App\Models\AttachmentImage;
+use App\Models\AttachmentVideo;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -42,28 +43,32 @@ class TeamController extends Controller
         $team = Team::create($data);
         $team->jobs()->syncWithoutDetaching($request->input('job_id'));
 
-            if ($request->hasfile('photo')) {
-            $team_image = $this->saveImage($request->photo, 'attachments/teams/'.$team->id);
-            $team->image = $team_image;
-            $team->save();
+        if ($request->hasfile('photo')) {
+        $team_image = $this->saveImage($request->photo, 'attachments/teams/'.$team->id);
+        $team->image = $team_image;
+        $team->save();
         }
 
         //important to update player
         if(isset($request->employee_id)) {
             $team->employees()->syncWithoutDetaching($request->employee_id);
         }
-        if($request->hasfile('images')||$request->hasfile('video')||$request->hasfile('documents')) {
+        if($request->hasfile('images')||$request->hasfile('videos')||$request->hasfile('documents')) {
             $Attachment = new Attachment();
             $Attachment->team_id = $team->id;
             $Attachment->save();
 
             // insert video
-            if ($request->hasfile('video')) {
-                $video_path = $this->saveImage($request->video, 'attachments/video/team/'.$team->id .'/'.$Attachment->id);
-                $Attachment->video = $video_path;
-                $Attachment->save();
+            if ($request->hasfile('videos')) {
+                foreach ($request->file('videos') as $value){
+                    $video_path = $this->saveImage($value, 'attachments/videos/team/'.$team->id .'/'. $Attachment->id);
+                    // insert in ExpenseMedia
+                    $image = new AttachmentVideo();
+                    $image->attachment_id = $Attachment->id;
+                    $image->video_path = $video_path;
+                    $image->save();
+                }
             }
-
             // insert img
             if ($request->hasfile('images')) {
                 foreach ($request->file('images') as $value){
@@ -241,6 +246,7 @@ class TeamController extends Controller
         }
 
         $id_attachment=$team->attachments()->first();
+
         if ($id_attachment){
             #Images_Delete
             $images=AttachmentImage::where('attachment_id',$id_attachment->id)->first();
@@ -255,7 +261,12 @@ class TeamController extends Controller
                 $Documents->delete();
             }
             #Video_Delete
-            $this->deleteFile('video/team',$id.'/'.$id_attachment->id);
+            $videos=AttachmentVideo::where('attachment_id',$id_attachment->id)->first();
+            if ($videos){
+                $this->deleteFile('videos/team',$id.'/'.$id_attachment->id);
+                $videos->delete();
+            }
+
             $id_attachment->delete();
         }
 

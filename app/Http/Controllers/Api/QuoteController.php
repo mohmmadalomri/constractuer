@@ -11,6 +11,7 @@ use App\Http\Traits\ImageTrait;
 use App\Models\Attachment;
 use App\Models\AttachmentDocument;
 use App\Models\AttachmentImage;
+use App\Models\AttachmentVideo;
 use App\Models\Quote;
 use App\Models\User;
 use App\Notifications\QuoteNotification;
@@ -69,10 +70,15 @@ class QuoteController extends Controller
                 $Attachment->save();
 
                 // insert video
-                if ($request->hasfile('video')) {
-                    $video_path = $this->saveImage($request->video, 'attachments/video/Quote/'.$quote->id .'/'.$Attachment->id);
-                    $Attachment->video = $video_path;
-                    $Attachment->save();
+                if ($request->hasfile('videos')) {
+                    foreach ($request->file('videos') as $value){
+                        $video_path = $this->saveImage($value, 'attachments/videos/Quote/'.$quote->id .'/'. $Attachment->id);
+                        // insert in ExpenseMedia
+                        $image = new AttachmentVideo();
+                        $image->attachment_id = $Attachment->id;
+                        $image->video_path = $video_path;
+                        $image->save();
+                    }
                 }
 
                 // insert img
@@ -216,7 +222,11 @@ class QuoteController extends Controller
             }
 
             #Video_Delete
-            $this->deleteFile('video/Quote',$id.'/'.$id_attachment->id);
+            $videos=AttachmentVideo::where('attachment_id',$id_attachment->id)->first();
+            if ($videos){
+                $this->deleteFile('videos/Quote',$id.'/'.$id_attachment->id);
+                $videos->delete();
+            }
             $id_attachment->delete();
         }
         $this->deleteFile('quote', $id);

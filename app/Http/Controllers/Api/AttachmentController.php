@@ -29,7 +29,6 @@ use ImageTrait;
         ]);
     }
 
-
     public function store(Request $request)
     {
         DB::beginTransaction();
