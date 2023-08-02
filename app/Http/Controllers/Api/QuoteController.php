@@ -230,7 +230,7 @@ class QuoteController extends Controller
             $id_attachment->delete();
         }
         $this->deleteFile('quote', $id);
-        $Quote->items()->detach($id);
+        $Quote->items()->detach();
         $Quote->delete();
         Quote::where('id', $id)->delete();
         return response()->json([

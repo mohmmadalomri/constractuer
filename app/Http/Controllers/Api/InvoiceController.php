@@ -213,7 +213,9 @@ class InvoiceController extends Controller
             ],502);
         }
         $id_attachment=$invoice->attachments()->first();
+//        return $id_attachment;
         if ($id_attachment){
+
             #Images_Delete
             $images=AttachmentImage::where('attachment_id',$id_attachment->id)->first();
             if ($images){
@@ -236,7 +238,7 @@ class InvoiceController extends Controller
         }
 
         $this->deleteFile('invoices', $id);
-        $invoice->items()->detach($id);
+        $invoice->items()->detach();
         $invoice->delete();
         Invoice::where('id', $id)->delete();
         return response()->json([

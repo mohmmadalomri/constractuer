@@ -272,7 +272,7 @@ class TeamController extends Controller
 
 
         $this->deleteFile('teams',$id);
-        $team->employees()->detach($id);
+        $team->employees()->detach();
         $team->jobs()->detach($id);
         $team->delete();
         return response()->json([

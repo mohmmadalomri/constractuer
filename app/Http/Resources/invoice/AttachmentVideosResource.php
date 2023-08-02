@@ -14,6 +14,7 @@ class AttachmentVideosResource extends JsonResource
     public function toArray($request): array
     {
         $invoice_id=$this->Attachment->invoice_id;
+
         return [
             'id' => $this->id,
             'video' => url('attachments/videos/invoice/'.$invoice_id.'/'.$this->attachment_id.'/'. $this->video_path),

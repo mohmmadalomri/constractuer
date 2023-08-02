@@ -41,6 +41,6 @@ class Invoice extends Model
 
     public function attachments()
     {
-        return $this->hasMany(Attachment::class);
+        return $this->belongsTo(Attachment::class, 'id','invoice_id');
     }
 }

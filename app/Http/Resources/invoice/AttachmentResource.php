@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\invoice;
 
-use App\Http\Resources\team\AttachmentVideosResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AttachmentResource extends JsonResource
