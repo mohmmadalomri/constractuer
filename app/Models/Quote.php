@@ -18,7 +18,12 @@ class Quote extends Model
 
     public function items()
     {
-        return $this->belongsToMany(Item::class, 'quotes_items', 'quote_id', 'item_id');
+        return $this->belongsToMany(Item::class, 'items_quotes', 'quote_id', 'item_id');
+    }
+
+    public function paymentschedules()
+    {
+        return $this->belongsToMany(QuotesPaymentschedule::class, 'quotes_paymentschedules', 'quote_id', 'paymentSchedule_id');
     }
 
     public function company()

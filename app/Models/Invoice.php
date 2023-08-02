@@ -30,15 +30,14 @@ class Invoice extends Model
         return $this->belongsTo(Signature::class, 'signature_id', 'id');
     }
 
-    public function paymentschedule()
-    {
-        return $this->belongsTo(Paymentschedule::class, 'paymentSchedule_id', 'id');
-    }
     public function items()
     {
         return $this->belongsToMany(Item::class, 'invoices_items', 'invoice_id', 'item_id');
     }
-
+    public function paymentschedules()
+    {
+        return $this->belongsToMany(InvoicesPaymentschedule::class, 'invoices_paymentschedules', 'invoice_id', 'paymentSchedule_id');
+    }
     public function attachments()
     {
         return $this->belongsTo(Attachment::class, 'id','invoice_id');

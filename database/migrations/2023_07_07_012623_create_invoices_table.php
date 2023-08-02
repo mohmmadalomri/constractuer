@@ -30,8 +30,8 @@ class CreateInvoicesTable extends Migration
             $table->bigInteger('tax_id')->unsigned()->nullable();
             $table->foreign('tax_id')->references('id')->on('taxes')->onDelete('cascade');
 
-            $table->bigInteger('paymentSchedule_id')->unsigned()->nullable();
-            $table->foreign('paymentSchedule_id')->references('id')->on('paymentschedules')->onDelete('cascade');
+//            $table->bigInteger('paymentSchedule_id')->unsigned()->nullable();
+//            $table->foreign('paymentSchedule_id')->references('id')->on('paymentschedules')->onDelete('cascade');
 
             $table->bigInteger('signature_id')->unsigned()->nullable();
             $table->foreign('signature_id')->references('id')->on('signatures');

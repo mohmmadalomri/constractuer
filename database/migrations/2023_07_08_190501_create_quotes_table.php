@@ -30,8 +30,8 @@ class CreateQuotesTable extends Migration
             $table->foreignId('client_id')->references('id')->on('clients');
 
 
-            $table->bigInteger('paymentSchedule_id')->unsigned()->nullable();
-            $table->foreign('paymentSchedule_id')->references('id')->on('paymentschedules')->onDelete('cascade');
+//            $table->bigInteger('paymentSchedule_id')->unsigned()->nullable();
+//            $table->foreign('paymentSchedule_id')->references('id')->on('paymentschedules')->onDelete('cascade');
 
             $table->bigInteger('discount_id')->unsigned()->nullable();
             $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('cascade');

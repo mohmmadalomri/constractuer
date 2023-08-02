@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Item extends Model
+class QuotesPaymentschedule extends Model
 {
     use HasFactory;
-    public $guarded = [];
+    protected $table='quotes_paymentschedule';
+    protected $guarded=[''];
 }

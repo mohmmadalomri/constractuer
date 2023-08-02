@@ -22,7 +22,7 @@ class InvoiceController extends Controller
 
     public function index()
     {
-        $invoices = Invoice::with('client', 'items','company','tax','signature','paymentschedule')->get();
+        $invoices = Invoice::with('client', 'items','company','tax','signature','paymentschedules')->get();
         return response()->json([
             'attachments'=>AttachmentResource::collection(Attachment::where('invoice_id','!=',null)->get()),
             'invoices' => $invoices,
@@ -43,7 +43,7 @@ class InvoiceController extends Controller
             $data['payment_due'] = $request->payment_due;
             $data['status'] = $request->status;
             $data['tax_id'] = $request->tax_id;
-            $data['paymentSchedule_id'] = $request->paymentSchedule_id;
+//            $data['paymentSchedule_id'] = $request->paymentSchedule_id;
             $data['signature_id'] = $request->signature_id;
             $data['request_id'] = $request->request_id;
             $data['company_id'] = $request->company_id;
@@ -57,6 +57,7 @@ class InvoiceController extends Controller
                 $invoices->save();
             }
             $invoices->items()->syncWithoutDetaching($request->input('item_id'));
+            $invoices->paymentschedules()->syncWithoutDetaching($request->input('paymentSchedule_id'));
 
             $users=User::where('id','!=',auth()->user()->id)->get();
             $user_create=auth()->user()->name;
@@ -134,52 +135,113 @@ class InvoiceController extends Controller
 
     }
 
-
     public function update(StoreInvoiceRequest $request, $id)
     {
-        $invoices = Invoice::find($id);
-        if ($invoices) {
-            $data['title'] = $request->title;
-            $data['issued_date'] = $request->issued_date;
-            $data['due_date'] = $request->due_date;
-            $data['payment'] = $request->payment;
-            $data['message'] = $request->message;
-            $data['subtotal'] = $request->subtotal;
-            $data['total'] = $request->total;
-            $data['payment_due'] = $request->payment_due;
-            $data['status'] = $request->status;
-            $data['tax_id'] = $request->tax_id;
-            $data['paymentSchedule_id'] = $request->paymentSchedule_id;
-            $data['signature_id'] = $request->signature_id;
-            $data['request_id'] = $request->request_id;
-            $data['company_id'] = $request->company_id;
-            $data['discount_id'] = $request->discount_id;
-            $data['client_id'] = $request->client_id;
+        DB::beginTransaction();
+        try {
 
-            $invoices->update($data);
-            if ($request->hasfile('image')) {
-                $this->deleteFile('invoices',$id);
-                $invoices_image = $this->saveImage($request->image, 'attachments/invoices/'.$id);
-                $invoices->image = $invoices_image;
-                $invoices->save();
+            $invoices = Invoice::find($id);
+            if ($invoices) {
+                $data['title'] = $request->title;
+                $data['issued_date'] = $request->issued_date;
+                $data['due_date'] = $request->due_date;
+                $data['payment'] = $request->payment;
+                $data['message'] = $request->message;
+                $data['subtotal'] = $request->subtotal;
+                $data['total'] = $request->total;
+                $data['payment_due'] = $request->payment_due;
+                $data['status'] = $request->status;
+                $data['tax_id'] = $request->tax_id;
+//            $data['paymentSchedule_id'] = $request->paymentSchedule_id;
+                $data['signature_id'] = $request->signature_id;
+                $data['request_id'] = $request->request_id;
+                $data['company_id'] = $request->company_id;
+                $data['discount_id'] = $request->discount_id;
+                $data['client_id'] = $request->client_id;
+
+                $invoices->update($data);
+                $invoices->items()->syncWithoutDetaching($request->input('item_id'));
+                $invoices->paymentschedules()->syncWithoutDetaching($request->input('paymentSchedule_id'));
+
+                if($request->hasfile('images')||$request->hasfile('video')||$request->hasfile('documents')) {
+                    $Attachment = new Attachment();
+                    $Attachment->invoice_id = $invoices->id;
+                    $Attachment->save();
+
+                    // insert video
+                    if ($request->hasfile('videos')) {
+                        foreach ($request->file('videos') as $value){
+                            $video_path = $this->saveImage($value, 'attachments/videos/invoice/'.$invoices->id .'/'. $Attachment->id);
+                            // insert in ExpenseMedia
+                            $image = new AttachmentVideo();
+                            $image->attachment_id = $Attachment->id;
+                            $image->video_path = $video_path;
+                            $image->save();
+                        }
+                    }
+
+                    // insert img
+                    if ($request->hasfile('images')) {
+                        foreach ($request->file('images') as $value){
+                            $image_path = $this->saveImage($value, 'attachments/images/invoice/'.$invoices->id .'/'. $Attachment->id);
+                            // insert in ExpenseMedia
+                            $image = new AttachmentImage();
+                            $image->attachment_id = $Attachment->id;
+                            $image->image_path = $image_path;
+                            $image->save();
+                        }
+                    }
+
+                    // insert img
+                    if ($request->hasfile('documents')) {
+                        foreach ($request->file('documents') as $value){
+                            $document_path = $this->saveImage($value, 'attachments/documents/invoice/'.$invoices->id .'/'. $Attachment->id);
+                            // insert in ExpenseMedia
+                            $image = new AttachmentDocument();
+                            $image->attachment_id = $Attachment->id;
+                            $image->document = $document_path;
+                            $image->save();
+                        }
+                    }
+                }
+
+                DB::commit();  // insert data
+                $attachments= $invoices->attachments()->first();
+                if(!$attachments){
+                    return response()->json([
+                        'message' => 'updated successfully',
+                        'invoices' => $invoices,
+                        'attachments'=>[],
+                    ], 201);
+                }else{
+                    return response()->json([
+                        'message' => 'updated successfully',
+                        'invoices' => $invoices,
+                        'attachments'=>new AttachmentResource($attachments),
+                    ],201);
+                }
+            }else{
+                return response()->json([
+                    'status' => false,
+                    'data' => [],
+                    'message' => 'Not Found Id',
+                ],502);
             }
-            return response()->json([
-                'status' => true,
-                'data' => $invoices,
-                'message' => 'Invoices Information Updated Successfully',
-            ]);
-        }else{
+        }catch (\Exception $e) {
+            DB::rollback();
             return response()->json([
                 'status' => false,
-                'data' => [],
-                'message' => 'Not Found Id',
+                'en' => 'Error System',
+                'ar' => 'يوجد خطأ بالنظام',
+                'error'=>$e->getMessage()
             ],502);
         }
+
     }
 
     public function show($id)
     {
-        $invoice = Invoice::with('client','items')->find($id);
+        $invoice = Invoice::with('client','items','paymentschedules')->find($id);
         if (!$invoice) {
             return response()->json([
                 'status' => false,
@@ -239,6 +301,7 @@ class InvoiceController extends Controller
 
         $this->deleteFile('invoices', $id);
         $invoice->items()->detach();
+        $invoice->paymentschedules()->detach();
         $invoice->delete();
         Invoice::where('id', $id)->delete();
         return response()->json([
