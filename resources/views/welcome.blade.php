@@ -20,10 +20,12 @@
             }
         </style>
     </head>
-    <a href="http://127.0.0.1:8000/laravel-signature-pad" style="text-align: center;font-size: 40px;color: red">signature</a>
-    <br>
-    <a href="http://127.0.0.1:8000/payment" style="text-align: center;font-size: 40px;color: green">Paypal</a>
+
     <body class="antialiased">
+
+    <a href="{{route('laravel_signature_pad_client')}}" style="text-align: center;font-size: 40px;color: red">signature to client</a>
+    <br>
+    <a href="{{route('paypal_form')}}" style="text-align: center;font-size: 40px;color: green">Paypal</a>
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
             @if (Route::has('login'))
                 <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">

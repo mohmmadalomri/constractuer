@@ -40,7 +40,9 @@ class TeamController extends Controller
 
 //        $data['employee_id'] = $request->employee_id;
         $team = Team::create($data);
-        if ($request->hasfile('photo')) {
+        $team->jobs()->syncWithoutDetaching($request->input('job_id'));
+
+            if ($request->hasfile('photo')) {
             $team_image = $this->saveImage($request->photo, 'attachments/teams/'.$team->id);
             $team->image = $team_image;
             $team->save();
@@ -155,6 +157,7 @@ class TeamController extends Controller
                     $team->image = $team_image;
                     $team->save();
                 }
+                $team->jobs()->syncWithoutDetaching($request->input('job_id'));
 
                 //important to update player
                 if(isset($request->employee_id)) {
@@ -259,8 +262,8 @@ class TeamController extends Controller
 
         $this->deleteFile('teams',$id);
         $team->employees()->detach($id);
+        $team->jobs()->detach($id);
         $team->delete();
-
         return response()->json([
             'status' => true,
             'message' => 'team Information deleted Successfully',

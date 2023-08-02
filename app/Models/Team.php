@@ -9,8 +9,6 @@ class Team extends Model
 {
     use HasFactory;
 
-
-
     public $guarded = [];
 
     public function supervisor()
@@ -28,10 +26,14 @@ class Team extends Model
         $this->hasMany(Task::class);
     }
 
-
     public function employees()
     {
         return $this->belongsToMany(Employee::class, 'teams_employees', 'team_id', 'employee_id');
+    }
+
+    public function jobs()
+    {
+        return $this->belongsToMany(Job::class, 'jobs_teams', 'team_id', 'job_id');
     }
 
     public function attachments()

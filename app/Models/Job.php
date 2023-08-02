@@ -22,14 +22,13 @@ class Job extends Model
 
     public function items()
     {
-        return $this->belongsToMany(Item::class, 'jobs_items', 'job_id', 'item_id');
+        return $this->belongsToMany(Item::class, 'items_jobs', 'job_id', 'item_id');
     }
-
-
     public function teams()
     {
-        return $this->belongsToMany(Team::class, 'jobs_teams', 'jobs_id', 'team_id');
+        return $this->belongsToMany(Team::class, 'jobs_teams', 'job_id', 'team_id');
     }
+
 
 
 

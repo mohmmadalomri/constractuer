@@ -28,7 +28,6 @@ class CreateRequestsTable extends Migration
             $table->string('request_adress');
             $table->timestamp('booking_request');
             $table->string('notes');
-            $table->foreignId('item_id')->references('id')->on('items');
             $table->decimal('service_price', 8, 2)->nullable();
             $table->string('status')->default(0)->nullable();#in_progress,#canceled,#completed,#not_approved
 

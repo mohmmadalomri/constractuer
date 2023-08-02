@@ -45,7 +45,6 @@ class QuoteController extends Controller
             $data['status'] = $request->status;
             $data['paymentSchedule_id'] = $request->paymentSchedule_id;
             $data['discount_id'] = $request->discount_id;
-            $data['item_id'] = $request->item_id;
             $data['company_id'] = $request->company_id;
             $data['client_id'] = $request->client_id;
             $data['signature_id'] = $request->signature_id;
@@ -56,6 +55,8 @@ class QuoteController extends Controller
                 $quote->image = $quote_image;
                 $quote->save();
             }
+            $quote->items()->syncWithoutDetaching($request->input('item_id'));
+
             $users=User::where('id','!=',auth()->user()->id)->get();
             $user_create=auth()->user()->name;
             Notification::send($users,new QuoteNotification($quote->id,$user_create,$request->title));
@@ -123,12 +124,7 @@ class QuoteController extends Controller
             ],201);
         }
     }
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function show($id)
     {
         $quote = Quote::find($id);
@@ -224,6 +220,7 @@ class QuoteController extends Controller
             $id_attachment->delete();
         }
         $this->deleteFile('quote', $id);
+        $Quote->items()->detach($id);
         $Quote->delete();
         Quote::where('id', $id)->delete();
         return response()->json([

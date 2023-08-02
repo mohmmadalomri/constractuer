@@ -21,7 +21,7 @@ class ExpenseController extends Controller
 
     public function show($id)
     {
-        $expense = Expense::with('clint')->find($id);
+        $expense = Expense::with('client')->find($id);
         if (!$expense){
             return response()->json([
                 'status' => false,

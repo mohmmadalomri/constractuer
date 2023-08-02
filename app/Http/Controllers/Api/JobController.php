@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\StorejobRequest;
 use App\Http\Requests\UpdatejobRequest;
@@ -22,7 +22,6 @@ class JobController extends Controller
 
     public function store(Request $request)
     {
-
         $data['client_id'] = $request->client_id;
         $data['title'] = $request->title;
         $data['instruction'] = $request->instruction;
@@ -33,22 +32,19 @@ class JobController extends Controller
         $data['subtotal'] = $request->subtotal;
         $data['arrival_window'] = $request->arrival_window;
         $data['company_id'] = $request->company_id;
-
         $data['project_id'] = $request->project_id;
-        $data['team_id'] = $request->team_id;
         $data['employee_id'] = $request->employee_id;
-        $data['item_id'] = $request->item_id;
         $data['total_value'] = $request->total_value;
         $data['total_expenses'] = $request->total_expenses;
         $data['total_salaries'] = $request->total_salaries;
         $data['in_progress'] = $request->in_progress;
-
-
         $jobs = Job::create($data);
+        $jobs->items()->syncWithoutDetaching($request->input('item_id'));
+        $jobs->teams()->syncWithoutDetaching($request->input('team_id'));
         return response()->json([
             'status' => true,
             'date' => $jobs,
-            'message' => 'Job Information Added Successfully',
+            'message' =>'Job Information Added Successfully',
         ]);
     }
 
@@ -63,7 +59,6 @@ class JobController extends Controller
     {
         $job = Job::findOrFail($id);
         if ($job) {
-
             $data['client_id'] = $request->client_id ? $request->client_id : $job->client_id;
             $data['title'] = $request->title ? $request->title : $job->title;
             $data['instruction'] = $request->instruction ? $request->instruction : $job->instruction;
@@ -74,32 +69,32 @@ class JobController extends Controller
             $data['subtotal'] = $request->subtotal ? $request->subtotal : $job->subtotal;
             $data['arrival_window'] = $request->arrival_window ? $request->arrival_window : $job->arrival_window;
             $data['company_id'] = $request->company_id ? $request->company_id : $job->company_id;
-
-
             $data['project_id'] = $request->project_id ? $request->project_id : $job->project_id;
-            $data['team_id'] = $request->team_id ? $request->team_id : $job->team_id;
             $data['employee_id'] = $request->employee_id ? $request->employee_id : $job->employee_id;
-            $data['item_id'] = $request->item_id ? $request->item_id : $job->item_id;
             $data['total_value'] = $request->total_value ? $request->total_value : $job->total_value;
             $data['total_expenses'] = $request->total_expenses ? $request->total_expenses : $job->total_expenses;
             $data['total_salaries'] = $request->total_salaries ? $request->total_salaries : $job->total_salaries;
             $data['in_progress'] = $request->in_progress ? $request->in_progress : $job->in_progress;
-
             $job->update($data);
-            return response()->json([
-                'status' => true,
-                'data' => $job,
-                'message' => 'invoices Information Updated Successfully',
-            ]);
+            $job->items()->syncWithoutDetaching($request->input('item_id'));
+            $job->teams()->syncWithoutDetaching($request->input('team_id'));
 
         }
-
+        return response()->json([
+            'status' => true,
+            'data' => $job,
+            'message' => 'invoices Information Updated Successfully',
+        ]);
 
     }
 
     public function destroy($id)
     {
-        Job::find($id)->delete();
+        $Job=Job::find($id);
+        $Job->items()->detach($id);
+        $Job->teams()->detach($id);
+
+        $Job->delete();
         return response()->json([
             'status' => true,
             'message' => 'job Information deleted Successfully',

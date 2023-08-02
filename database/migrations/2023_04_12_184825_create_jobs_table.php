@@ -27,9 +27,8 @@ class CreateJobsTable extends Migration
             $table->foreignId('company_id')->references('id')->on('companies');
 
             $table->foreignId('project_id')->references('id')->on('projects');
-            $table->foreignId('team_id')->references('id')->on('teams');
+//            $table->foreignId('team_id')->references('id')->on('teams');
             $table->foreignId('employee_id')->references('id')->on('employees');
-            $table->foreignId('item_id')->references('id')->on('items');
             $table->decimal('total_value', 8, 2)->nullable();
             $table->decimal('total_expenses', 8, 2)->nullable();
             $table->decimal('total_salaries', 8, 2)->nullable();

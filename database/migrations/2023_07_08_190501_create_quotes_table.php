@@ -29,7 +29,6 @@ class CreateQuotesTable extends Migration
 
             $table->foreignId('client_id')->references('id')->on('clients');
 
-            $table->foreignId('item_id')->references('id')->on('items');
 
             $table->bigInteger('paymentSchedule_id')->unsigned()->nullable();
             $table->foreign('paymentSchedule_id')->references('id')->on('paymentschedules')->onDelete('cascade');

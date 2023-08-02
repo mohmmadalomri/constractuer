@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\PaypalController;
+use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\SignaturePadController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,13 +23,14 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('laravel-signature-pad', [SignaturePadController::class, 'index']);
+Route::get('laravel-signature-pad', [SignaturePadController::class, 'index'])->name('laravel_signature_pad_client');
 Route::get('laravel-signature-pad-company', [SignaturePadController::class, 'index_company']);
 Route::post('laravel-signature-pad', [SignaturePadController::class, 'store']);
 
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';
 
-
-Route::get('/payment', [PaypalController::class, 'payment']);
-Route::get('/cancel', [PaypalController::class, 'cancel']);
-Route::get('/payment/success', [PaypalController::class, 'success']);
+/* PayPal */
+Route::get('paypal/form', [PaypalController::class, 'form'])->name('paypal_form');
+Route::post('paypal/payment', [PaypalController::class, 'payment'])->name('paypal');
+Route::get('paypal/success', [PaypalController::class, 'success'])->name('paypal_success');
+Route::get('paypal/cancel', [PaypalController::class, 'cancel'])->name('paypal_cancel');

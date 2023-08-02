@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequestRequest;
-use App\Http\Requests\UpdateRequestRequest;
-use App\Models\Booking_date;
-use App\Models\Request;
+use App\Models\RequestModel;
 use App\Models\User;
 use App\Notifications\RequestNotification;
+use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 
 class RequsetsController extends Controller
@@ -17,26 +19,54 @@ class RequsetsController extends Controller
 
     public function index()
     {
-        $requests = Request::with('client', 'team', 'company')->get();
+        $requests = RequestModel::with('client', 'team', 'company','items')->get();
         return response()->json([
-            'requests' => $requests
-        ], 200);
+            'status' => true,
+            'requests' => $requests,
+//            'Items' => RequestModel::with('items')->get()
+        ]);
     }
 
     public function show($id)
     {
-        $request = Request::with('client', 'team', 'company')->find($id);
+        try {
+            $request = RequestModel::with('client', 'team', 'company','items')->find($id);
+         }catch (\Exception $exception){
+            return response()->json([
+            'message' => 'Error System',
+            'status' => false,
+            'error' => $exception->validator->errors()->toArray()
+            ],404);
+         }
         return response()->json([
+            'status' => true,
             'request' => $request
-        ], 200);
+        ]);
     }
 
-    public function store(StoreRequestRequest $request)
+    public function store(Request $request)
     {
-//        return $request;
-        $requestData = $request->all();
-        $newRequest = Request::create($requestData);
-        $requestId = $newRequest->id;
+        try {
+            $data=$request->validate([
+                'title' => 'string',
+                'instruction' => 'string',
+                'day' => 'string',
+                'start_time' => 'string',
+                'end_time' => 'string',
+                'request_adress' => 'string',
+                'booking_request' => 'string',
+                'notes' => 'string',
+                'client_id' => 'required|integer',
+                'team_id' => 'required|integer',
+                'company_id' => 'required|integer',
+                'project_id' => 'required|integer',
+                'task_id' => 'required|integer',
+//                'item_id' => 'required|integer',
+                'service_price' => '',
+                'status' => 'integer',
+            ]);
+            $newRequest=RequestModel::create($data);
+            $newRequest->items()->syncWithoutDetaching($request->input('item_id'));
 
 //        $dates = $request->input('booking_request');
 //        foreach ($dates as $date) {
@@ -46,51 +76,86 @@ class RequsetsController extends Controller
 //            ]);
 //        }
 
-        $users=User::where('id','!=',auth()->user()->id)->get();
-        $user_create=auth()->user()->name;
-        Notification::send($users,new RequestNotification($newRequest->id,$user_create,$request->title));
+            #notification
+//        $users=User::where('id','!=',auth()->user()->id)->get();
+//        $user_create=auth()->user()->name;
+//        Notification::send($users,new RequestNotification($newRequest->id,$user_create,$request->title));
 
+        }catch (ValidationException $exception) {
+            // Validation failed, return error response with validation errors
+            return response()->json([
+                'message' => 'Validation failed.',
+                'status' => false,
+                'errors' => $exception->validator->getMessageBag(),
+            ], 422);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => 'Error storing the request.',
+                'status' => false,
+                'error' => $exception->getMessage(),
+            ], 500); // HTTP status code 500 indicates Internal Server Error
+        }
 
         return response()->json([
             'status' => true,
             'date' => $newRequest,
             'message' => 'Request Information Added Successfully',
-        ]);
+        ],201);
 
     }
 
 
-    public function update(StoreRequestRequest $request, $id)
+    public function update(Request $request, $id)
     {
-        $requests = Request::findOrFail($id);
-        if ($requests) {
-            $data['title'] = $request->title ? $request->title : $requests->title;
-            $data['start_time'] = $request->start_time ? $request->start_time : $requests->start_time;
-            $data['end_time'] = $request->end_time ? $request->end_time : $requests->end_time;
-            $data['team_id'] = $request->team_id ? $request->team_id : $requests->team_id;
-            $data['day'] = $request->day ? $request->day : $requests->day;
-            $data['status'] = $request->status ? $request->status : $requests->status;
-            $data['project_id'] = $request->project_id ? $request->project_id : $requests->project_id;
-            $data['task_id'] = $request->task_id ? $request->task_id : $requests->task_id;
-//            $data['booking_request'] = $request->booking_request ? $request->booking_request : $requests->booking_request;
-            $data['notes'] = $request->notes ? $request->notes : $requests->notes;
-            $data['item_id'] = $request->item_id ? $request->item_id : $requests->item_id;
-            $data['service_price'] = $request->service_price ? $request->service_price : $requests->service_price;
-
-
-            $requests->update($data);
-            return response()->json([
-                'status' => true,
-                'data' => $requests,
-                'message' => 'Request Information Updated Successfully',
+        try {
+            $newRequest = RequestModel::findOrFail($id);
+            $data=$request->validate([
+                'title' => 'string',
+                'instruction' => 'string',
+                'day' => 'string',
+                'start_time' => 'string',
+                'end_time' => 'string',
+                'request_adress' => 'string',
+                'booking_request' => 'string',
+                'notes' => 'string',
+                'client_id' => 'integer',
+                'team_id' => 'integer',
+                'company_id' => 'integer',
+                'project_id' => 'integer',
+                'task_id' => 'integer',
+                'service_price' => '',
+                'status' => 'integer',
             ]);
+            $newRequest->update($data);
+
+        }catch (ValidationException $exception) {
+            // Validation failed, return error response with validation errors
+            return response()->json([
+                'message' => 'Validation failed.',
+                'status' => false,
+                'errors' => $exception->validator->getMessageBag(),
+            ], 422);
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => 'Error storing the request.',
+                'status' => false,
+                'error' => $exception->getMessage(),
+            ], 500); // HTTP status code 500 indicates Internal Server Error
         }
+
+        return response()->json([
+            'status' => true,
+            'date' => $newRequest,
+            'message' => 'Request Information updated Successfully',
+        ]);
     }
 
 
     public function destroy($id)
     {
-        Request::find($id)->delete();
+        $requests=RequestModel::find($id);
+        $requests->items()->detach($id);
+        $requests->delete();
         return response()->json([
             'status' => true,
             'message' => 'Request Information deleted Successfully',

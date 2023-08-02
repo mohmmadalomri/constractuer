@@ -55,6 +55,7 @@ class InvoiceController extends Controller
                 $invoices->image = $invoices_image;
                 $invoices->save();
             }
+            $invoices->items()->syncWithoutDetaching($request->input('item_id'));
 
             $users=User::where('id','!=',auth()->user()->id)->get();
             $user_create=auth()->user()->name;
@@ -223,7 +224,9 @@ class InvoiceController extends Controller
             $this->deleteFile('video/invoice',$id.'/'.$id_attachment->id);
             $id_attachment->delete();
         }
+
         $this->deleteFile('invoices', $id);
+        $invoice->items()->detach($id);
         $invoice->delete();
         Invoice::where('id', $id)->delete();
         return response()->json([

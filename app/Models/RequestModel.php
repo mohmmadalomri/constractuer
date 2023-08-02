@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Request extends Model
+class RequestModel extends Model
 {
     use HasFactory;
-
+    protected $table='requests';
     protected $guarded = [];
 
     public function client()
@@ -37,9 +37,10 @@ class Request extends Model
     {
         return $this->hasMany(Task::class);
     }
+
     public function items()
     {
-        return $this->hasMany(Item::class);
+        return $this->belongsToMany(Item::class, 'items_requests', 'request_id', 'item_id');
     }
     public function bookingDates()
     {
