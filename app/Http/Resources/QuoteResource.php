@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Http\Resources\invoice\AttachmentResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class InvoiceResource extends JsonResource
+class QuoteResource extends JsonResource
 {
 
     public function toArray($request)
@@ -14,20 +14,18 @@ class InvoiceResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'issued_date' => $this->issued_date,
-            'due_date' => $this->due_date,
-            'payment' => $this->payment,
-            'message' => $this->message,
-            'subtotal' => $this->subtotal,
-            'payment_due' => $this->payment_due,
+            'offer_price_massage' => $this->offer_price_massage,
             'total' => $this->total,
+            'message' => $this->message,
+            'date' => $this->date,
+            'note' => $this->note,
             'status' => $this->status,
             'company' => $this->company,
             'client' => $this->client,
-            'signature' => $this->signature,
+            'discount' => $this->discount,
             'tax' => $this->tax,
+            'signature' => $this->signature,
             'items' => $this->items,
-//            'paymentschedules' => $this->paymentschedules,
             'attachments'=>AttachmentResource::collection($this->attachments),
 
         ];

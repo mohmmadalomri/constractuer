@@ -13,7 +13,7 @@ class Quote extends Model
 
     public function client()
     {
-        $this->belongsTo(Client::class, 'client_id', 'id');
+        return $this->belongsTo(Client::class, 'client_id', 'id');
     }
 
     public function items()
@@ -28,11 +28,11 @@ class Quote extends Model
 
     public function company()
     {
-        $this->belongsTo(Company::class, 'company_id', 'id');
+        return  $this->belongsTo(Company::class, 'company_id', 'id');
     }
 
     public function attachments()
     {
-        return $this->belongsTo(Attachment::class, 'id','quote_id');
+        return $this->hasMany(Attachment::class, 'quote_id','id');
     }
 }

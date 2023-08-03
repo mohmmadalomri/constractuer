@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Requests\StoreQuoteRequest;
-use App\Http\Requests\UpdateQuoteRequest;
 use App\Http\Resources\quote\AttachmentResource;
+use App\Http\Resources\QuoteResource;
 use App\Http\Traits\ImageTrait;
 use App\Models\Attachment;
 use App\Models\AttachmentDocument;
@@ -15,7 +14,6 @@ use App\Models\AttachmentVideo;
 use App\Models\Quote;
 use App\Models\User;
 use App\Notifications\QuoteNotification;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification;
 
@@ -25,11 +23,10 @@ class QuoteController extends Controller
 
     public function index()
     {
-        $quotes = Quote::all();
         return response()->json([
-            'attachments'=>AttachmentResource::collection(Attachment::where('quote_id','!=',null)->get()),
-            'quotes' => $quotes
-        ], 200);
+            'status'=>true,
+            'teams' => QuoteResource::collection(Quote::get())
+        ]);
     }
 
     public function store(StoreQuoteRequest $request)
@@ -115,20 +112,11 @@ class QuoteController extends Controller
                 'error'=>$e->getMessage()
             ],502);
         }
-        $attachments= $quote->attachments()->first();
-        if(!$attachments){
-            return response()->json([
-                'message' => 'created successfully',
-                'quote' => $quote,
-                'attachments'=>[],
-            ], 201);
-        }else{
-            return response()->json([
-                'message' => 'created successfully',
-                'quote' => $quote,
-                'attachments'=>new AttachmentResource($attachments),
-            ],201);
-        }
+        return response()->json([
+            'status'=>true,
+            'message' => 'created successfully',
+            'Quote' => new QuoteResource(Quote::find($quote->id))
+        ],201);
     }
 
     public function show($id)
@@ -140,20 +128,11 @@ class QuoteController extends Controller
                 'message' => 'not found id',
             ],502);
         }
-        $attachments= $quote->attachments()->first();
-        if(!$attachments){
-            return response()->json([
-                'message' => 'Show by Id successfully',
-                'quote' => $quote,
-                'attachments'=>[],
-            ], 201);
-        }else{
-            return response()->json([
-                'message' => 'Show by Id successfully',
-                'quote' => $quote,
-                'attachments'=>new AttachmentResource($attachments),
-            ],201);
-        }
+        return response()->json([
+            'status'=>true,
+            'message' => 'Show successfully',
+            'Quote' => new QuoteResource(Quote::find($id))
+        ],201);
     }
 
     public function update(StoreQuoteRequest $request, $id)
@@ -235,9 +214,9 @@ class QuoteController extends Controller
 
                 DB::commit();  // insert data
                 return response()->json([
-                    'status' => true,
-                    'date' => $quote,
-                    'message' => 'Quote  Update Successfully',
+                    'status'=>true,
+                    'message' => 'updated successfully',
+                    'Quote' => new QuoteResource(Quote::find($quote->id))
                 ],201);
             }else{
                 return response()->json([

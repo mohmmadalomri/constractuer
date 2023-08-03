@@ -38,8 +38,9 @@ class Invoice extends Model
     {
         return $this->belongsToMany(InvoicesPaymentschedule::class, 'invoices_paymentschedules', 'invoice_id', 'paymentSchedule_id');
     }
+
     public function attachments()
     {
-        return $this->belongsTo(Attachment::class, 'id','invoice_id');
+        return $this->hasMany(Attachment::class, 'invoice_id');
     }
 }

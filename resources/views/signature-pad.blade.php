@@ -70,5 +70,18 @@
         $("#signature64").val('');
     });
 </script>
+{{--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>--}}
+{{--<script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script>--}}
+{{--<link rel="stylesheet" type="text/css" href="http://keith-wood.name/css/jquery.signature.css">--}}
+{{--<script type="text/javascript">--}}
+{{--    $(document).ready(function() {--}}
+{{--        var signaturePad = $('#signaturePad').signature({syncField: '#signature64', syncFormat: 'PNG'});--}}
+{{--        $('#clear').click(function(e) {--}}
+{{--            e.preventDefault();--}}
+{{--            signaturePad.signature('clear');--}}
+{{--            $("#signature64").val('');--}}
+{{--        });--}}
+{{--    });--}}
+{{--</script>--}}
 </body>
 </html>

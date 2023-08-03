@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTeamRequest;
 use App\Http\Resources\team\AttachmentResource;
+use App\Http\Resources\TeamResource;
 use App\Http\Traits\ImageTrait;
 use App\Models\Attachment;
 use App\Models\AttachmentDocument;
@@ -13,7 +14,6 @@ use App\Models\AttachmentVideo;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\File;
 
 class TeamController extends Controller
 {
@@ -21,11 +21,9 @@ class TeamController extends Controller
 
     public function index()
     {
-        $teams = Team::with('supervisor', 'projects')->get();
         return response()->json([
-            'status'=>200,
-            'attachments'=>AttachmentResource::collection(Attachment::where('team_id','!=',null)->get()),
-            'teams' => $teams
+            'status'=>true,
+            'teams' => TeamResource::collection(Team::get())
         ]);
     }
 
@@ -104,20 +102,11 @@ class TeamController extends Controller
             ],502);
         }
 
-        $attachments= $team->attachments()->first();
-        if(!$attachments){
-            return response()->json([
-                'message' => 'created successfully',
-                'team' => $team,
-                'attachments'=>[],
-            ], 201);
-        }else{
-            return response()->json([
-                'message' => 'created successfully',
-                'team' => $team,
-                'attachments'=>new AttachmentResource($attachments),
-            ],201);
-        }
+        return response()->json([
+            'status' => true,
+            'message' => 'created successfully',
+            'teams' => new TeamResource(Team::find($team->id))
+        ], 201);
     }
 
     public function show($id)
@@ -129,18 +118,11 @@ class TeamController extends Controller
                 'message' => 'not found team',
             ]);
         }
-        $attachments= $team->attachments()->first();
-        if(!$attachments){
-            return response()->json([
-                'team' => $team,
-                'attachments'=>[],
-            ], 200);
-        }else{
-            return response()->json([
-                'team' => $team,
-                'attachments'=>new AttachmentResource($attachments),
-            ]);
-        }
+        return response()->json([
+            'status'=>true,
+            'teams' => new TeamResource(Team::find($id))
+        ]);
+
     }
 
 
@@ -228,9 +210,9 @@ class TeamController extends Controller
         }
         return response()->json([
             'status' => true,
-            'date' => $team,
-            'message' => 'Team  Update Successfully',
-        ]);
+            'message' => 'created successfully',
+            'teams' => new TeamResource(Team::find($id))
+        ], 201);
 
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreInvoiceRequest;
 use App\Http\Resources\invoice\AttachmentResource;
+use App\Http\Resources\InvoiceResource;
 use App\Http\Traits\ImageTrait;
 use App\Models\Attachment;
 use App\Models\AttachmentDocument;
@@ -22,10 +23,9 @@ class InvoiceController extends Controller
 
     public function index()
     {
-        $invoices = Invoice::with('client', 'items','company','tax','signature','paymentschedules')->get();
         return response()->json([
-            'attachments'=>AttachmentResource::collection(Attachment::where('invoice_id','!=',null)->get()),
-            'invoices' => $invoices,
+            'status'=>true,
+            'teams' => InvoiceResource::collection(Invoice::get())
         ]);
     }
 
@@ -43,7 +43,6 @@ class InvoiceController extends Controller
             $data['payment_due'] = $request->payment_due;
             $data['status'] = $request->status;
             $data['tax_id'] = $request->tax_id;
-//            $data['paymentSchedule_id'] = $request->paymentSchedule_id;
             $data['signature_id'] = $request->signature_id;
             $data['request_id'] = $request->request_id;
             $data['company_id'] = $request->company_id;
@@ -115,24 +114,11 @@ class InvoiceController extends Controller
             ],502);
         }
 
-        $attachments= $invoices->attachments()->first();
-        if(!$attachments){
-            return response()->json([
-                'message' => 'created successfully',
-                'invoices' => $invoices,
-                'attachments'=>[],
-            ], 201);
-        }else{
-            return response()->json([
-                'message' => 'created successfully',
-                'invoices' => $invoices,
-                'attachments'=>new AttachmentResource($attachments),
-            ],201);
-        }
-
-
-
-
+        return response()->json([
+            'status'=>true,
+            'message' => 'created successfully',
+            'invoice' => new InvoiceResource(Invoice::find($invoices->id))
+        ],201);
     }
 
     public function update(StoreInvoiceRequest $request, $id)
@@ -152,7 +138,6 @@ class InvoiceController extends Controller
                 $data['payment_due'] = $request->payment_due;
                 $data['status'] = $request->status;
                 $data['tax_id'] = $request->tax_id;
-//            $data['paymentSchedule_id'] = $request->paymentSchedule_id;
                 $data['signature_id'] = $request->signature_id;
                 $data['request_id'] = $request->request_id;
                 $data['company_id'] = $request->company_id;
@@ -206,20 +191,11 @@ class InvoiceController extends Controller
                 }
 
                 DB::commit();  // insert data
-                $attachments= $invoices->attachments()->first();
-                if(!$attachments){
-                    return response()->json([
-                        'message' => 'updated successfully',
-                        'invoices' => $invoices,
-                        'attachments'=>[],
-                    ], 201);
-                }else{
-                    return response()->json([
-                        'message' => 'updated successfully',
-                        'invoices' => $invoices,
-                        'attachments'=>new AttachmentResource($attachments),
-                    ],201);
-                }
+                return response()->json([
+                    'status'=>true,
+                    'message' => 'Updated successfully',
+                    'invoice' => new InvoiceResource(Invoice::find($id))
+                ]);
             }else{
                 return response()->json([
                     'status' => false,
@@ -241,27 +217,17 @@ class InvoiceController extends Controller
 
     public function show($id)
     {
-        $invoice = Invoice::with('client','items','paymentschedules')->find($id);
+        $invoice = Invoice::find($id);
         if (!$invoice) {
             return response()->json([
                 'status' => false,
                 'message' => 'not found id',
             ],502);
         }
-        $attachments= $invoice->attachments()->first();
-        if(!$attachments){
-            return response()->json([
-                'message' => 'Show by Id successfully',
-                'invoice' => $invoice,
-                'attachments'=>[],
-            ], 201);
-        }else{
-            return response()->json([
-                'message' => 'Show by Id successfully',
-                'invoice' => $invoice,
-                'attachments'=>new AttachmentResource($attachments),
-            ],201);
-        }
+        return response()->json([
+            'status'=>true,
+            'invoice' => new InvoiceResource(Invoice::find($id))
+        ]);
 
     }
 
@@ -298,7 +264,6 @@ class InvoiceController extends Controller
             }
             $id_attachment->delete();
         }
-
         $this->deleteFile('invoices', $id);
         $invoice->items()->detach();
         $invoice->paymentschedules()->detach();
@@ -307,6 +272,7 @@ class InvoiceController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Invoices Information deleted Successfully',
+            'data'=>[]
         ]);
     }
 

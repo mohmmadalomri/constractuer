@@ -15,7 +15,10 @@ class Team extends Model
     {
         return $this->belongsTo(User::class, 'supervisor_id', 'id');
     }
-
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id');
+    }
     public function projects()
     {
         return $this->belongsToMany(Project::class, 'projects_teams', 'team_id', 'project_id');
@@ -38,7 +41,8 @@ class Team extends Model
 
     public function attachments()
     {
-        return $this->belongsTo(Attachment::class, 'id','team_id');
+        return $this->hasMany(Attachment::class, 'team_id');
     }
+
 
 }
