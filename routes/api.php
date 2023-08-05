@@ -59,6 +59,9 @@ Route::group(['prefix' => 'v1', 'namspace' => 'Api'], function () {
     Route::get('/notifications/Markallread', [NotificationController::class, 'Markallread']);
     Route::get('/notifications', [NotificationController::class, 'getNotifications']);
 
+    Route::get('signature_client_show_all', [\App\Http\Controllers\SignaturePadController::class, 'signature_client_show_all']);
+    Route::get('signature_company_show_all', [\App\Http\Controllers\SignaturePadController::class, 'signature_company_show_all']);
+//    Route::post('signature_client_show_id/{id}', [\App\Http\Controllers\SignaturePadController::class, 'signature_client_show_id']);
 
     require 'API\user.php';
 

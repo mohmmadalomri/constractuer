@@ -10,6 +10,10 @@ class Employee extends Model
     use HasFactory;
     protected $guarded = [];
 
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class);

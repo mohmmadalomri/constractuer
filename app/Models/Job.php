@@ -12,12 +12,12 @@ class Job extends Model
     protected $guarded = [];
     public function clients()
     {
-        $this->belongsTo(Client::class, 'client_id', 'id');
+       return $this->belongsTo(Client::class, 'client_id', 'id');
     }
 
     public function companies()
     {
-        $this->belongsTo(Company::class, 'company_id', 'id');
+      return  $this->belongsTo(Company::class, 'company_id', 'id');
     }
 
     public function items()

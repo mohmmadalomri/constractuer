@@ -27,7 +27,7 @@ class CreateProjectsTable extends Migration
             $table->date('end_time');
             $table->enum('status', ['in_progress', 'Cancel ', 'finish', ' reject'])->default('in_progress');
             $table->foreignId('supervisor_id')->references('id')->on('users');
-            $table->foreignId('team_id')->references('id')->on('teams');
+//            $table->foreignId('team_id')->references('id')->on('teams');
             $table->foreignId('company_id')->references('id')->on('companies');
             $table->foreignId('client_id')->references('id')->on('clients');
             $table->timestamps();

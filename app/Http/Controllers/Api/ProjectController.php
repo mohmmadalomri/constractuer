@@ -11,64 +11,51 @@ use App\Models\Project;
 class ProjectController extends Controller
 {
     use ImageTrait;
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function index()
     {
 
         $projects = Project::with('company', 'supervisor', 'client', 'teams')->get();
-
+        $professionWithUrls = $projects->map(function ($project) {
+            $project->image = url('attachments/projects/'.$project->id .'/'. $project->image);
+            return $project;
+        });
         return response()->json([
-            'projects' => $projects,
+            'projects' => $professionWithUrls,
         ], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function store(StoreProjectRequest $request)
     {
-        $Project = Project::create($request->all());
+        $project = project::create($request->all());
+        $project->teams()->syncWithoutDetaching($request->input('team_id'));
+
         if ($request->hasfile('image')) {
-            $Image_dir=$this->saveImage($request->image, 'attachments/projects/'.$Project->id);
-            $Project->image = $Image_dir;
-            $Project->save();
+            $Image_dir=$this->saveImage($request->image, 'attachments/projects/'.$project->id);
+            $project->image = $Image_dir;
+            $project->save();
         }
+        $project->image = url('attachments/projects/'.$project->id .'/'. $project->image);
         return response()->json([
             'status' => true,
-            'data' => $Project,
+            'data' => $project,
             'message' => 'projects Information Added Successfully',
         ]);
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function show($id)
     {
-        $projects = Project::with('company', 'supervisor', 'client', 'teams')->find($id);
+        $project = Project::with('company', 'supervisor', 'client', 'teams')->find($id);
+        $project->image = url('attachments/projects/'.$project->id .'/'. $project->image);
         return response()->json([
-            'projects' => $projects
-        ], 200);
+            'projects' => $project
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
+
     public function update(StoreProjectRequest $request, $id)
     {
         $project = Project::find($id);
@@ -93,6 +80,8 @@ class ProjectController extends Controller
                 $project->image = $Image_dir;
                 $project->save();
             }
+            $project->image = url('attachments/projects/'.$project->id .'/'. $project->image);
+
             return response()->json([
                 'status' => true,
                 'data' => $project,
@@ -101,18 +90,18 @@ class ProjectController extends Controller
         }
     }
 
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function destroy($id)
     {
-        Project::find($id)->delete();
+        $project=  Project::find($id);
+        if (!$project){
+            return response()->json([
+                'status' => false,
+                'message' => 'not found team',
+            ]);
+        }
+        $project->teams()->detach();
         $this->deleteFile('projects',$id);
-
+        $project->delete();
         return response()->json([
             'status' => true,
             'message' => 'project Information deleted Successfully',

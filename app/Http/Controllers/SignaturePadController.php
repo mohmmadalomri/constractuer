@@ -46,5 +46,36 @@ class SignaturePadController extends Controller
 
         return back()->with('success', 'Form successfully submitted with signature');
     }
-
+    public function signature_client_show_all(){
+        $signatures=Signature::where('client_id','!=',null)->get();
+        $requestWithUrls = $signatures->map(function ($signature) {
+            $signature->signature = url('attachments/signature/'. $signature->signature);
+            return $signature;
+        });
+            return response()->json([
+                'status'=>true,
+                'message'=>'client',
+                'data'=>$requestWithUrls
+            ]);
+    }
+    public function signature_company_show_all(){
+        $signatures=Signature::where('company_id','!=',null)->get();
+        $requestWithUrls = $signatures->map(function ($signature) {
+            $signature->signature = url('attachments/signature/'. $signature->signature);
+            return $signature;
+        });
+        return response()->json([
+            'status'=>true,
+            'message'=>'company',
+            'data'=>$requestWithUrls
+        ]);
+    }
+//    public function signature_client_show_id($id){
+//        $signature=Signature::where('client_id','!=',null)->find($id);
+//        $signature->signature = url('attachments/signature/'. $signature->signature);
+//        return response()->json([
+//            'status'=>true,
+//            'data'=>$signature
+//        ]);
+//    }
 }

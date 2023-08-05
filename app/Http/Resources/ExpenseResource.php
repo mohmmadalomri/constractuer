@@ -25,13 +25,16 @@ class ExpenseResource extends JsonResource
             'job_title' => $this->job_title,
             'status' => $this->status,
             'in_progress' => $this->in_progress,
+            'image' => url('attachments/expense/'.$this->id.'/'.$this->image),
+
             'client' => $this->client,
-            'company_id' => $this->company,
-            'employee_id' => $this->employee,
+            'company' => $this->Company,
+            'employee' => $this->employee,
             'team_id' => $this->team,
             'job_id' => $this->job,
-            'project_id' => $this->project,
-            'task_id' => $this->task,
+            'project' => $this->project,
+            'task' => $this->task,
+
             'attachments'=>AttachmentResource::collection($this->attachments),
         ];
     }

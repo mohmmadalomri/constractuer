@@ -21,16 +21,26 @@ class RequsetsController extends Controller
     public function index()
     {
         $requests = RequestModel::with('client', 'team', 'company','items')->get();
+        $requestWithUrls = $requests->map(function ($newRequest) {
+            $newRequest->image = url('attachments/requests/'.$newRequest->id .'/'. $newRequest->image);
+            return $newRequest;
+        });
         return response()->json([
             'status' => true,
-            'requests' => $requests,
+            'requests' => $requestWithUrls,
         ]);
     }
 
     public function show($id)
     {
         try {
-            $request = RequestModel::with('client', 'team', 'company','items')->find($id);
+            $newRequest = RequestModel::with('client', 'team', 'company','items')->find($id);
+            if (!$newRequest){
+                return response()->json([
+                    'status'=>false,
+                    'message'=>'not foun id',
+                ]);
+            }
          }catch (\Exception $exception){
             return response()->json([
             'message' => 'Error System',
@@ -38,9 +48,11 @@ class RequsetsController extends Controller
             'error' => $exception->validator->errors()->toArray()
             ],404);
          }
+        $newRequest->image = url('attachments/requests/'.$newRequest->id .'/'. $newRequest->image);
+
         return response()->json([
             'status' => true,
-            'request' => $request
+            'request' => $newRequest
         ]);
     }
 
@@ -97,7 +109,7 @@ class RequsetsController extends Controller
                 'error' => $exception->getMessage(),
             ], 500); // HTTP status code 500 indicates Internal Server Error
         }
-
+        $newRequest->image = url('attachments/requests/'.$newRequest->id .'/'. $newRequest->image);
         return response()->json([
             'status' => true,
             'date' => $newRequest,
@@ -111,6 +123,12 @@ class RequsetsController extends Controller
     {
         try {
             $newRequest = RequestModel::findOrFail($id);
+            if (!$newRequest){
+                return response()->json([
+                    'status'=>false,
+                    'message'=>'not foun id',
+                ]);
+            }
             $data=$request->validate([
                 'title' => 'string',
                 'instruction' => 'nullable|string',
@@ -153,7 +171,7 @@ class RequsetsController extends Controller
                 'error' => $exception->getMessage(),
             ], 500); // HTTP status code 500 indicates Internal Server Error
         }
-
+        $newRequest->image = url('attachments/requests/'.$newRequest->id .'/'. $newRequest->image);
         return response()->json([
             'status' => true,
             'date' => $newRequest,
@@ -165,6 +183,12 @@ class RequsetsController extends Controller
     public function destroy($id)
     {
         $requests=RequestModel::find($id);
+        if (!$requests){
+            return response()->json([
+                'status'=>false,
+                'message'=>'not foun id',
+            ]);
+        }
         $requests->items()->detach($id);
         $this->deleteFile('requests',$id);
 

@@ -16,8 +16,12 @@ class EmployeeController extends Controller
     public function index()
     {
         $employees = Employee::with('user', 'profession','WeaklySchedules')->get();
+        $professionWithUrls = $employees->map(function ($employee) {
+            $employee->image = url('attachments/employees/'.$employee->id .'/'. $employee->image);
+            return $employee;
+        });
         return response()->json([
-            'employees' => $employees
+            'employees' => $professionWithUrls
         ], 200);
     }
 
@@ -78,6 +82,8 @@ class EmployeeController extends Controller
             $employee->image = $employee_image;
             $employee->save();
         }
+        $employee->image = url('attachments/employees/'.$employee->id .'/'. $employee->image);
+
         // Step 3: Save Employee Working Hours for Each Day
         $daysOfWeek = ['Sunday','Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
@@ -107,6 +113,7 @@ class EmployeeController extends Controller
     public function show($id)
     {
         $employee = Employee::with('user', 'profession','WeaklySchedules')->find($id);
+        $employee->image = url('attachments/employees/'.$employee->id .'/'. $employee->image);
         return response()->json([
             'employee' => $employee,
 
@@ -122,6 +129,7 @@ class EmployeeController extends Controller
             $data['monthly_salary'] = $request->monthly_salary ? $request->monthly_salary : $employee->monthly_salary;
 
             $employee->update($data);
+            $employee->image = url('attachments/employees/'.$employee->id .'/'. $employee->image);
             return response()->json([
                 'status' => true,
                 'message' => 'employee Information Updated Successfully',

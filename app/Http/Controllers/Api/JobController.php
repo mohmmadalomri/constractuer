@@ -13,11 +13,12 @@ class JobController extends Controller
 
     public function index()
     {
-        $jobs = Job::all();
-
+        $jobs = Job::with(['teams','clients','items'])->get();
         return response()->json([
+            'status'=>true,
+            'message'=>'successfully',
             'jops' => $jobs
-        ], 200);
+        ]);
     }
 
     public function store(Request $request)
@@ -50,7 +51,7 @@ class JobController extends Controller
 
     public function show($id)
     {
-        $job = Job::with(['project_id','client_id'])->find($id);
+        $job = Job::with(['teams','clients','items'])->find($id);
         return response()->json($job);
     }
 

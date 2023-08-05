@@ -22,7 +22,7 @@ class CompanyController extends Controller
     {
         $company = Company::with('admin')->get();
         $CompanyWithUrls = $company->map(function ($Company) {
-            $Company->logo = asset('attachments/company/'.$Company->id .'/'. $Company->logo);
+            $Company->logo = url('attachments/company/'.$Company->id .'/'. $Company->logo);
             return $Company;
         });
         return response()->json([
@@ -90,7 +90,7 @@ class CompanyController extends Controller
                 $company->logo = $logo_image;
                 $company->save();
             }
-            $company->logo = asset('attachments/company/'.$company->id .'/'. $company->logo);
+            $company->logo = url('attachments/company/'.$company->id .'/'. $company->logo);
 
             return response()->json([
                 'status' => true,
@@ -103,7 +103,7 @@ class CompanyController extends Controller
     public function show($id)
     {
         $company = Company::with('admin')->find($id);
-        $company->logo = asset('attachments/company/'.$company->id .'/'. $company->logo);
+        $company->logo = url('attachments/company/'.$company->id .'/'. $company->logo);
 
         return response()->json([
             'company' => $company

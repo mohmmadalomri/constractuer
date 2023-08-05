@@ -16,8 +16,12 @@ use ImageTrait;
     public function index()
     {
         $items = Item::all();
+        $professionWithUrls = $items->map(function ($item) {
+            $item->image = url('attachments/items/'.$item->id .'/'. $item->image);
+            return $item;
+        });
         return response()->json([
-            'items' => $items
+            'items' => $professionWithUrls
         ], 200);
     }
 
@@ -37,6 +41,8 @@ use ImageTrait;
             $item->image = $_image;
             $item->save();
         }
+        $item->image = url('attachments/items/'.$item->id .'/'. $item->image);
+
         return response()->json([
             'status' => true,
             'date' => $item,
@@ -47,14 +53,16 @@ use ImageTrait;
 
     public function show($id)
     {
-        $Item = Item::find($id);
-        if (!$Item) {
+        $item = Item::find($id);
+        if (!$item) {
             return response()->json([
                 'status' => false,
                 'message' => 'not found Item',
             ]);
         }
-        return response()->json($Item);
+        $item->image = url('attachments/items/'.$item->id .'/'. $item->image);
+
+        return response()->json($item);
     }
 
 
@@ -81,6 +89,7 @@ use ImageTrait;
             }
 
             $item->update($data);
+            $item->image = url('attachments/items/'.$item->id .'/'. $item->image);
             return response()->json([
                 'status' => true,
                 'data' => $item,

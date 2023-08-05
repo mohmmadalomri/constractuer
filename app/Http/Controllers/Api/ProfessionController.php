@@ -16,8 +16,12 @@ class ProfessionController extends Controller
     public function index()
     {
         $professions = Profession::with('company')->get();
+        $professionWithUrls = $professions->map(function ($profession) {
+            $profession->image = url('attachments/professions/'.$profession->id .'/'. $profession->image);
+            return $profession;
+        });
         return response()->json([
-            'professions' => $professions
+            'professions' => $professionWithUrls
         ]);
     }
 
@@ -44,6 +48,7 @@ class ProfessionController extends Controller
             $profession->image = $profession_image;
             $profession->save();
         }
+        $profession->image = url('attachments/professions/'.$profession->id .'/'. $profession->image);
         return response()->json([
             'status' => true,
             'message' => 'created profession successfully',
@@ -61,6 +66,8 @@ class ProfessionController extends Controller
                 'message' => 'not found profession',
             ]);
         }
+        $profession->image = url('attachments/professions/'.$profession->id .'/'. $profession->image);
+
         return response()->json([
             'profession' => $profession
         ], 200);
@@ -110,6 +117,7 @@ class ProfessionController extends Controller
             $message = 'Profession not created';
             $message_ar=' لم يتم التحديث بنجاح';
         }
+        $professions->image = url('attachments/professions/'.$professions->id .'/'. $professions->image);
         return response()->json([
             'status' => $status,
             'status_code'=>$status_code,
