@@ -16,20 +16,25 @@ class CreateRequestsTable extends Migration
         Schema::create('requests', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('instruction');
-            $table->date('day');
-            $table->time('start_time');
-            $table->time('end_time');
+            $table->string('instruction')->nullable();
+            $table->date('day')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
             $table->foreignId('client_id')->references('id')->on('clients');
             $table->foreignId('team_id')->references('id')->on('teams');
             $table->foreignId('company_id')->references('id')->on('companies');
             $table->foreignId('project_id')->references('id')->on('projects');
             $table->foreignId('task_id')->references('id')->on('tasks');
-            $table->string('request_adress');
-            $table->timestamp('booking_request');
-            $table->string('notes');
+            $table->string('request_adress')->nullable();
+            $table->timestamp('booking_request')->nullable();
+            $table->string('notes')->nullable();
             $table->decimal('service_price', 8, 2)->nullable();
             $table->string('status')->default(0)->nullable();#in_progress,#canceled,#completed,#not_approved
+
+            $table->string('image')->nullable();
+            $table->decimal('sub_total', 8, 2)->nullable();
+            $table->string('total')->nullable();
+            $table->string('service_details')->nullable();
 
 
         });

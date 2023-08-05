@@ -35,10 +35,10 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="Client">Client : <span class="text-danger">*</span></label>
-                                <select class="custom-select mr-sm-2" name="client_id">
+                                <select class="custom-select mr-sm-2" name="client_id" required>
                                     <option selected disabled>chose...</option>
                                     @foreach($clients as $client)
-                                        <option  value="{{ $client->id }}">{{ $client->first_name }}</option>
+                                        <option   value="{{ $client->id }}">{{ $client->first_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -50,7 +50,7 @@
                             <div id="signaturePad" ></div>
                             <br/>
                             <button id="clear" class="btn btn-danger btn-sm">Clear Signature</button>
-                            <textarea id="signature64" name="signed" style="display: none"></textarea>
+                            <textarea id="signature64" required name="signed" style="display: none"></textarea>
                         </div>
                         <br/>
                         <button class="btn btn-success">Save</button>
@@ -70,18 +70,6 @@
         $("#signature64").val('');
     });
 </script>
-{{--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>--}}
-{{--<script type="text/javascript" src="http://keith-wood.name/js/jquery.signature.js"></script>--}}
-{{--<link rel="stylesheet" type="text/css" href="http://keith-wood.name/css/jquery.signature.css">--}}
-{{--<script type="text/javascript">--}}
-{{--    $(document).ready(function() {--}}
-{{--        var signaturePad = $('#signaturePad').signature({syncField: '#signature64', syncFormat: 'PNG'});--}}
-{{--        $('#clear').click(function(e) {--}}
-{{--            e.preventDefault();--}}
-{{--            signaturePad.signature('clear');--}}
-{{--            $("#signature64").val('');--}}
-{{--        });--}}
-{{--    });--}}
-{{--</script>--}}
+
 </body>
 </html>

@@ -23,8 +23,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-Route::get('laravel-signature-pad', [SignaturePadController::class, 'index'])->name('laravel_signature_pad_client');
-Route::get('laravel-signature-pad-company', [SignaturePadController::class, 'index_company']);
+Route::get('laravel_signature_pad_client', [SignaturePadController::class, 'index'])->name('laravel_signature_pad_client');
+Route::get('laravel_signature_pad_company', [SignaturePadController::class, 'index_company'])->name('laravel_signature_pad_company');
 Route::post('laravel-signature-pad', [SignaturePadController::class, 'store']);
 
 //require __DIR__.'/auth.php';

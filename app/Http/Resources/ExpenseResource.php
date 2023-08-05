@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\expense\AttachmentResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ExpenseResource extends JsonResource
@@ -13,7 +14,25 @@ class ExpenseResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
+            'accounting_code' => $this->accounting_code,
+            'describe' => $this->describe,
             'date' => $this->date,
+            'time' => $this->time,
+            'value' => $this->value,
+            'total_salary_paid' => $this->total_salary_paid,
+            'total_expenses' => $this->total_expenses,
+            'address' => $this->address,
+            'job_title' => $this->job_title,
+            'status' => $this->status,
+            'in_progress' => $this->in_progress,
+            'client' => $this->client,
+            'company_id' => $this->company,
+            'employee_id' => $this->employee,
+            'team_id' => $this->team,
+            'job_id' => $this->job,
+            'project_id' => $this->project,
+            'task_id' => $this->task,
+            'attachments'=>AttachmentResource::collection($this->attachments),
         ];
     }
 }

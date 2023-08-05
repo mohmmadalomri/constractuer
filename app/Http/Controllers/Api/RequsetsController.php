@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRequestRequest;
+use App\Http\Traits\ImageTrait;
 use App\Models\RequestModel;
 use App\Models\User;
 use App\Notifications\RequestNotification;
@@ -16,14 +17,13 @@ use Illuminate\Validation\ValidationException;
 
 class RequsetsController extends Controller
 {
-
+    use ImageTrait;
     public function index()
     {
         $requests = RequestModel::with('client', 'team', 'company','items')->get();
         return response()->json([
             'status' => true,
             'requests' => $requests,
-//            'Items' => RequestModel::with('items')->get()
         ]);
     }
 
@@ -49,33 +49,35 @@ class RequsetsController extends Controller
         try {
             $data=$request->validate([
                 'title' => 'string',
-                'instruction' => 'string',
-                'day' => 'string',
-                'start_time' => 'string',
-                'end_time' => 'string',
-                'request_adress' => 'string',
-                'booking_request' => 'string',
-                'notes' => 'string',
+                'instruction' => 'nullable|string',
+                'day' => 'nullable|string',
+                'start_time' => 'nullable|string',
+                'end_time' => 'nullable|string',
+                'request_adress' => 'nullable|string',
+                'booking_request' => 'nullable|string',
+                'notes' => 'nullable|string',
                 'client_id' => 'required|integer',
                 'team_id' => 'required|integer',
                 'company_id' => 'required|integer',
                 'project_id' => 'required|integer',
                 'task_id' => 'required|integer',
 //                'item_id' => 'required|integer',
-                'service_price' => '',
-                'status' => 'integer',
+                'sub_total' => 'nullable',
+                'service_price' => 'nullable',
+                'total' => 'nullable',
+                'service_details' => 'nullable',
+                'status' => 'nullable|integer',
             ]);
+
             $newRequest=RequestModel::create($data);
+
             $newRequest->items()->syncWithoutDetaching($request->input('item_id'));
 
-//        $dates = $request->input('booking_request');
-//        foreach ($dates as $date) {
-//            Booking_date::create([
-//                'request_id' => $requestId,
-//                'date' => $date,
-//            ]);
-//        }
-
+            if ($request->hasfile('image')) {
+                $newRequest_image = $this->saveImage($request->image, 'attachments/requests/'.$newRequest->id);
+                $newRequest->image = $newRequest_image;
+                $newRequest->save();
+            }
             #notification
 //        $users=User::where('id','!=',auth()->user()->id)->get();
 //        $user_create=auth()->user()->name;
@@ -111,23 +113,32 @@ class RequsetsController extends Controller
             $newRequest = RequestModel::findOrFail($id);
             $data=$request->validate([
                 'title' => 'string',
-                'instruction' => 'string',
-                'day' => 'string',
-                'start_time' => 'string',
-                'end_time' => 'string',
-                'request_adress' => 'string',
-                'booking_request' => 'string',
-                'notes' => 'string',
-                'client_id' => 'integer',
-                'team_id' => 'integer',
-                'company_id' => 'integer',
-                'project_id' => 'integer',
-                'task_id' => 'integer',
-                'service_price' => '',
-                'status' => 'integer',
+                'instruction' => 'nullable|string',
+                'day' => 'nullable|string',
+                'start_time' => 'nullable|string',
+                'end_time' => 'nullable|string',
+                'request_adress' => 'nullable|string',
+                'booking_request' => 'nullable|string',
+                'notes' => 'nullable|string',
+                'client_id' => 'required|integer',
+                'team_id' => 'required|integer',
+                'company_id' => 'required|integer',
+                'project_id' => 'required|integer',
+                'task_id' => 'required|integer',
+//                'item_id' => 'required|integer',
+                'sub_total' => 'nullable',
+                'service_price' => 'nullable',
+                'total' => 'nullable',
+                'service_details' => 'nullable',
+                'status' => 'nullable|integer',
             ]);
             $newRequest->update($data);
-
+            if ($request->hasfile('image')) {
+                $this->deleteFile('requests',$id);
+                $newRequest_image = $this->saveImage($request->image, 'attachments/requests/'.$newRequest->id);
+                $newRequest->image = $newRequest_image;
+                $newRequest->save();
+            }
         }catch (ValidationException $exception) {
             // Validation failed, return error response with validation errors
             return response()->json([
@@ -155,6 +166,8 @@ class RequsetsController extends Controller
     {
         $requests=RequestModel::find($id);
         $requests->items()->detach($id);
+        $this->deleteFile('requests',$id);
+
         $requests->delete();
         return response()->json([
             'status' => true,

@@ -11,7 +11,7 @@ class Company extends Model
 
     public $guarded = [];
 
-
+protected $table='companies';
 
     protected $casts = [
         'email' => 'array',

@@ -25,6 +25,9 @@
 
     <a href="{{route('laravel_signature_pad_client')}}" style="text-align: center;font-size: 40px;color: red">signature to client</a>
     <br>
+    <a href="{{route('laravel_signature_pad_company')}}" style="text-align: center;font-size: 40px;color: red">signature to Company</a>
+    <br>
+    <hr>
     <a href="{{route('paypal_form')}}" style="text-align: center;font-size: 40px;color: green">Paypal</a>
         <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center py-4 sm:pt-0">
             @if (Route::has('login'))

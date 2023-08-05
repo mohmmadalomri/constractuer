@@ -15,12 +15,18 @@ class CreateAttachmentsTable extends Migration
     {
         Schema::create('attachments', function (Blueprint $table) {
             $table->id();
+
             $table->bigInteger('team_id')->unsigned()->nullable();
             $table->foreign('team_id')->references('id')->on('teams');
+
             $table->bigInteger('invoice_id')->unsigned()->nullable();
             $table->foreign('invoice_id')->references('id')->on('invoices');
+
             $table->bigInteger('quote_id')->unsigned()->nullable();
             $table->foreign('quote_id')->references('id')->on('quotes');
+
+            $table->bigInteger('expense_id')->unsigned()->nullable();
+            $table->foreign('expense_id')->references('id')->on('expenses');
             $table->timestamps();
         });
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCompanyRequest;
 use App\Http\Requests\UpdateCompanyRequest;
+use App\Http\Resources\CompanyResource;
 use App\Http\Traits\ImageTrait;
 use App\Models\Company;
 use Illuminate\Http\Request;
@@ -20,8 +21,12 @@ class CompanyController extends Controller
     public function index()
     {
         $company = Company::with('admin')->get();
+        $CompanyWithUrls = $company->map(function ($Company) {
+            $Company->logo = asset('attachments/company/'.$Company->id .'/'. $Company->logo);
+            return $Company;
+        });
         return response()->json([
-            'company' => $company
+            'company' => $CompanyWithUrls
         ], 200);
     }
 
@@ -48,10 +53,11 @@ class CompanyController extends Controller
             $company->logo = $logo_image;
             $company->save();
         }
+
         return response()->json([
             'status' => true,
-            'date' => $company,
             'message' => 'Company Information Added Successfully',
+            'date' => CompanyResource::collection($company->get()),
         ]);
 
     }
@@ -84,6 +90,7 @@ class CompanyController extends Controller
                 $company->logo = $logo_image;
                 $company->save();
             }
+            $company->logo = asset('attachments/company/'.$company->id .'/'. $company->logo);
 
             return response()->json([
                 'status' => true,
@@ -96,6 +103,8 @@ class CompanyController extends Controller
     public function show($id)
     {
         $company = Company::with('admin')->find($id);
+        $company->logo = asset('attachments/company/'.$company->id .'/'. $company->logo);
+
         return response()->json([
             'company' => $company
         ], 200);

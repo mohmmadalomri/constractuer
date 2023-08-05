@@ -27,7 +27,9 @@ class StoreCompanyRequest extends FormRequest
 //            'name'          => 'required|max:100',
 //            'logo'          =>'image|max:20000,mimes:jpeg,jpg,png,svg|max:2048',
 //            'phone'         => 'required|numeric',
-//            'email'          => 'email|max:255|unique:companies,email',
+//            'email'          => 'email|max:255|unique:companies,email,'.$this->id,
+            'email' => 'required|email|unique:companies,email,' . $this->id,
+
 //            'link_website'   =>'nullable|url',
 //            'link_facebook'    =>'nullable|url',
 //            'link_twitter'      =>'nullable|url',

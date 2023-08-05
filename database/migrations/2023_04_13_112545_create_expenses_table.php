@@ -20,6 +20,7 @@ class CreateExpensesTable extends Migration
             $table->string('image')->nullable();
             $table->text('describe')->nullable();
             $table->date('date')->nullable();
+            $table->time('time')->nullable();
             $table->double('value')->nullable();
             $table->enum('status', ['under_review', 'approved', 'cancellation', ' in_progress'])->default('under_review');
             $table->foreignId('client_id')->references('id')->on('clients');
@@ -27,6 +28,10 @@ class CreateExpensesTable extends Migration
             $table->string('address')->nullable();
             $table->string('job_title')->nullable();
             $table->string('in_progress')->nullable();
+
+
+            $table->decimal('total_expenses', 8, 2)->nullable();
+            $table->decimal('total_salary_paid', 8, 2)->nullable();
 
             $table->bigInteger('project_id')->unsigned()->nullable();
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');

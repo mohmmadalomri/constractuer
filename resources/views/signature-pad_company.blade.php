@@ -35,7 +35,7 @@
                         <div class="col-md-3">
                             <div class="form-group">
                                 <label for="Client">Company : <span class="text-danger">*</span></label>
-                                <select class="custom-select mr-sm-2" name="company_id">
+                                <select class="custom-select mr-sm-2" required name="company_id">
                                     <option selected disabled>chose...</option>
                                     @foreach($companies as $company)
                                         <option  value="{{ $company->id }}">{{ $company->name }}</option>
@@ -50,7 +50,7 @@
                             <div id="signaturePad" ></div>
                             <br/>
                             <button id="clear" class="btn btn-danger btn-sm">Clear Signature</button>
-                            <textarea id="signature64" name="signed" style="display: none"></textarea>
+                            <textarea id="signature64" name="signed" required style="display: none"></textarea>
                         </div>
                         <br/>
                         <button class="btn btn-success">Save</button>
