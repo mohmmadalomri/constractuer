@@ -12,6 +12,7 @@ use App\Models\AttachmentDocument;
 use App\Models\AttachmentImage;
 use App\Models\AttachmentVideo;
 use App\Models\Invoice;
+use App\Models\Paymentschedule;
 use App\Models\User;
 use App\Notifications\InvoiceNotification;
 use Illuminate\Support\Facades\DB;
@@ -48,6 +49,7 @@ class InvoiceController extends Controller
             $data['company_id'] = $request->company_id;
             $data['discount_id'] = $request->discount_id;
             $data['client_id'] = $request->client_id;
+            $data['payment_type'] = $request->payment_type;       #$ or %
 
             $invoices = Invoice::create($data);
             if ($request->hasfile('image')) {
@@ -56,7 +58,6 @@ class InvoiceController extends Controller
                 $invoices->save();
             }
             $invoices->items()->syncWithoutDetaching($request->input('item_id'));
-            $invoices->paymentschedules()->syncWithoutDetaching($request->input('paymentSchedule_id'));
 
             $users=User::where('id','!=',auth()->user()->id)->get();
             $user_create=auth()->user()->name;
@@ -103,6 +104,16 @@ class InvoiceController extends Controller
                     }
                 }
             }
+            // insert paymentschedule in the server
+            if (isset($request->value)) {
+                foreach ($request->value as $file) {
+                    $paymentschedule = new Paymentschedule();
+                    $paymentschedule->value =$file['value'];
+                    $paymentschedule->receive_date =$file['receive_date'];
+                    $paymentschedule->invoice_id =$invoices->id;
+                    $paymentschedule->save();
+                }
+            }
             DB::commit();  // insert data
         }catch (\Exception $e) {
             DB::rollback();
@@ -143,10 +154,11 @@ class InvoiceController extends Controller
                 $data['company_id'] = $request->company_id;
                 $data['discount_id'] = $request->discount_id;
                 $data['client_id'] = $request->client_id;
+                $data['payment_type'] = $request->payment_type;       #$ or %
 
                 $invoices->update($data);
                 $invoices->items()->syncWithoutDetaching($request->input('item_id'));
-                $invoices->paymentschedules()->syncWithoutDetaching($request->input('paymentSchedule_id'));
+
 
                 if($request->hasfile('images')||$request->hasfile('video')||$request->hasfile('documents')) {
                     $Attachment = new Attachment();
@@ -189,6 +201,20 @@ class InvoiceController extends Controller
                         }
                     }
                 }
+
+
+
+                // insert paymentschedule in the server
+                if (isset($request->value)) {
+                    foreach ($request->value as $file) {
+                        $paymentschedule = new Paymentschedule();
+                        $paymentschedule->value =$file['value'];
+                        $paymentschedule->receive_date =$file['receive_date'];
+                        $paymentschedule->invoice_id =$invoices->id;
+                        $paymentschedule->save();
+                    }
+                }
+
 
                 DB::commit();  // insert data
                 return response()->json([

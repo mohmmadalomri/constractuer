@@ -15,10 +15,16 @@ class CreatePaymentschedulesTable extends Migration
     {
         Schema::create('paymentschedules', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->enum('discount', ['fixed ', 'variable ']);
+            $table->string('name')->nullable();
             $table->string('value')->nullable();
             $table->date('receive_date')->nullable();
+            $table->string('status')->default(0)->nullable();
+
+            $table->bigInteger('invoice_id')->unsigned()->nullable();
+            $table->foreign('invoice_id')->references('id')->on('invoices');
+
+            $table->bigInteger('quote_id')->unsigned()->nullable();
+            $table->foreign('quote_id')->references('id')->on('quotes');
             $table->timestamps();
         });
     }

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Traits\ImageTrait;
 use App\Models\Project;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -26,16 +27,34 @@ class ProjectController extends Controller
     }
 
 
-    public function store(StoreProjectRequest $request)
+    public function store(Request $request)
     {
-        $project = project::create($request->all());
-        $project->teams()->syncWithoutDetaching($request->input('team_id'));
+        // Step 1: Validate Input Data
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'describe' => 'string',
+            'budget' => 'string', // Assuming a minimum of 6 characters for the password.
+            'total_price' => 'integer',
+            'profit' => 'string',
+            'image' => '',
+            'start_time' => 'date',
+            'end_time' => 'date',
+            'status' => 'string',
+            'supervisor_id' => 'required|integer',
+            'company_id' => 'required|integer',
+            'client_id' => 'required|integer',
+            ]);
+
+        $project = project::create($validatedData);
+
 
         if ($request->hasfile('image')) {
             $Image_dir=$this->saveImage($request->image, 'attachments/projects/'.$project->id);
             $project->image = $Image_dir;
             $project->save();
         }
+        $project->teams()->syncWithoutDetaching($request->input('team_id'));
+
         $project->image = url('attachments/projects/'.$project->id .'/'. $project->image);
         return response()->json([
             'status' => true,
@@ -65,29 +84,38 @@ class ProjectController extends Controller
                 'message' => 'Error  Id ',
             ],502);
         }
-        $data = $request->all();
-        if ($project) {
-            $data['name'] = $request->name ? $request->name : $project->name;
-            $data['describe'] = $request->describe ? $request->describe : $project->describe;
-            $data['budget'] = $request->budget ? $request->budget : $project->budget;
-            $data['supervisor_id'] = $request->supervisor_id ? $request->supervisor_id : $project->supervisor_id;
-            $data['start_time'] = $request->start_time ? $request->start_time : $project->start_time;
-            $data['end_time'] = $request->end_time ? $request->end_time : $project->end_time;
-            $project->update($data);
-            if ($request->hasfile('image')) {
-                $this->deleteFile('projects',$id);
-                $Image_dir=$this->saveImage($request->image, 'attachments/projects/'.$id);
-                $project->image = $Image_dir;
-                $project->save();
-            }
-            $project->image = url('attachments/projects/'.$project->id .'/'. $project->image);
+        // Step 1: Validate Input Data
+        $validatedData = $request->validate([
+            'name' => 'required|string',
+            'describe' => 'string',
+            'budget' => 'string', // Assuming a minimum of 6 characters for the password.
+            'total_price' => 'integer',
+            'profit' => 'string',
+            'image' => '',
+            'start_time' => 'date',
+            'end_time' => 'date',
+            'status' => 'string',
+            'supervisor_id' => 'required|integer',
+            'company_id' => 'required|integer',
+            'client_id' => 'required|integer',
+        ]);
+        $project->update($validatedData);
 
-            return response()->json([
-                'status' => true,
-                'data' => $project,
-                'message' => 'project Information Updated Successfully',
-            ]);
+        if ($request->hasfile('image')) {
+            $this->deleteFile('projects',$id);
+            $Image_dir=$this->saveImage($request->image, 'attachments/projects/'.$id);
+            $project->image = $Image_dir;
+            $project->save();
         }
+        $project->image = url('attachments/projects/'.$project->id .'/'. $project->image);
+        $project->teams()->syncWithoutDetaching($request->input('team_id'));
+
+        return response()->json([
+            'status' => true,
+            'data' => $project,
+            'message' => 'project Information Updated Successfully',
+        ]);
+
     }
 
     public function destroy($id)

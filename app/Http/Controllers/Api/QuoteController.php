@@ -11,6 +11,7 @@ use App\Models\Attachment;
 use App\Models\AttachmentDocument;
 use App\Models\AttachmentImage;
 use App\Models\AttachmentVideo;
+use App\Models\Paymentschedule;
 use App\Models\Quote;
 use App\Models\User;
 use App\Notifications\QuoteNotification;
@@ -46,6 +47,7 @@ class QuoteController extends Controller
             $data['client_id'] = $request->client_id;
             $data['signature_id'] = $request->signature_id;
             $data['tax_id'] = $request->tax_id;
+            $data['payment_type'] = $request->payment_type;       #$ or %
             $quote = Quote::create($data);
             if ($request->hasfile('image')) {
                 $quote_image = $this->saveImage($request->image, 'attachments/quote/'.$quote->id);
@@ -53,7 +55,6 @@ class QuoteController extends Controller
                 $quote->save();
             }
             $quote->items()->syncWithoutDetaching($request->input('item_id'));
-            $quote->paymentschedules()->syncWithoutDetaching($request->input('paymentSchedule_id'));
 
             $users=User::where('id','!=',auth()->user()->id)->get();
             $user_create=auth()->user()->name;
@@ -100,6 +101,16 @@ class QuoteController extends Controller
                         $image->document = $document_path;
                         $image->save();
                     }
+                }
+            }
+            // insert paymentschedule in the server
+            if (isset($request->value)) {
+                foreach ($request->value as $file) {
+                    $paymentschedule = new Paymentschedule();
+                    $paymentschedule->value =$file['value'];
+                    $paymentschedule->receive_date =$file['receive_date'];
+                    $paymentschedule->invoice_id =$quote->id;
+                    $paymentschedule->save();
                 }
             }
             DB::commit();  // insert data
@@ -156,10 +167,11 @@ class QuoteController extends Controller
                 $data['client_id'] = $request->client_id;
                 $data['signature_id'] = $request->signature_id;
                 $data['tax_id'] = $request->tax_id;
+                $data['payment_type'] = $request->payment_type;       #$ or %
+
                 $quote->update($data);
 
                 $quote->items()->syncWithoutDetaching($request->input('item_id'));
-                $quote->paymentschedules()->syncWithoutDetaching($request->input('paymentSchedule_id'));
 
                 #attachements
                 if($request->hasfile('images')||$request->hasfile('video')||$request->hasfile('documents')) {
@@ -211,7 +223,16 @@ class QuoteController extends Controller
                     $quote->image = $quote_image;
                     $quote->save();
                 }
-
+                // insert paymentschedule in the server
+                if (isset($request->value)) {
+                    foreach ($request->value as $file) {
+                        $paymentschedule = new Paymentschedule();
+                        $paymentschedule->value =$file['value'];
+                        $paymentschedule->receive_date =$file['receive_date'];
+                        $paymentschedule->invoice_id =$quote->id;
+                        $paymentschedule->save();
+                    }
+                }
                 DB::commit();  // insert data
                 return response()->json([
                     'status'=>true,

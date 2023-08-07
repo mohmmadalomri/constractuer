@@ -9,5 +9,6 @@ class Paymentschedule extends Model
 {
     use HasFactory;
     protected $guarded=[''];
+    protected $table ='paymentschedules';
 
 }

@@ -44,6 +44,8 @@ class CreateInvoicesTable extends Migration
 
             $table->foreignId('company_id')->references('id')->on('companies');
             $table->foreignId('client_id')->references('id')->on('clients');
+
+            $table->enum('payment_type', ['$', '%'])->default('$')->nullable();
             $table->timestamps();
         });
     }

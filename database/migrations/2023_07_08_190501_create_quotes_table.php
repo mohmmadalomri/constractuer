@@ -24,14 +24,8 @@ class CreateQuotesTable extends Migration
             $table->date('date');
             $table->text('note');
             $table->enum('status',['in_progress','canceled','completed','approved'])->default('in_progress');
-
             $table->foreignId('company_id')->references('id')->on('companies');
-
             $table->foreignId('client_id')->references('id')->on('clients');
-
-
-//            $table->bigInteger('paymentSchedule_id')->unsigned()->nullable();
-//            $table->foreign('paymentSchedule_id')->references('id')->on('paymentschedules')->onDelete('cascade');
 
             $table->bigInteger('discount_id')->unsigned()->nullable();
             $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('cascade');
@@ -41,6 +35,8 @@ class CreateQuotesTable extends Migration
 
             $table->bigInteger('tax_id')->unsigned()->nullable();
             $table->foreign('tax_id')->references('id')->on('taxes')->onDelete('cascade');
+
+            $table->enum('payment_type', ['$', '%'])->default('$')->nullable();
 
             $table->timestamps();
         });
