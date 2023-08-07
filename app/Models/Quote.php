@@ -23,7 +23,7 @@ class Quote extends Model
 
     public function paymentschedules()
     {
-        return $this->belongsToMany(QuotesPaymentschedule::class, 'quotes_paymentschedules', 'quote_id', 'paymentSchedule_id');
+        return $this->hasMany(Paymentschedule::class, 'quote_id');
     }
 
     public function company()

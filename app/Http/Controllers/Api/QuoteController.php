@@ -104,12 +104,12 @@ class QuoteController extends Controller
                 }
             }
             // insert paymentschedule in the server
-            if (isset($request->value)) {
-                foreach ($request->value as $file) {
+            if (isset($request->paymentSch)) {
+                foreach ($request->paymentSch as $file) {
                     $paymentschedule = new Paymentschedule();
                     $paymentschedule->value =$file['value'];
                     $paymentschedule->receive_date =$file['receive_date'];
-                    $paymentschedule->invoice_id =$quote->id;
+                    $paymentschedule->quote_id =$quote->id;
                     $paymentschedule->save();
                 }
             }
@@ -224,12 +224,12 @@ class QuoteController extends Controller
                     $quote->save();
                 }
                 // insert paymentschedule in the server
-                if (isset($request->value)) {
-                    foreach ($request->value as $file) {
+                if (isset($request->paymentSch)) {
+                    foreach ($request->paymentSch as $file) {
                         $paymentschedule = new Paymentschedule();
                         $paymentschedule->value =$file['value'];
                         $paymentschedule->receive_date =$file['receive_date'];
-                        $paymentschedule->invoice_id =$quote->id;
+                        $paymentschedule->quote_id =$quote->id;
                         $paymentschedule->save();
                     }
                 }
@@ -267,6 +267,10 @@ class QuoteController extends Controller
                 'message' => 'not found id',
             ],502);
         }
+        $id_attachmentss=$Quote->paymentschedules()->get();
+        if ($id_attachmentss !== null && $id_attachmentss->count() > 0) {
+            $id_attachmentss->each->delete();
+        }
 
         $id_attachment=$Quote->attachments()->first();
         if ($id_attachment){
@@ -293,7 +297,7 @@ class QuoteController extends Controller
         }
         $this->deleteFile('quote', $id);
         $Quote->items()->detach();
-        $Quote->paymentschedules()->detach();
+//        $Quote->paymentschedules()->detach();
         $Quote->delete();
         Quote::where('id', $id)->delete();
         return response()->json([

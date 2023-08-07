@@ -20,6 +20,8 @@ class QuoteResource extends JsonResource
             'date' => $this->date,
             'note' => $this->note,
             'status' => $this->status,
+            'payment_type' => $this->payment_type,
+            'paymentschedules' => $this->paymentschedules,
             'company' => $this->company,
             'client' => $this->client,
             'discount' => $this->discount,

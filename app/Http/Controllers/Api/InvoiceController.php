@@ -205,8 +205,8 @@ class InvoiceController extends Controller
 
 
                 // insert paymentschedule in the server
-                if (isset($request->value)) {
-                    foreach ($request->value as $file) {
+                if (isset($request->paymentSch)) {
+                    foreach ($request->paymentSch as $file) {
                         $paymentschedule = new Paymentschedule();
                         $paymentschedule->value =$file['value'];
                         $paymentschedule->receive_date =$file['receive_date'];
@@ -266,6 +266,10 @@ class InvoiceController extends Controller
                 'message' => 'not found id',
             ],502);
         }
+        $id_attachmentss=$invoice->paymentschedules()->get();
+        if ($id_attachmentss !== null && $id_attachmentss->count() > 0) {
+            $id_attachmentss->each->delete();
+        }
         $id_attachment=$invoice->attachments()->first();
 //        return $id_attachment;
         if ($id_attachment){
@@ -292,7 +296,6 @@ class InvoiceController extends Controller
         }
         $this->deleteFile('invoices', $id);
         $invoice->items()->detach();
-        $invoice->paymentschedules()->detach();
         $invoice->delete();
         Invoice::where('id', $id)->delete();
         return response()->json([
