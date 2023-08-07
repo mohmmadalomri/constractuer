@@ -105,8 +105,8 @@ class InvoiceController extends Controller
                 }
             }
             // insert paymentschedule in the server
-            if (isset($request->value)) {
-                foreach ($request->value as $file) {
+            if (isset($request->paymentSch)) {
+                foreach ($request->paymentSch as $file) {
                     $paymentschedule = new Paymentschedule();
                     $paymentschedule->value =$file['value'];
                     $paymentschedule->receive_date =$file['receive_date'];

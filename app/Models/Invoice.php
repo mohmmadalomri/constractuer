@@ -36,7 +36,7 @@ class Invoice extends Model
     }
     public function paymentschedules()
     {
-        return $this->belongsToMany(InvoicesPaymentschedule::class, 'invoices_paymentschedules', 'invoice_id', 'paymentSchedule_id');
+        return $this->hasMany(Paymentschedule::class, 'invoice_id');
     }
 
     public function attachments()

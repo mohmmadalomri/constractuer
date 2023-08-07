@@ -22,12 +22,13 @@ class InvoiceResource extends JsonResource
             'payment_due' => $this->payment_due,
             'total' => $this->total,
             'status' => $this->status,
+            'payment_type' => $this->payment_type,
+            'paymentschedules' => $this->paymentschedules,
             'company' => $this->company,
             'client' => $this->client,
             'signature' => $this->signature,
             'tax' => $this->tax,
             'items' => $this->items,
-//            'paymentschedules' => $this->paymentschedules,
             'attachments'=>AttachmentResource::collection($this->attachments),
 
         ];

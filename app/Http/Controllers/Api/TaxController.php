@@ -26,7 +26,7 @@ class TaxController extends Controller
     {
         $rules = [
             "name" => "required|string|min:3",
-            "ratio" => "string",
+            "ratio" => "numeric",
             "description" => "string",
         ];
         $validator = Validator::make($request->all(), $rules);
